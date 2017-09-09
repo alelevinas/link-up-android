@@ -72,7 +72,7 @@
             android:text="Mensaje" />
 
         <ImageButton
-            android:id="@+id/share_button"
+            android:id="@+id/superlike_button"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/cards_button_width"
             android:layout_height="@dimen/cards_button_height"
@@ -90,7 +90,7 @@
             android:layout_marginRight="@dimen/md_keylines"
             app:srcCompat="@drawable/ic_favorite"
             android:layout_below="@+id/card_text"
-            android:layout_toLeftOf="@id/share_button"
+            android:layout_toLeftOf="@id/superlike_button"
             style="?android:attr/borderlessButtonStyle"
             android:tint="@color/button_grey" />
 

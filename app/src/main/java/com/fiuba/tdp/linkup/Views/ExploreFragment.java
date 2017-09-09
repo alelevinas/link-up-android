@@ -1,6 +1,8 @@
 package com.fiuba.tdp.linkup.Views;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -19,6 +21,9 @@ import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
 
+import static android.R.color.holo_orange_light;
+import static android.R.color.holo_red_light;
+
 public class ExploreFragment extends Fragment{
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +41,9 @@ public class ExploreFragment extends Fragment{
             public ImageView picture;
             public TextView name;
             public TextView description;
-            public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
+            boolean favoriteImageButtonChecked = false;
+            boolean superLikeImageButtonChecked = false;
+            public ViewHolder(LayoutInflater inflater, final ViewGroup parent) {
                 super(inflater.inflate(R.layout.item_card, parent, false));
                 picture = (ImageView) itemView.findViewById(R.id.card_image);
                 name = (TextView) itemView.findViewById(R.id.card_title);
@@ -69,22 +76,32 @@ public class ExploreFragment extends Fragment{
                     }
                 });
 
-                ImageButton favoriteImageButton =
+                final ImageButton favoriteImageButton =
                         (ImageButton) itemView.findViewById(R.id.favorite_button);
                 favoriteImageButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
                         Snackbar.make(v, "Le pusiste un like a "+name.getText().toString(),
                                 Snackbar.LENGTH_LONG).show();
+                        if(favoriteImageButtonChecked)
+                            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+                        else
+                            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
+                        favoriteImageButtonChecked = !favoriteImageButtonChecked;
                     }
                 });
 
-                ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-                shareImageButton.setOnClickListener(new View.OnClickListener(){
+                final ImageButton superLikeImageButton = (ImageButton) itemView.findViewById(R.id.superlike_button);
+                superLikeImageButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
                         Snackbar.make(v, "Le pusiste un SUPER like a "+name.getText().toString(),
                                 Snackbar.LENGTH_LONG).show();
+                        if(superLikeImageButtonChecked)
+                            superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+                        else
+                            superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_orange_light));
+                        superLikeImageButtonChecked = !superLikeImageButtonChecked;
                     }
                 });
             }
