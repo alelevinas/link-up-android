@@ -1,4 +1,4 @@
-package com.fiuba.tdp.linkup.Views;
+package com.fiuba.tdp.linkup.views;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -38,19 +38,12 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        Bundle inBundle = getIntent().getExtras();
-        String name = inBundle.get("name").toString();
-        String surname = inBundle.get("surname").toString();
-        String imageUrl = inBundle.get("imageUrl").toString();
+//        Bundle inBundle = getIntent().getExtras();
+//        String name = inBundle.get("name").toString();
+//        String surname = inBundle.get("surname").toString();
+//        String imageUrl = inBundle.get("imageUrl").toString();
 
         pushFragment(exploreFragment);
-
-//        TextView nameView = (TextView)findViewById(R.id.nameAndSurname);
-//        nameView.setText("" + name + " " + surname);
-//
-//        new DownloadImage((ImageView)findViewById(R.id.profileImage)).execute(imageUrl);
-
-
     }
 
     /**

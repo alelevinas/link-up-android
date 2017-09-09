@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.fiuba.tdp.linkup.Views.MainLinkUpActivity">
+    tools:context="com.fiuba.tdp.linkup.views.MainLinkUpActivity">
 
     <FrameLayout
         android:id="@+id/rootLayout"
