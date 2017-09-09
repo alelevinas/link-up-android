@@ -9,11 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 
@@ -64,7 +62,7 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         switch (item.getItemId()) {
             case R.id.navigation_discover:
 //                mTextMessage.setText(R.string.title_home);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(new ExploreFragment());
                 return true;
             case R.id.navigation_notifications:
 //                mTextMessage.setText(R.string.title_dashboard);
