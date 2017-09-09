@@ -2,8 +2,11 @@ package com.fiuba.tdp.linkup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -50,7 +53,7 @@ public class LogInActivity extends AppCompatActivity {
 
         // TODO: si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
 
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override

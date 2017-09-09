@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.components.dummy.DummyContent;
-import com.fiuba.tdp.linkup.components.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.fiuba.tdp.linkup.components.dummy.InterestsContent;
+import com.fiuba.tdp.linkup.components.dummy.InterestsContent.InterestItem;
 
 /**
  * A fragment representing a list of Items.
@@ -70,7 +68,7 @@ public class InterestsFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(InterestsContent.ITEMS, mListener));
         }
         return view;
     }
@@ -105,6 +103,6 @@ public class InterestsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(InterestItem item);
     }
 }

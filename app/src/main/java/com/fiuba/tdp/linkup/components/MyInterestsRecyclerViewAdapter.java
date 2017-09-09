@@ -8,21 +8,21 @@ import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment.OnListFragmentInteractionListener;
-import com.fiuba.tdp.linkup.components.dummy.DummyContent.DummyItem;
+import com.fiuba.tdp.linkup.components.dummy.InterestsContent.InterestItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link InterestItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInterestsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<InterestItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyInterestsRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyInterestsRecyclerViewAdapter(List<InterestItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -59,7 +59,7 @@ public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInter
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public DummyItem mItem;
+        public InterestItem mItem;
 
         public ViewHolder(View view) {
             super(view);
