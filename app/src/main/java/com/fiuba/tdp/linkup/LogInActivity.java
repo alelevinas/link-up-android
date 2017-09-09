@@ -109,6 +109,7 @@ public class LogInActivity extends AppCompatActivity {
             main.putExtra("surname", profile.getLastName());
             main.putExtra("imageUrl", profile.getProfilePictureUri(200, 200).toString());
             startActivity(main);
+            finish();
         }
     }
 

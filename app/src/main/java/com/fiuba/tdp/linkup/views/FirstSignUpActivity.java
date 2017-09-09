@@ -11,8 +11,10 @@ import android.view.View;
 import android.widget.Button;
 
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.InterestsFragment;
+import com.fiuba.tdp.linkup.components.dummy.DummyContent;
 
-public class FirstSignUpActivity extends AppCompatActivity {
+public class FirstSignUpActivity extends AppCompatActivity implements InterestsFragment.OnListFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,4 +45,8 @@ public class FirstSignUpActivity extends AppCompatActivity {
 //    }
 
 
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        return;
+    }
 }
