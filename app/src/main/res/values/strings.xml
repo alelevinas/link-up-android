@@ -4,7 +4,7 @@
     <string name="fb_login_protocol_scheme">fb271461820013664</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_main_link_up">MainLinkUpActivity</string>
+    <string name="title_activity_main_link_up">Link Up!</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -15,6 +15,9 @@
     <string name="title_messages">Mensajes</string>
     <string name="title_discover">Descubrir</string>
     <string name="title_profile">Perfil</string>
+    <string name="login_title">Link Up!</string>
+    <string name="login_subtitle">¡Comienza Ya!</string>
+    <string name="title_activity_first_sign_up">Tu Perfil</string>
 
     <string name="item_title">Palais Garnier</string>
     <string name="item_desc">The Palais Garnier which locates in Paris was built from 1861 for
