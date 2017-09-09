@@ -16,7 +16,8 @@ import com.fiuba.tdp.linkup.R;
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
-
+    private Fragment exploreFragment = new ExploreFragment();
+    private Fragment profileFragment = ProfileFragment.newInstance("hola", "mundo");
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -42,6 +43,8 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         String surname = inBundle.get("surname").toString();
         String imageUrl = inBundle.get("imageUrl").toString();
 
+        pushFragment(exploreFragment);
+
 //        TextView nameView = (TextView)findViewById(R.id.nameAndSurname);
 //        nameView.setText("" + name + " " + surname);
 //
@@ -62,19 +65,19 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         switch (item.getItemId()) {
             case R.id.navigation_discover:
 //                mTextMessage.setText(R.string.title_home);
-                pushFragment(new ExploreFragment());
+                pushFragment(exploreFragment);
                 return true;
             case R.id.navigation_notifications:
 //                mTextMessage.setText(R.string.title_dashboard);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(profileFragment);
                 return true;
             case R.id.navigation_messages:
 //                mTextMessage.setText(R.string.title_notifications);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(profileFragment);
                 return true;
             case R.id.navigation_profile:
 //                mTextMessage.setText(R.string.title_notifications);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(profileFragment);
                 return true;
         }
         return false;

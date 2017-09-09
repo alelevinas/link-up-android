@@ -59,6 +59,16 @@ public class ExploreFragment extends Fragment{
                     }
                 });
 
+                ImageButton closeImageButton =
+                        (ImageButton) itemView.findViewById(R.id.closeButton);
+                closeImageButton.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Snackbar.make(v, "Eliminaste de tu listado a "+name.getText().toString(),
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                });
+
                 ImageButton favoriteImageButton =
                         (ImageButton) itemView.findViewById(R.id.favorite_button);
                 favoriteImageButton.setOnClickListener(new View.OnClickListener(){
