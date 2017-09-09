@@ -15,6 +15,7 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
 
 public class LogInActivity extends AppCompatActivity {
@@ -79,7 +80,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onResume();
         //Facebook login
         profile = Profile.getCurrentProfile();
-        nextActivity(profile);
+//        nextActivity(profile);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void nextActivity(Profile profile) {
         if (profile != null) {
-            Intent main = new Intent(this, MainLinkUpActivity.class);
+            Intent main = new Intent(this, FirstSignUpActivity.class);
             main.putExtra("name", profile.getFirstName());
             main.putExtra("surname", profile.getLastName());
             main.putExtra("imageUrl", profile.getProfilePictureUri(200, 200).toString());
