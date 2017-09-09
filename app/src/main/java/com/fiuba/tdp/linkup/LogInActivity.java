@@ -2,8 +2,11 @@ package com.fiuba.tdp.linkup;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -15,8 +18,7 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
-import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
+import com.fiuba.tdp.linkup.Views.MainLinkUpActivity;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -48,9 +50,7 @@ public class LogInActivity extends AppCompatActivity {
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
-        // TODO: si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
-
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -59,7 +59,8 @@ public class LogInActivity extends AppCompatActivity {
                 profile = Profile.getCurrentProfile();
                 nextActivity(profile);
                 Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(), "Bienvenido " + profile.getName() + "!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), profile.getName() + " " + profile.getLinkUri().getPath(), Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -80,7 +81,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onResume();
         //Facebook login
         profile = Profile.getCurrentProfile();
-//        nextActivity(profile);
+        nextActivity(profile);
     }
 
     @Override
@@ -102,15 +103,13 @@ public class LogInActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, responseCode, intent);
     }
 
-    private void nextActivity(Profile profile) {
-        if (profile != null) {
-            // TODO: si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
-            Intent main = new Intent(this, FirstSignUpActivity.class);
+    private void nextActivity(Profile profile){
+        if(profile != null){
+            Intent main = new Intent(this, MainLinkUpActivity.class);
             main.putExtra("name", profile.getFirstName());
             main.putExtra("surname", profile.getLastName());
-            main.putExtra("imageUrl", profile.getProfilePictureUri(200, 200).toString());
+            main.putExtra("imageUrl", profile.getProfilePictureUri(200,200).toString());
             startActivity(main);
-            finish();
         }
     }
 
