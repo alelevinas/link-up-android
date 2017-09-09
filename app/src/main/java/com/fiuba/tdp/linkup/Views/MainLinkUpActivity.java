@@ -9,16 +9,15 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
-
+    private Fragment exploreFragment = new ExploreFragment();
+    private Fragment profileFragment = ProfileFragment.newInstance("hola", "mundo");
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -44,6 +43,8 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         String surname = inBundle.get("surname").toString();
         String imageUrl = inBundle.get("imageUrl").toString();
 
+        pushFragment(exploreFragment);
+
 //        TextView nameView = (TextView)findViewById(R.id.nameAndSurname);
 //        nameView.setText("" + name + " " + surname);
 //
@@ -64,19 +65,19 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         switch (item.getItemId()) {
             case R.id.navigation_discover:
 //                mTextMessage.setText(R.string.title_home);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(exploreFragment);
                 return true;
             case R.id.navigation_notifications:
 //                mTextMessage.setText(R.string.title_dashboard);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(profileFragment);
                 return true;
             case R.id.navigation_messages:
 //                mTextMessage.setText(R.string.title_notifications);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(profileFragment);
                 return true;
             case R.id.navigation_profile:
 //                mTextMessage.setText(R.string.title_notifications);
-                pushFragment(ProfileFragment.newInstance("hola", "mundo"));
+                pushFragment(profileFragment);
                 return true;
         }
         return false;
