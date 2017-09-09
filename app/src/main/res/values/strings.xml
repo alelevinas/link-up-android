@@ -15,4 +15,6 @@
     <string name="title_messages">Mensajes</string>
     <string name="title_discover">Descubrir</string>
     <string name="title_profile">Perfil</string>
+    <string name="login_title">Link Up!</string>
+    <string name="login_subtitle">¡Comienza Ya!</string>
 </resources>

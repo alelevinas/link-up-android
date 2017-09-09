@@ -43,8 +43,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Views.MainLinkUpActivity"
-            android:label="@string/title_activity_main_link_up"></activity>
+            android:name=".views.MainLinkUpActivity"
+            android:label="@string/title_activity_main_link_up" />
     </application>
 
 </manifest>

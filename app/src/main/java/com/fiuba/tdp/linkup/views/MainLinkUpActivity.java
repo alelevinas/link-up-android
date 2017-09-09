@@ -1,4 +1,4 @@
-package com.fiuba.tdp.linkup.Views;
+package com.fiuba.tdp.linkup.views;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -9,11 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 

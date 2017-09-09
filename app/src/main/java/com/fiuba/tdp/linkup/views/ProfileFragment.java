@@ -1,4 +1,4 @@
-package com.fiuba.tdp.linkup.Views;
+package com.fiuba.tdp.linkup.views;
 
 import android.content.Context;
 import android.net.Uri;
