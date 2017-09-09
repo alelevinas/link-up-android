@@ -1,5 +1,6 @@
 package com.fiuba.tdp.linkup.views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -26,6 +27,13 @@ public class FirstSignUpActivity extends AppCompatActivity implements InterestsF
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button button = (Button) findViewById(R.id.done);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveProfile();
+            }
+        });
     }
 
 //    @Override
@@ -48,5 +56,11 @@ public class FirstSignUpActivity extends AppCompatActivity implements InterestsF
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
         return;
+    }
+
+    private void saveProfile() {
+        Intent main = new Intent(this, MainLinkUpActivity.class);
+        startActivity(main);
+        finish();
     }
 }

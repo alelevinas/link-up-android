@@ -48,7 +48,7 @@ public class LogInActivity extends AppCompatActivity {
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
-        // TODO: si ya esta logueado ir directo a la MainLinkUpActivity
+        // TODO: si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
@@ -104,6 +104,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void nextActivity(Profile profile) {
         if (profile != null) {
+            // TODO: si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
             Intent main = new Intent(this, FirstSignUpActivity.class);
             main.putExtra("name", profile.getFirstName());
             main.putExtra("surname", profile.getLastName());
