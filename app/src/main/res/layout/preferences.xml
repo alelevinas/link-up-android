@@ -241,8 +241,9 @@
                         android:textSize="20sp" />
 
                     <RadioGroup
+                        android:id="@+id/friend_relation_radiogroup"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" >
+                        android:layout_height="wrap_content">
 
                         <RadioButton
                             android:id="@+id/relationship"
