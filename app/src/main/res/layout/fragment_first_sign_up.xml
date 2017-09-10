@@ -108,6 +108,8 @@
             android:id="@+id/fragment_interests" />
 
         <Button
+            android:id="@+id/button2"
+            android:layout_width="0dp"
             android:id="@+id/button_edit_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -123,7 +125,7 @@
             android:layout_marginEnd="32dp" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/button_preferences"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
