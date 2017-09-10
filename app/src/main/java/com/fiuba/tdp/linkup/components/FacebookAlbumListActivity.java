@@ -34,11 +34,11 @@ import static android.support.v4.app.NavUtils.navigateUpFromSameTask;
  * An activity representing a list of FacebookPhotos. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link FacebookPhotoDetailActivity} representing
+ * lead to a {@link FacebookPhotoGridActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class FacebookPhotoListActivity extends AppCompatActivity {
+public class FacebookAlbumListActivity extends AppCompatActivity {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -130,8 +130,8 @@ public class FacebookPhotoListActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, FacebookPhotoDetailActivity.class);
-                    intent.putExtra(FacebookPhotoDetailActivity.ARG_ITEM_ID, holder.mItem.id);
+                    Intent intent = new Intent(context, FacebookPhotoGridActivity.class);
+                    intent.putExtra(FacebookPhotoGridActivity.ARG_ITEM_ID, holder.mItem.id);
 
                     context.startActivity(intent);
 

@@ -59,7 +59,7 @@
             android:name=".views.EditInfoActivity"
             android:parentActivityName=".views.FirstSignUpActivity" />
         <activity
-            android:name=".components.FacebookPhotoListActivity"
+            android:name=".components.FacebookAlbumListActivity"
             android:label="@string/title_facebookphoto_list"
             android:parentActivityName=".views.EditInfoActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -68,13 +68,13 @@
                 android:value="com.fiuba.tdp.linkup.views.EditInfoActivity" />
         </activity>
         <activity
-            android:name=".components.FacebookPhotoDetailActivity"
+            android:name=".components.FacebookPhotoGridActivity"
             android:label="@string/title_facebookphoto_detail"
-            android:parentActivityName=".components.FacebookPhotoListActivity"
+            android:parentActivityName=".components.FacebookAlbumListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.fiuba.tdp.linkup.components.FacebookPhotoListActivity" />
+                android:value="com.fiuba.tdp.linkup.components.FacebookAlbumListActivity" />
         </activity>
     </application>
 

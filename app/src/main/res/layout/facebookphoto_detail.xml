@@ -9,7 +9,7 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="GridLayoutManager"
-    tools:context="com.fiuba.tdp.linkup.components.FacebookPhotoDetailActivity"
+    tools:context="com.fiuba.tdp.linkup.components.FacebookPhotoGridActivity"
     tools:listitem="@layout/facebookphoto_detail_content" />
 
 

@@ -3,13 +3,11 @@ package com.fiuba.tdp.linkup.views;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.components.FacebookPhotoListActivity;
+import com.fiuba.tdp.linkup.components.FacebookAlbumListActivity;
 
 public class EditInfoActivity extends AppCompatActivity {
 
@@ -34,7 +32,7 @@ public class EditInfoActivity extends AppCompatActivity {
     }
 
     private void pickImageFromFacebook() {
-        Intent main = new Intent(this, FacebookPhotoListActivity.class);
+        Intent main = new Intent(this, FacebookAlbumListActivity.class);
         startActivity(main);
     }
 }
