@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:layout_marginTop="15dp"
-            android:text="Intereses"
+            android:text="@string/intereses"
             android:textSize="20sp"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@+id/label_studies"
@@ -108,13 +108,13 @@
             android:id="@+id/fragment_interests" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/button_edit_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginTop="8dp"
-            android:text="Editar Información"
+            android:text="@string/button_edit_info"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -127,10 +127,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Preferencias"
-            app:layout_constraintLeft_toLeftOf="@+id/button2"
-            app:layout_constraintRight_toRightOf="@+id/button2"
-            app:layout_constraintTop_toBottomOf="@+id/button2" />
+            android:text="@string/preferencias"
+            app:layout_constraintLeft_toLeftOf="@+id/button_edit_info"
+            app:layout_constraintRight_toRightOf="@+id/button_edit_info"
+            app:layout_constraintTop_toBottomOf="@+id/button_edit_info" />
 
 
     </android.support.constraint.ConstraintLayout>

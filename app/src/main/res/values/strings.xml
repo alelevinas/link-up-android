@@ -30,4 +30,10 @@
         pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
         deserunt mollit anim id est laborum.
     </string>
+    <string name="button_edit_info">Editar Información</string>
+    <string name="profile_picture">profile picture</string>
+    <string name="title_facebookphoto_list">Facebook Albums</string>
+    <string name="title_facebookphoto_detail">Album\'s photos</string>
+    <string name="preferencias">button_preferences</string>
+    <string name="intereses">title_interests</string>
 </resources>

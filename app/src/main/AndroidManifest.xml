@@ -3,6 +3,7 @@
     package="com.fiuba.tdp.linkup">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -53,6 +54,27 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fiuba.tdp.linkup.LogInActivity" />
+        </activity>
+        <activity
+            android:name=".views.EditInfoActivity"
+            android:parentActivityName=".views.FirstSignUpActivity" />
+        <activity
+            android:name=".components.FacebookAlbumListActivity"
+            android:label="@string/title_facebookphoto_list"
+            android:parentActivityName=".views.EditInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fiuba.tdp.linkup.views.EditInfoActivity" />
+        </activity>
+        <activity
+            android:name=".components.FacebookPhotoGridActivity"
+            android:label="@string/title_facebookphoto_detail"
+            android:parentActivityName=".components.FacebookAlbumListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fiuba.tdp.linkup.components.FacebookAlbumListActivity" />
         </activity>
         <activity android:name=".views.PreferencesActivity"
             android:label="Preferencias"
