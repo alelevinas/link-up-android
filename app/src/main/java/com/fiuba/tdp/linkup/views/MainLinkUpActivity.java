@@ -12,10 +12,12 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.InterestsFragment;
+import com.fiuba.tdp.linkup.components.dummy.InterestsContent;
 
-public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
+public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
+        InterestsFragment.OnListFragmentInteractionListener{
 
-    private TextView mTextMessage;
     private Fragment exploreFragment = new ExploreFragment();
     private Fragment profileFragment = new FirstSignUpActivityFragment();
 
@@ -34,14 +36,8 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_link_up);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-//        Bundle inBundle = getIntent().getExtras();
-//        String name = inBundle.get("name").toString();
-//        String surname = inBundle.get("surname").toString();
-//        String imageUrl = inBundle.get("imageUrl").toString();
 
         pushFragment(exploreFragment);
     }
@@ -57,19 +53,15 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
         switch (item.getItemId()) {
             case R.id.navigation_discover:
-//                mTextMessage.setText(R.string.title_home);
                 pushFragment(exploreFragment);
                 return true;
             case R.id.navigation_notifications:
-//                mTextMessage.setText(R.string.title_dashboard);
                 pushFragment(profileFragment);
                 return true;
             case R.id.navigation_messages:
-//                mTextMessage.setText(R.string.title_notifications);
                 pushFragment(profileFragment);
                 return true;
             case R.id.navigation_profile:
-//                mTextMessage.setText(R.string.title_notifications);
                 pushFragment(profileFragment);
                 return true;
         }
@@ -97,6 +89,9 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        return;
+    }
+
+    @Override
+    public void onListFragmentInteraction(InterestsContent.InterestItem item) {
     }
 }

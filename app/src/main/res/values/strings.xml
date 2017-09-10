@@ -34,4 +34,6 @@
     <string name="profile_picture">profile picture</string>
     <string name="title_facebookphoto_list">Facebook Albums</string>
     <string name="title_facebookphoto_detail">Album\'s photos</string>
+    <string name="preferencias">button_preferences</string>
+    <string name="intereses">title_interests</string>
 </resources>
