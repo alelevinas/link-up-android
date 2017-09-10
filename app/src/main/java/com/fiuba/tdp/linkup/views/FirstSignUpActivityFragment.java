@@ -1,7 +1,7 @@
 package com.fiuba.tdp.linkup.views;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +15,23 @@ import com.fiuba.tdp.linkup.R;
  */
 public class FirstSignUpActivityFragment extends Fragment {
 
-    public FirstSignUpActivityFragment() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_first_sign_up, container, false);
 
-        Button btn_preferences = (Button) view.findViewById(R.id.button_preferences);
-        btn_preferences.setOnClickListener(new View.OnClickListener() {
+        Button buttonEditInfo = (Button) view.findViewById(R.id.button_edit_info);
+
+        buttonEditInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent editInfo = new Intent(getActivity(), EditInfoActivity.class);
+                startActivity(editInfo);
+            }
+        });
+
+        Button btnPreferences = (Button) view.findViewById(R.id.button_preferences);
+        btnPreferences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent preferences = new Intent(view.getContext(), PreferencesActivity.class);
