@@ -8,6 +8,8 @@ import android.widget.Button;
 
 import com.fiuba.tdp.linkup.R;
 
+import org.florescu.android.rangeseekbar.RangeSeekBar;
+
 public class PreferencesActivity extends AppCompatActivity {
 
     @Override
@@ -16,6 +18,10 @@ public class PreferencesActivity extends AppCompatActivity {
         setContentView(R.layout.preferences);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        RangeSeekBar rangeSeekBarDistance = (RangeSeekBar) findViewById(R.id.seekbar_distance);
+        rangeSeekBarDistance.setSelectedMaxValue(10);
+
 
         /*button.setOnClickListener(new View.OnClickListener() {
             @Override

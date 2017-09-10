@@ -86,6 +86,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="90dp"
+                        android:checked="true"
                         android:text="Mujeres"
                         android:textSize="30sp" />
 
@@ -123,8 +124,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="40dp"
-                        app:absoluteMaxValue="100"
-                        app:absoluteMinValue="1"
+                        app:absoluteMaxValue="50"
+                        app:absoluteMinValue="5"
                         app:activateOnDefaultValues="true"
                         app:activeColor="@color/colorAccent"
                         app:barHeight="2dp"
@@ -170,7 +171,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="30dp"
-                        app:absoluteMaxValue="70"
+                        app:absoluteMaxValue="99"
                         app:absoluteMinValue="18"
                         app:activateOnDefaultValues="true"
                         app:activeColor="@color/colorAccent"
