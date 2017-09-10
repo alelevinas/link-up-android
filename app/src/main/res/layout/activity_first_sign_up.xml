@@ -23,10 +23,10 @@
                 android:layout_width="42dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:textSize="12sp"
                 android:background="@null"
+                android:drawableStart="@drawable/ic_done_white_24dp"
                 android:textColor="#FFF"
-                android:drawableStart="@drawable/ic_done_white_24dp"/>
+                android:textSize="12sp" />
 
         </android.support.v7.widget.Toolbar>
 

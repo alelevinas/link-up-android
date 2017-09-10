@@ -17,7 +17,7 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
     private TextView mTextMessage;
     private Fragment exploreFragment = new ExploreFragment();
-    private Fragment profileFragment = ProfileFragment.newInstance("hola", "mundo");
+    private Fragment profileFragment = new FirstSignUpActivityFragment();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
