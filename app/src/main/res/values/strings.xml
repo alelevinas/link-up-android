@@ -32,4 +32,6 @@
     </string>
     <string name="button_edit_info">Editar Información</string>
     <string name="profile_picture">profile picture</string>
+    <string name="title_facebookphoto_list">Facebook Albums</string>
+    <string name="title_facebookphoto_detail">Album\'s photos</string>
 </resources>

@@ -29,7 +29,7 @@ public class FirstSignUpActivityFragment extends Fragment {
         buttonEditInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                editInfo();
             }
         });
 
@@ -38,7 +38,7 @@ public class FirstSignUpActivityFragment extends Fragment {
     }
 
     private void editInfo() {
-        Intent main = new Intent(getActivity(), MainLinkUpActivity.class);
+        Intent main = new Intent(getActivity(), EditInfoActivity.class);
         startActivity(main);
     }
 }

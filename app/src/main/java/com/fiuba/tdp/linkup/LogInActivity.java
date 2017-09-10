@@ -54,7 +54,7 @@ public class LogInActivity extends AppCompatActivity {
         // TODO: si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
 
         LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_friends");
+        loginButton.setReadPermissions("user_friends", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -62,7 +62,6 @@ public class LogInActivity extends AppCompatActivity {
                 profile = Profile.getCurrentProfile();
                 nextActivity(profile);
                 Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(), "Bienvenido " + profile.getName() + "!", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -83,7 +82,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onResume();
         //Facebook login
         profile = Profile.getCurrentProfile();
-//        nextActivity(profile);
+        nextActivity(profile);
     }
 
     @Override
