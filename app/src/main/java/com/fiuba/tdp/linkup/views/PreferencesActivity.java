@@ -3,6 +3,7 @@ package com.fiuba.tdp.linkup.views;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -10,9 +11,19 @@ import android.widget.Switch;
 
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.domain.UserAround;
+import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.services.UserService;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PreferencesActivity extends AppCompatActivity {
 
@@ -24,7 +35,6 @@ public class PreferencesActivity extends AppCompatActivity {
     private Switch invisibleSwitch;
     private RadioGroup searchingRadioGroup;
     private Button deleteAccountButton;
-    private Profile profile;
     private UserService userService;
 
 
@@ -34,6 +44,8 @@ public class PreferencesActivity extends AppCompatActivity {
         setContentView(R.layout.preferences);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        userService = new UserService();
 
         linkUpPlusButton = (Button) findViewById(R.id.txt_linkup_plus);
         linkUpPlusButton.setOnClickListener(new View.OnClickListener(){
@@ -64,8 +76,6 @@ public class PreferencesActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
-
-        userService = new UserService();
     }
 
     @Override
@@ -75,7 +85,7 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void postPreferences() {
-        String userId = profile.getCurrentProfile().getId();
+        String userId = Profile.getCurrentProfile().getId();
         String gender;
         if(likeMenSwitch.isChecked() && likeWomenSwitch.isChecked())
             gender = "both";
