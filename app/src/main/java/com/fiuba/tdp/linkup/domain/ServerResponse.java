@@ -7,9 +7,9 @@ package com.fiuba.tdp.linkup.domain;
 public class ServerResponse<T> {
 
     public T data;
-    public String statusCode;
+    public Integer statusCode;
 
-    public ServerResponse(T data, String statusCode) {
+    public ServerResponse(T data, Integer statusCode) {
         this.data = data;
         this.statusCode = statusCode;
     }

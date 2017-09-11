@@ -1,13 +1,12 @@
 package com.fiuba.tdp.linkup.services;
 
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
-import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
-import com.fiuba.tdp.linkup.domain.UsersAround;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -18,8 +17,12 @@ import retrofit2.http.Path;
 
 public interface UserAPIService {
 
-    @GET("/users/{userId}")
-    Call<ServerResponse<User>> getUser(@Path("userId") String userId);
+    @GET("/api/linkup/users/{userId}")
+    Call<ServerResponse<LinkUpUser>> getUser(@Path("userId") String userId);
+
+    @POST("/api/linkup/users")
+    Call<ServerResponse<LinkUpUser>> postUser(@Body FacebookUserItem body);
+
 
     @GET("/api/linkup/users/{userId}/around")
     Call<ServerResponse<ArrayList<UserAround>>> getUsersCompatible(@Path("userId") String userId);

@@ -2,15 +2,14 @@ package com.fiuba.tdp.linkup.services;
 
 import android.util.Log;
 
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
-import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
-import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.util.Globals;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -43,20 +42,56 @@ public class UserService {
                 .create(UserAPIService.class);
     }
 
-    public void getUser(String userId, final Callback<ServerResponse<User>> callback) {
-        api.getUser(userId).enqueue(new Callback<ServerResponse<User>>() {
+    public void getUser(String userId, final Callback<ServerResponse<LinkUpUser>> callback) {
+        api.getUser(userId).enqueue(new Callback<ServerResponse<LinkUpUser>>() {
             @Override
-            public void onResponse(Call<ServerResponse<User>> call, Response<ServerResponse<User>> response) {
-                User serverResponse = response.body().data;
-                if (serverResponse != null) {
-                    Log.i("SERVER RESPONSE", serverResponse.toString());
-                    callback.onResponse(call, Response.success(response.body()));
-                }
+            public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                Log.i("SERVER RESPONSE", response.toString());
+                callback.onResponse(call, response);
             }
 
             @Override
-            public void onFailure(Call<ServerResponse<User>> call, Throwable t) {
+            public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                Log.e("USER SERVICE GET USER", call.toString());
                 callback.onFailure(call, t);
+            }
+        });
+    }
+
+    public void postActualFacebookUser(final Callback<ServerResponse<LinkUpUser>> callback) {
+        final String LOG_TAG = "POST USER";
+
+        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
+            @Override
+            public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
+                FacebookUserItem body = response.body();
+
+                api.postUser(body).enqueue(new Callback<ServerResponse<LinkUpUser>>() {
+                    @Override
+                    public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                        Log.d(LOG_TAG, "message = " + response.message());
+                        if (response.isSuccessful()) {
+                            Log.d(LOG_TAG, "-----isSuccess----");
+                            callback.onResponse(call, response);
+                        } else {
+                            Log.d(LOG_TAG, "-----isFalse-----");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                        Log.d(LOG_TAG, "----onFailure------");
+                        Log.e(LOG_TAG, t.getMessage());
+                        Log.d(LOG_TAG, "----onFailure------");
+                        callback.onFailure(call, t);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<FacebookUserItem> call, Throwable t) {
+                Log.e("GET USER FACEBOOK", "COULDN'T GET USER FROM FACEBOOK");
+                callback.onFailure(null, t);
             }
         });
     }
@@ -105,9 +140,9 @@ public class UserService {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 Log.d(LOG_TAG, "message = " + response.message());
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.d(LOG_TAG, "-----isSuccess----");
-                }else{
+                } else {
                     Log.d(LOG_TAG, "-----isFalse-----");
                 }
             }
@@ -126,10 +161,9 @@ public class UserService {
         api.getUserPreferences(userId).enqueue(new Callback<ServerResponse<UserPreferences>>() {
             @Override
             public void onResponse(Call<ServerResponse<UserPreferences>> call, Response<ServerResponse<UserPreferences>> response) {
-                UserPreferences serverResponse = response.body().data;
-                if (serverResponse != null) {
-                    Log.i("SERVER RESPONSE", serverResponse.toString());
-                    callback.onResponse(call, Response.success(response.body()));
+                if (response.isSuccessful()) {
+                    Log.i("SERVER RESPONSE", response.toString());
+                    callback.onResponse(call, response);
                 }
             }
 

@@ -12,15 +12,12 @@ import android.view.ViewGroup;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.FacebookUserItem;
-import com.fiuba.tdp.linkup.services.FacebookService;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.services.UserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A fragment representing a list of Items.
@@ -77,24 +74,13 @@ public class InterestsFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
+            LinkUpUser.LinkUpLikes[] linkUpLikes = UserManager.getInstance().getMyUser().getLikes();
 
-            new FacebookService().getUserLikes(new Callback<FacebookUserItem.FacebookLikesItem>() {
-                @Override
-                public void onResponse(Call<FacebookUserItem.FacebookLikesItem> call, Response<FacebookUserItem.FacebookLikesItem> response) {
-                    FacebookUserItem.FacebookLikesItem likesItem = response.body();
-                    FacebookUserItem.Like[] arrayLikes = likesItem.getData();
+            List<LinkUpUser.LinkUpLikes> likes = new ArrayList<>();
+            Collections.addAll(likes, linkUpLikes);
 
-                    List<FacebookUserItem.Like> likes = new ArrayList<FacebookUserItem.Like>();
-                    Collections.addAll(likes, arrayLikes);
+            recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(likes, mListener));
 
-                    recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(likes, mListener));
-                }
-
-                @Override
-                public void onFailure(Call<FacebookUserItem.FacebookLikesItem> call, Throwable t) {
-
-                }
-            });
         }
         return view;
     }
@@ -132,3 +118,23 @@ public class InterestsFragment extends Fragment {
         void onListFragmentInteraction(FacebookUserItem.Like item);
     }
 }
+
+
+/*get likes from faceboook
+* new FacebookService().getUserLikes(new Callback<FacebookUserItem.FacebookLikesItem>() {
+                @Override
+                public void onResponse(Call<FacebookUserItem.FacebookLikesItem> call, Response<FacebookUserItem.FacebookLikesItem> response) {
+                    FacebookUserItem.FacebookLikesItem likesItem = response.body();
+                    FacebookUserItem.Like[] arrayLikes = likesItem.getData();
+
+                    List<FacebookUserItem.Like> likes = new ArrayList<FacebookUserItem.Like>();
+                    Collections.addAll(likes, arrayLikes);
+
+                    recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(likes, mListener));
+                }
+
+                @Override
+                public void onFailure(Call<FacebookUserItem.FacebookLikesItem> call, Throwable t) {
+
+                }
+            });*/

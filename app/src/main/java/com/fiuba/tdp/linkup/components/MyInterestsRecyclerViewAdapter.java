@@ -8,21 +8,21 @@ import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment.OnListFragmentInteractionListener;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link FacebookUserItem.Like} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link LinkUpUser.LinkUpLikes} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInterestsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<FacebookUserItem.Like> mValues;
+    private final List<LinkUpUser.LinkUpLikes> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyInterestsRecyclerViewAdapter(List<FacebookUserItem.Like> items, OnListFragmentInteractionListener listener) {
+    public MyInterestsRecyclerViewAdapter(List<LinkUpUser.LinkUpLikes> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,17 +38,6 @@ public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getName());
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    mListener.onListFragmentInteraction(holder.mItem);
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -59,7 +48,7 @@ public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInter
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public FacebookUserItem.Like mItem;
+        public LinkUpUser.LinkUpLikes mItem;
 
         public ViewHolder(View view) {
             super(view);

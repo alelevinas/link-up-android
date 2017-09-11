@@ -8,17 +8,21 @@ import java.util.Calendar;
 
 public class FacebookUserItem {
     String id;
+    String name;
     String birthday;
     String gender;
     FacebookEducationItem[] education;
     FacebookLikesItem likes;
+    FacebookPictureItem picture;
 
-    public FacebookUserItem(String id, String birthday, String gender, FacebookEducationItem[] education, FacebookLikesItem likes) {
+    public FacebookUserItem(String id, String name, String birthday, String gender, FacebookEducationItem[] education, FacebookLikesItem likes, FacebookPictureItem picture) {
         this.id = id;
+        this.name = name;
         this.birthday = birthday;
         this.gender = gender;
         this.education = education;
         this.likes = likes;
+        this.picture = picture;
     }
 
     public String getId() {
@@ -44,6 +48,14 @@ public class FacebookUserItem {
 
     public FacebookLikesItem getLikes() {
         return likes;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public FacebookPictureItem getPicture() {
+        return picture;
     }
 
     /**
@@ -145,6 +157,30 @@ public class FacebookUserItem {
 
         public String getName() {
             return name;
+        }
+    }
+
+    public class FacebookPictureItem {
+        PictureData data;
+
+        public FacebookPictureItem(PictureData data) {
+            this.data = data;
+        }
+
+        public PictureData getData() {
+            return data;
+        }
+    }
+
+    public class PictureData {
+        String url;
+
+        public PictureData(String url) {
+            this.url = url;
+        }
+
+        public String getUrl() {
+            return url;
         }
     }
 }

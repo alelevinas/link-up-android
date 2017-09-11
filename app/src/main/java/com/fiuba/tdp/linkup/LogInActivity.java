@@ -2,11 +2,9 @@ package com.fiuba.tdp.linkup;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -18,15 +16,23 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.UserManager;
+import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LogInActivity extends AppCompatActivity {
 
+    Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
-    Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +51,18 @@ public class LogInActivity extends AppCompatActivity {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                nextActivity(newProfile);
+//                nextActivity(newProfile);
             }
         };
         accessTokenTracker.startTracking();
         profileTracker.startTracking();
 
-        // TODO: si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
+        //  si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
 
-        LoginButton loginButton = (LoginButton)findViewById(R.id.login_button);
+        profile = Profile.getCurrentProfile();
+
+
+        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -72,10 +81,7 @@ public class LogInActivity extends AppCompatActivity {
             public void onError(FacebookException e) {
             }
         });
-
-
     }
-
 
     @Override
     protected void onResume() {
@@ -106,13 +112,44 @@ public class LogInActivity extends AppCompatActivity {
 
     private void nextActivity(Profile profile) {
         if (profile != null) {
-            // TODO: si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
-            Intent main = new Intent(this, FirstSignUpActivity.class);
-            main.putExtra("name", profile.getFirstName());
-            main.putExtra("surname", profile.getLastName());
-            main.putExtra("imageUrl", profile.getProfilePictureUri(200, 200).toString());
-            startActivity(main);
-            finish();
+            // si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
+
+            new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
+                @Override
+                public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                    if (response.isSuccessful()) {
+                        UserManager.getInstance().setMyUser(response.body().data);
+
+                        Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
+                        startActivity(main);
+                        finish();
+                    } else if (response.code() == 404) {
+                        new UserService().postActualFacebookUser(new Callback<ServerResponse<LinkUpUser>>() {
+                            @Override
+                            public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                                Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");
+
+                                UserManager.getInstance().setMyUser(response.body().data);
+
+                                Intent main = new Intent(getBaseContext(), FirstSignUpActivity.class);
+                                startActivity(main);
+                                finish();
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                                Log.e("LOGIN ACTIVITY SERVER", "ERROR POSTING USER TO LINK UP SERVERS");
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                    Log.e("LOGIN ACTIVITY SERVER", "ERROR GETING USER FROM LINK UP SERVERS");
+                }
+            });
         }
     }
 
