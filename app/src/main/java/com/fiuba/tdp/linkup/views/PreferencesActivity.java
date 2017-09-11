@@ -14,6 +14,7 @@ import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
+import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
@@ -61,6 +62,12 @@ public class PreferencesActivity extends AppCompatActivity {
         distanceRangeSeekBar.setSelectedMaxValue(10);
 
         ageRangeSeekBar = (RangeSeekBar<Integer>) findViewById(R.id.rgseekbar_age);
+        int userAge = Integer.parseInt(UserManager.getInstance().getMyUser().getAge());
+        if(userAge <= 23)
+            ageRangeSeekBar.setSelectedMinValue(18);
+        else
+            ageRangeSeekBar.setSelectedMinValue(userAge-5);
+        ageRangeSeekBar.setSelectedMaxValue(userAge+5);
 
         invisibleSwitch = (Switch) findViewById(R.id.switch_invisible);
 
