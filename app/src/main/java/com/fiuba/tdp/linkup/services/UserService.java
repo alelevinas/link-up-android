@@ -8,6 +8,7 @@ import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
 import com.fiuba.tdp.linkup.util.Globals;
+import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
 
 import java.util.ArrayList;
@@ -71,6 +72,11 @@ public class UserService {
 
                 if (Integer.parseInt(body.getAge()) < 18) {
                     callback.onFailure(null, new UserIsNotOldEnoughException("User is under 18 years old"));
+                    return;
+                }
+
+                if (body.getPicture() == null || body.getPicture().getData().getUrl().equals("https://scontent.xx.fbcdn.net/v/t1.0-1/c15.0.50.50/p50x50/1379841_10150004552801901_469209496895221757_n.jpg?oh=75a552f602cfcd0f95dfc5f86743ca25&oe=5A18F933")) {
+                    callback.onFailure(null, new UserDoesNotHaveFacebookPicture("User does not have a profile picture"));
                     return;
                 }
 

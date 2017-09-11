@@ -22,6 +22,7 @@ import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
 import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
@@ -145,6 +146,14 @@ public class LogInActivity extends AppCompatActivity {
                                     //tiene menos de 18 anos
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("El usuario es menor a 18 años, vuelva mas tarde");
+                                    return;
+                                }
+
+                                if (t.getClass() == UserDoesNotHaveFacebookPicture.class) {
+                                    //tiene menos de 18 anos
+                                    Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
+                                    showAlert("Debes tener una foto de perfil en Facebook para usar esta app, vuelva mas tarde");
+                                    return;
                                 }
                                 Log.e("LOGIN ACTIVITY SERVER", "ERROR POSTING USER TO LINK UP SERVERS");
                             }
