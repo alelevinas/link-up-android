@@ -44,7 +44,28 @@ public class FacebookService {
                 });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "education,about,birthday,likes,gender");
+        parameters.putString("fields", "education,about,birthday,likes,gender,picture");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    public void getUserRawData(final Callback<JSONObject> callback) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        if (response.getError() != null) {
+                            Log.e("FACEBOOK ERROR", response.getError().getErrorMessage());
+                            callback.onFailure(null, null);
+                        }
+                        Log.i("FACEBOOK RESPONSE", object.toString());
+                        callback.onResponse(null, Response.success(object));
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "education,about,birthday,likes,gender,picture");
         request.setParameters(parameters);
         request.executeAsync();
     }

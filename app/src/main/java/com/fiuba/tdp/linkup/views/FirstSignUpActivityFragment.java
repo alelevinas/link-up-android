@@ -12,13 +12,9 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
-import com.fiuba.tdp.linkup.services.FacebookService;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.util.DownloadImage;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -35,7 +31,7 @@ public class FirstSignUpActivityFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_first_sign_up, container, false);
 
-        getFacebookData(view);
+        bindUserData(view, UserManager.getInstance().getMyUser());
 
 
         Button buttonEditInfo = (Button) view.findViewById(R.id.button_edit_info);
@@ -60,34 +56,50 @@ public class FirstSignUpActivityFragment extends Fragment {
         return view;
     }
 
-    private void getFacebookData(final View view) {
-        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(200, 200).toString());
+    private void bindUserData(View view, LinkUpUser myUser) {
+        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(700, 700).toString());
 
-        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
-            @Override
-            public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
-                FacebookUserItem userData = response.body();
-                attachUserDataToView(userData, view);
-            }
-
-            @Override
-            public void onFailure(Call<FacebookUserItem> call, Throwable t) {
-
-            }
-        });
-    }
-
-    private void attachUserDataToView(FacebookUserItem userData, View view) {
         TextView nameView = (TextView) view.findViewById(R.id.label_name);
         nameView.setText(profile.getName());
 
         TextView ageView = (TextView) view.findViewById(R.id.label_age);
-        ageView.setText(String.format("%s %s", userData.getAge(), getString(R.string.years)));
+//        ageView.setText(String.format("%s %s", myUser.getAge(), getString(R.string.years)));
 
         TextView genreView = (TextView) view.findViewById(R.id.label_genre);
-        genreView.setText(userData.getGender());
+        genreView.setText(myUser.getGender());
 
         TextView studiesView = (TextView) view.findViewById(R.id.label_studies);
-        studiesView.setText(userData.getEducation()[userData.getEducation().length - 1].getSchool().getName());
+        studiesView.setText(myUser.getEducation()[myUser.getEducation().length - 1].getName());
     }
+
+//    private void getFacebookData(final View view) {
+//        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(200, 200).toString());
+//
+//        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
+//            @Override
+//            public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
+//                FacebookUserItem userData = response.body();
+//                attachUserDataToView(userData, view);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<FacebookUserItem> call, Throwable t) {
+//
+//            }
+//        });
+//    }
+//
+//    private void attachUserDataToView(FacebookUserItem userData, View view) {
+//        TextView nameView = (TextView) view.findViewById(R.id.label_name);
+//        nameView.setText(profile.getName());
+//
+//        TextView ageView = (TextView) view.findViewById(R.id.label_age);
+//        ageView.setText(String.format("%s %s", userData.getAge(), getString(R.string.years)));
+//
+//        TextView genreView = (TextView) view.findViewById(R.id.label_genre);
+//        genreView.setText(userData.getGender());
+//
+//        TextView studiesView = (TextView) view.findViewById(R.id.label_studies);
+//        studiesView.setText(userData.getEducation()[userData.getEducation().length - 1].getSchool().getName());
+//    }
 }

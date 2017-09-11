@@ -2,8 +2,9 @@ package com.fiuba.tdp.linkup.services;
 
 import android.util.Log;
 
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
-import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.util.Globals;
 
 import java.util.HashMap;
@@ -38,20 +39,71 @@ public class UserService {
                 .create(UserAPIService.class);
     }
 
-    public void getUser(String userId, final Callback<ServerResponse<User>> callback) {
-        api.getUser(userId).enqueue(new Callback<ServerResponse<User>>() {
+    public void getUser(String userId, final Callback<ServerResponse<LinkUpUser>> callback) {
+        api.getUser(userId).enqueue(new Callback<ServerResponse<LinkUpUser>>() {
             @Override
-            public void onResponse(Call<ServerResponse<User>> call, Response<ServerResponse<User>> response) {
-                User serverResponse = response.body().data;
-                if (serverResponse != null) {
-                    Log.i("SERVER RESPONSE", serverResponse.toString());
-                    callback.onResponse(call, Response.success(response.body()));
-                }
+            public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                Log.i("SERVER RESPONSE", response.toString());
+                callback.onResponse(call, response);
             }
 
             @Override
-            public void onFailure(Call<ServerResponse<User>> call, Throwable t) {
+            public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                Log.e("USER SERVICE GET USER", call.toString());
                 callback.onFailure(call, t);
+            }
+        });
+    }
+
+    public void postActualFacebookUser(final Callback<ServerResponse<LinkUpUser>> callback) {
+        final String LOG_TAG = "POST USER";
+
+        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
+            @Override
+            public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
+                /*JSONObject facebookData = response.body();
+
+                HashMap<String, String> parameters = new HashMap<>();
+                try {
+                    parameters.put("birthday", facebookData.getString("birthday"));
+                    parameters.put("likes", facebookData.getJSONObject("likes").toString());
+                    parameters.put("picture", facebookData.getJSONObject("picture").toString());
+                    parameters.put("education", facebookData.getJSONArray("education").toString());
+                    parameters.put("name", facebookData.getString("name"));
+                    parameters.put("gender", facebookData.getString("gender"));
+                    parameters.put("id", facebookData.getString("id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+
+                FacebookUserItem body = response.body();
+
+                api.postUser(body).enqueue(new Callback<ServerResponse<LinkUpUser>>() {
+                    @Override
+                    public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                        Log.d(LOG_TAG, "message = " + response.message());
+                        if (response.isSuccessful()) {
+                            Log.d(LOG_TAG, "-----isSuccess----");
+                            callback.onResponse(call, response);
+                        } else {
+                            Log.d(LOG_TAG, "-----isFalse-----");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                        Log.d(LOG_TAG, "----onFailure------");
+                        Log.e(LOG_TAG, t.getMessage());
+                        Log.d(LOG_TAG, "----onFailure------");
+                        callback.onFailure(call, t);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<FacebookUserItem> call, Throwable t) {
+                Log.e("GET USER FACEBOOK", "COULDN'T GET USER FROM FACEBOOK");
+                callback.onFailure(null, t);
             }
         });
     }
@@ -68,15 +120,15 @@ public class UserService {
         parameters.put("mode", mode);
         parameters.put("searchMode", searchMode);
 
-        Log.d(LOG_TAG,"Valores: "+gender+", "+distance+", "+minAge+", "+maxAge+", "+mode+", "+searchMode);
+        Log.d(LOG_TAG, "Valores: " + gender + ", " + distance + ", " + minAge + ", " + maxAge + ", " + mode + ", " + searchMode);
 
         api.postPreferences(userId, parameters).enqueue(new Callback<ServerResponse>() {
             @Override
             public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
                 Log.d(LOG_TAG, "message = " + response.message());
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.d(LOG_TAG, "-----isSuccess----");
-                }else{
+                } else {
                     Log.d(LOG_TAG, "-----isFalse-----");
                 }
             }
