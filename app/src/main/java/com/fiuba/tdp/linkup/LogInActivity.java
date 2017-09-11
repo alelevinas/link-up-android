@@ -111,9 +111,11 @@ public class LogInActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, responseCode, intent);
     }
 
-    private void nextActivity(Profile profile) {
+    private void nextActivity(final Profile profile) {
         if (profile != null) {
             // si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
+
+            final String name = profile.getName();
 
             new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
                 @Override
@@ -125,7 +127,7 @@ public class LogInActivity extends AppCompatActivity {
                         startActivity(main);
                         finish();
                     } else if (response.code() == 404) {
-                        new UserService().postActualFacebookUser(new Callback<ServerResponse<LinkUpUser>>() {
+                        new UserService().postActualFacebookUser(name, new Callback<ServerResponse<LinkUpUser>>() {
                             @Override
                             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                                 Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");

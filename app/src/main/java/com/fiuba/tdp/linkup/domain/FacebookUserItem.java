@@ -29,33 +29,61 @@ public class FacebookUserItem {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getBirthday() {
         return birthday;
     }
 
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
     public String getAge() {
         String[] dob = birthday.split("/");
-        return getAgeFromDoB(Integer.parseInt(dob[2]), Integer.parseInt(dob[1]), Integer.parseInt(dob[0]));
+        return getAgeFromDoB(Integer.parseInt(dob[2]), Integer.parseInt(dob[0]), Integer.parseInt(dob[1]));
     }
 
     public String getGender() {
         return gender;
     }
 
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
     public FacebookEducationItem[] getEducation() {
         return education;
+    }
+
+    public void setEducation(FacebookEducationItem[] education) {
+        this.education = education;
     }
 
     public FacebookLikesItem getLikes() {
         return likes;
     }
 
+    public void setLikes(FacebookLikesItem likes) {
+        this.likes = likes;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public FacebookPictureItem getPicture() {
         return picture;
+    }
+
+    public void setPicture(FacebookPictureItem picture) {
+        this.picture = picture;
     }
 
     /**

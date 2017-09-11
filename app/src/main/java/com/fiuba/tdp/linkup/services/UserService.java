@@ -59,13 +59,15 @@ public class UserService {
         });
     }
 
-    public void postActualFacebookUser(final Callback<ServerResponse<LinkUpUser>> callback) {
+    public void postActualFacebookUser(final String name, final Callback<ServerResponse<LinkUpUser>> callback) {
         final String LOG_TAG = "POST USER";
 
         new FacebookService().getUserData(new Callback<FacebookUserItem>() {
             @Override
             public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
                 FacebookUserItem body = response.body();
+
+                body.setName(name);
 
                 if (Integer.parseInt(body.getAge()) < 18) {
                     callback.onFailure(null, new UserIsNotOldEnoughException("User is under 18 years old"));
