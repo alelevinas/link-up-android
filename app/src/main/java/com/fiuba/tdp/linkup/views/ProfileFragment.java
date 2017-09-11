@@ -1,9 +1,9 @@
 package com.fiuba.tdp.linkup.views;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,13 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.services.FacebookService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,11 +33,10 @@ public class ProfileFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    Profile profile;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     public ProfileFragment() {
@@ -70,17 +75,42 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        TextView nameView = (TextView) view.findViewById(R.id.nameAndSurname);
-        nameView.setText("" + mParam1 + " " + mParam2);
+        profile = Profile.getCurrentProfile();
 
-        Profile profile = Profile.getCurrentProfile();
-
-
-        new DownloadImage((ImageView) view.findViewById(R.id.profileImage)).execute(profile.getProfilePictureUri(200,200).toString());
-
-        nameView.setText(profile.getName());
+        getFacebookData(view);
 
         return view;
+    }
+
+    private void getFacebookData(final View view) {
+        new DownloadImage((ImageView) view.findViewById(R.id.profileImage)).execute(profile.getProfilePictureUri(200, 200).toString());
+
+        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
+            @Override
+            public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
+                FacebookUserItem userData = response.body();
+                attachUserDataToView(userData, view);
+            }
+
+            @Override
+            public void onFailure(Call<FacebookUserItem> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void attachUserDataToView(FacebookUserItem userData, View view) {
+        TextView nameView = (TextView) view.findViewById(R.id.nameAndSurname);
+        nameView.setText(profile.getName());
+
+        TextView ageView = (TextView) view.findViewById(R.id.label_age);
+        ageView.setText(userData.getBirthday());
+
+        TextView genreView = (TextView) view.findViewById(R.id.label_genre);
+        genreView.setText(userData.getGender());
+
+        TextView studiesView = (TextView) view.findViewById(R.id.label_studies);
+        studiesView.setText(userData.getEducation()[userData.getEducation().length - 1].getSchool().getName());
     }
 
     // TODO: Rename method, update argument and hook method into UI event

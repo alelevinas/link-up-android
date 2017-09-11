@@ -9,11 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment;
-import com.fiuba.tdp.linkup.components.dummy.InterestsContent;
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
         InterestsFragment.OnListFragmentInteractionListener{
@@ -92,6 +91,6 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
     }
 
     @Override
-    public void onListFragmentInteraction(InterestsContent.InterestItem item) {
+    public void onListFragmentInteraction(FacebookUserItem.Like item) {
     }
 }

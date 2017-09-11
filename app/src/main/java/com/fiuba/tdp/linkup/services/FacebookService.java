@@ -9,6 +9,7 @@ import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.fiuba.tdp.linkup.domain.FacebookAlbumItem;
 import com.fiuba.tdp.linkup.domain.FacebookPhotoItem;
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -23,6 +24,59 @@ import retrofit2.Response;
  */
 
 public class FacebookService {
+
+
+    public void getUserData(final Callback<FacebookUserItem> callback) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        if (response.getError() != null) {
+                            Log.e("FACEBOOK ERROR", response.getError().getErrorMessage());
+                            callback.onFailure(null, null);
+                        }
+                        Log.i("FACEBOOK RESPONSE", object.toString());
+
+                        FacebookUserItem data = new Gson().fromJson(object.toString(), FacebookUserItem.class);
+                        callback.onResponse(null, Response.success(data));
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "education,about,birthday,likes,gender");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    public void getUserLikes(final Callback<FacebookUserItem.FacebookLikesItem> callback) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        if (response.getError() != null) {
+                            Log.e("FACEBOOK ERROR", response.getError().getErrorMessage());
+                            callback.onFailure(null, null);
+                        }
+
+                        try {
+                            Log.i("FACEBOOK RESPONSE", object.toString());
+
+                            FacebookUserItem.FacebookLikesItem data = new Gson().fromJson(object.getJSONObject("likes").toString(), FacebookUserItem.FacebookLikesItem.class);
+                            callback.onResponse(null, Response.success(data));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "likes");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
 
     public void getAlbums(final Callback<FacebookAlbumItem[]> callback) {
         GraphRequest request = GraphRequest.newMeRequest(
