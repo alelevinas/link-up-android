@@ -3,16 +3,19 @@ package com.fiuba.tdp.linkup.services;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.User;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
-import retrofit2.http.Path;
+import java.util.HashMap;
 
-/**
- * Created by alejandro on 9/9/17.
- */
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface UserAPIService {
 
     @GET("/users/{userId}")
     Call<ServerResponse<User>> getUser(@Path("userId") String userId);
+
+    @POST("/api/linkup/users/{userId}/preferences")
+    Call<ServerResponse> postPreferences(@Path("userId") String userId, @Body HashMap<String, String> parameters);
 }

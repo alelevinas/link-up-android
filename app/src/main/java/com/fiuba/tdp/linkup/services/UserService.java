@@ -6,6 +6,7 @@ import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.util.Globals;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -14,10 +15,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-/**
- * Created by alejandro on 9/9/17.
- */
 
 public class UserService {
 
@@ -59,5 +56,37 @@ public class UserService {
         });
     }
 
+    public void postPreferences(String userId, String gender, String distance, String minAge, String maxAge,
+                                String mode, String searchMode) {
+        final String LOG_TAG = "POST PREFERENCES";
 
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("gender", gender);
+        parameters.put("distance", distance);
+        parameters.put("minAge", minAge);
+        parameters.put("maxAge", maxAge);
+        parameters.put("mode", mode);
+        parameters.put("searchMode", searchMode);
+
+        Log.d(LOG_TAG,"Valores: "+gender+", "+distance+", "+minAge+", "+maxAge+", "+mode+", "+searchMode);
+
+        api.postPreferences(userId, parameters).enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                Log.d(LOG_TAG, "message = " + response.message());
+                if(response.isSuccessful()){
+                    Log.d(LOG_TAG, "-----isSuccess----");
+                }else{
+                    Log.d(LOG_TAG, "-----isFalse-----");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Log.d(LOG_TAG, "----onFailure------");
+                Log.e(LOG_TAG, t.getMessage());
+                Log.d(LOG_TAG, "----onFailure------");
+            }
+        });
+    }
 }

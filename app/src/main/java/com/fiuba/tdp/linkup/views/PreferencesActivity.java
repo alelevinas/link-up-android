@@ -3,13 +3,14 @@ package com.fiuba.tdp.linkup.views;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 
+import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.services.UserService;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 
@@ -23,6 +24,8 @@ public class PreferencesActivity extends AppCompatActivity {
     private Switch invisibleSwitch;
     private RadioGroup searchingRadioGroup;
     private Button deleteAccountButton;
+    private Profile profile;
+    private UserService userService;
 
 
     @Override
@@ -57,29 +60,40 @@ public class PreferencesActivity extends AppCompatActivity {
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                postPreferences();
+                Snackbar.make(view, "Eliminar cuenta!!!",
+                        Snackbar.LENGTH_LONG).show();
             }
         });
+
+        userService = new UserService();
+    }
+
+    @Override
+    protected void onStop() {
+        postPreferences();
+        super.onStop();
     }
 
     public void postPreferences() {
-        System.out.print("Me interesan: ");
-        if(likeMenSwitch.isChecked())
-            System.out.print(" hombres ");
-        if(likeWomenSwitch.isChecked())
-            System.out.print(" mujeres ");
-        System.out.println("");
-
-        System.out.println("Distancia maxima: " + distanceRangeSeekBar.getSelectedMaxValue());
-
-        System.out.println("Rango edad: " + ageRangeSeekBar.getSelectedMinValue() + "-" + ageRangeSeekBar.getSelectedMaxValue());
-
-        System.out.println("Modo invisible: " + invisibleSwitch.isChecked());
-
-        System.out.print("Estoy buscando ");
-        if(searchingRadioGroup.getCheckedRadioButtonId() == R.id.relationship)
-            System.out.println("una pareja");
+        String userId = profile.getCurrentProfile().getId();
+        String gender;
+        if(likeMenSwitch.isChecked() && likeWomenSwitch.isChecked())
+            gender = "both";
         else
-            System.out.println("amistad");
+            if(likeWomenSwitch.isChecked())
+                gender = "female";
+            else
+                gender = "male";
+        String distance = distanceRangeSeekBar.getSelectedMaxValue().toString();
+        String minAge = ageRangeSeekBar.getSelectedMinValue().toString();
+        String maxAge = ageRangeSeekBar.getSelectedMaxValue().toString();
+        String mode = invisibleSwitch.isChecked() ? "invisible" : "visible";
+        String searchMode;
+        if(searchingRadioGroup.getCheckedRadioButtonId() == R.id.relationship)
+            searchMode = "couple";
+        else
+            searchMode = "friendship";
+
+        userService.postPreferences(userId, gender, distance, minAge, maxAge, mode, searchMode);
     }
 }
