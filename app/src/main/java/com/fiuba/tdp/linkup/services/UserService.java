@@ -5,14 +5,11 @@ import android.util.Log;
 import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
-import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
-import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.util.Globals;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -164,10 +161,9 @@ public class UserService {
         api.getUserPreferences(userId).enqueue(new Callback<ServerResponse<UserPreferences>>() {
             @Override
             public void onResponse(Call<ServerResponse<UserPreferences>> call, Response<ServerResponse<UserPreferences>> response) {
-                UserPreferences serverResponse = response.body().data;
-                if (serverResponse != null) {
-                    Log.i("SERVER RESPONSE", serverResponse.toString());
-                    callback.onResponse(call, Response.success(response.body()));
+                if (response.isSuccessful()) {
+                    Log.i("SERVER RESPONSE", response.toString());
+                    callback.onResponse(call, response);
                 }
             }
 

@@ -3,13 +3,10 @@ package com.fiuba.tdp.linkup.services;
 import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
-import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
-import com.fiuba.tdp.linkup.domain.UsersAround;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import retrofit2.Call;
