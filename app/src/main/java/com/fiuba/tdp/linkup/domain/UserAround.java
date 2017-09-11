@@ -5,15 +5,15 @@ public class UserAround {
     private String picture;
     private String compatibility;
     private String description;
-    private String userName;
+    private String name;
 
 
-    public UserAround(String id, String picture, String compatibility, String description, String userName) {
+    public UserAround(String id, String name, String picture, String description, String compatibility) {
         this.id = id;
         this.picture = picture;
         this.compatibility = compatibility;
         this.description = description;
-        this.userName = userName;
+        this.name = name;
     }
 
     public String getId() {
@@ -49,10 +49,10 @@ public class UserAround {
     }
 
     public String getUserName() {
-        return userName;
+        return name;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.name = userName;
     }
 }
