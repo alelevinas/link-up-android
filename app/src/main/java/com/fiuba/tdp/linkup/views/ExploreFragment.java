@@ -131,7 +131,6 @@ public class ExploreFragment extends Fragment{
         public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
             private static int LENGTH = 0;
 
-            private final Drawable[] mUsersPictures;
             private UserService userService;
             private static UsersAround usersAround;
 
@@ -143,6 +142,7 @@ public class ExploreFragment extends Fragment{
                     public void onResponse(Call<ServerResponse<ArrayList<UserAround>>> call, Response<ServerResponse<ArrayList<UserAround>>> response) {
                         usersAround = new UsersAround(response.body().data);
                         LENGTH = usersAround.getSize();
+                        notifyDataSetChanged();
                     }
 
                     @Override
@@ -150,9 +150,6 @@ public class ExploreFragment extends Fragment{
                         Log.w("ERROR", "Error getting users around!");
                     }
                 });
-                mUsersPictures = new Drawable[1];
-                mUsersPictures[0] = ContextCompat.getDrawable(context, R.drawable.a);
-                notifyDataSetChanged();
             }
 
             @Override
