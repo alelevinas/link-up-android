@@ -56,6 +56,24 @@ public class UserService {
         });
     }
 
+    public void getUsersCompatible(String userId, final Callback<ServerResponse<User>> callback) {
+        api.getUsersCompatible(userId).enqueue(new Callback<ServerResponse<User>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<User>> call, Response<ServerResponse<User>> response) {
+                User serverResponse = response.body().data;
+                if (serverResponse != null) {
+                    Log.i("SERVER RESPONSE", serverResponse.toString());
+                    callback.onResponse(call, Response.success(response.body()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<User>> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
+    }
+
     public void postPreferences(String userId, String gender, String distance, String minAge, String maxAge,
                                 String mode, String searchMode) {
         final String LOG_TAG = "POST PREFERENCES";
@@ -68,7 +86,7 @@ public class UserService {
         parameters.put("mode", mode);
         parameters.put("searchMode", searchMode);
 
-        Log.d(LOG_TAG,"Valores: "+gender+", "+distance+", "+minAge+", "+maxAge+", "+mode+", "+searchMode);
+        Log.d(LOG_TAG,"Valores: "+userId+", "+gender+", "+distance+", "+minAge+", "+maxAge+", "+mode+", "+searchMode);
 
         api.postPreferences(userId, parameters).enqueue(new Callback<ServerResponse>() {
             @Override
