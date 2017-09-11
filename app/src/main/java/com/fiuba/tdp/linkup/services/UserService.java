@@ -8,6 +8,7 @@ import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
 import com.fiuba.tdp.linkup.util.Globals;
+import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +66,11 @@ public class UserService {
             @Override
             public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
                 FacebookUserItem body = response.body();
+
+                if (Integer.parseInt(body.getAge()) < 18) {
+                    callback.onFailure(null, new UserIsNotOldEnoughException("User is under 18 years old"));
+                    return;
+                }
 
                 api.postUser(body).enqueue(new Callback<ServerResponse<LinkUpUser>>() {
                     @Override

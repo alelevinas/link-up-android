@@ -1,11 +1,12 @@
 package com.fiuba.tdp.linkup;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -14,12 +15,14 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
 import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
 
@@ -67,10 +70,8 @@ public class LogInActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                AccessToken accessToken = loginResult.getAccessToken();
                 profile = Profile.getCurrentProfile();
                 nextActivity(profile);
-                Toast.makeText(getApplicationContext(), "Logging in...", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -134,11 +135,15 @@ public class LogInActivity extends AppCompatActivity {
                                 Intent main = new Intent(getBaseContext(), FirstSignUpActivity.class);
                                 startActivity(main);
                                 finish();
-
                             }
 
                             @Override
                             public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+                                if (t.getClass() == UserIsNotOldEnoughException.class) {
+                                    //tiene menos de 18 anos
+                                    Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
+                                    showAlert("El usuario es menor a 18 años, vuelva mas tarde");
+                                }
                                 Log.e("LOGIN ACTIVITY SERVER", "ERROR POSTING USER TO LINK UP SERVERS");
                             }
                         });
@@ -151,6 +156,30 @@ public class LogInActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void showAlert(String s) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(s)
+                .setTitle("Atención");
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+                LoginManager.getInstance().logOut();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 
 }
