@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment;
-import com.fiuba.tdp.linkup.components.dummy.InterestsContent;
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 
 public class FirstSignUpActivity extends AppCompatActivity implements InterestsFragment.OnListFragmentInteractionListener {
 
@@ -34,7 +34,7 @@ public class FirstSignUpActivity extends AppCompatActivity implements InterestsF
 
 
     @Override
-    public void onListFragmentInteraction(InterestsContent.InterestItem item) {
+    public void onListFragmentInteraction(FacebookUserItem.Like item) {
         return;
     }
 

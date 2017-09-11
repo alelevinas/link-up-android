@@ -1,8 +1,8 @@
 package com.fiuba.tdp.linkup.components;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.components.dummy.InterestsContent;
-import com.fiuba.tdp.linkup.components.dummy.InterestsContent.InterestItem;
+import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.services.FacebookService;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A fragment representing a list of Items.
@@ -62,13 +70,31 @@ public class InterestsFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            final RecyclerView recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(InterestsContent.ITEMS, mListener));
+
+
+            new FacebookService().getUserLikes(new Callback<FacebookUserItem.FacebookLikesItem>() {
+                @Override
+                public void onResponse(Call<FacebookUserItem.FacebookLikesItem> call, Response<FacebookUserItem.FacebookLikesItem> response) {
+                    FacebookUserItem.FacebookLikesItem likesItem = response.body();
+                    FacebookUserItem.Like[] arrayLikes = likesItem.getData();
+
+                    List<FacebookUserItem.Like> likes = new ArrayList<FacebookUserItem.Like>();
+                    Collections.addAll(likes, arrayLikes);
+
+                    recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(likes, mListener));
+                }
+
+                @Override
+                public void onFailure(Call<FacebookUserItem.FacebookLikesItem> call, Throwable t) {
+
+                }
+            });
         }
         return view;
     }
@@ -103,6 +129,6 @@ public class InterestsFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(InterestItem item);
+        void onListFragmentInteraction(FacebookUserItem.Like item);
     }
 }
