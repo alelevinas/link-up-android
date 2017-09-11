@@ -61,21 +61,6 @@ public class UserService {
         new FacebookService().getUserData(new Callback<FacebookUserItem>() {
             @Override
             public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
-                /*JSONObject facebookData = response.body();
-
-                HashMap<String, String> parameters = new HashMap<>();
-                try {
-                    parameters.put("birthday", facebookData.getString("birthday"));
-                    parameters.put("likes", facebookData.getJSONObject("likes").toString());
-                    parameters.put("picture", facebookData.getJSONObject("picture").toString());
-                    parameters.put("education", facebookData.getJSONArray("education").toString());
-                    parameters.put("name", facebookData.getString("name"));
-                    parameters.put("gender", facebookData.getString("gender"));
-                    parameters.put("id", facebookData.getString("id"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-
                 FacebookUserItem body = response.body();
 
                 api.postUser(body).enqueue(new Callback<ServerResponse<LinkUpUser>>() {

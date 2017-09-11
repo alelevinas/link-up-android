@@ -63,43 +63,12 @@ public class FirstSignUpActivityFragment extends Fragment {
         nameView.setText(profile.getName());
 
         TextView ageView = (TextView) view.findViewById(R.id.label_age);
-//        ageView.setText(String.format("%s %s", myUser.getAge(), getString(R.string.years)));
+        ageView.setText(String.format("%s %s", myUser.getAge(), getString(R.string.years)));
 
         TextView genreView = (TextView) view.findViewById(R.id.label_genre);
-        genreView.setText(myUser.getGender());
+        genreView.setText(myUser.getGender().compareTo("male") == 0 ? "Hombre" : "Mujer");
 
         TextView studiesView = (TextView) view.findViewById(R.id.label_studies);
         studiesView.setText(myUser.getEducation()[myUser.getEducation().length - 1].getName());
     }
-
-//    private void getFacebookData(final View view) {
-//        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(200, 200).toString());
-//
-//        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
-//            @Override
-//            public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
-//                FacebookUserItem userData = response.body();
-//                attachUserDataToView(userData, view);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<FacebookUserItem> call, Throwable t) {
-//
-//            }
-//        });
-//    }
-//
-//    private void attachUserDataToView(FacebookUserItem userData, View view) {
-//        TextView nameView = (TextView) view.findViewById(R.id.label_name);
-//        nameView.setText(profile.getName());
-//
-//        TextView ageView = (TextView) view.findViewById(R.id.label_age);
-//        ageView.setText(String.format("%s %s", userData.getAge(), getString(R.string.years)));
-//
-//        TextView genreView = (TextView) view.findViewById(R.id.label_genre);
-//        genreView.setText(userData.getGender());
-//
-//        TextView studiesView = (TextView) view.findViewById(R.id.label_studies);
-//        studiesView.setText(userData.getEducation()[userData.getEducation().length - 1].getSchool().getName());
-//    }
 }

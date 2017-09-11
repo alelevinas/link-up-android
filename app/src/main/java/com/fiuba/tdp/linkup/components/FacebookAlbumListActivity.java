@@ -31,7 +31,7 @@ import retrofit2.Response;
 import static android.support.v4.app.NavUtils.navigateUpFromSameTask;
 
 /**
- * An activity representing a list of FacebookPhotos. This activity
+ * An activity representing a grid of FacebookPhotos. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
  * lead to a {@link FacebookPhotoGridActivity} representing
