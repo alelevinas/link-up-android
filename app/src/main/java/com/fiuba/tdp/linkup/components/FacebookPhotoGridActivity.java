@@ -3,14 +3,15 @@ package com.fiuba.tdp.linkup.components;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -36,6 +37,7 @@ import retrofit2.Response;
 public class FacebookPhotoGridActivity extends AppCompatActivity {
 
     public static String ARG_ITEM_ID = "ITEM_ID";
+    public static String ARG_PHOTO_URL = "PHOTO_URL";
     private String albumId;
 
     @Override
@@ -114,8 +116,12 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    //TODO: elegir la foto para el perfil!
-
+                    Intent intent = new Intent();
+                    String photoURL = String.valueOf(holder.mItem.getSource());
+                    intent.putExtra(ARG_PHOTO_URL, photoURL);
+                    setResult(RESULT_OK, intent);
+                    Log.i("PHOTO URL", photoURL);
+                    finish();
                 }
             });
         }

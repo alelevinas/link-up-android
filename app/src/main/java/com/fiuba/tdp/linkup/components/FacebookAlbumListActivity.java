@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,6 +67,18 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            String photoURL = data.getStringExtra(FacebookPhotoGridActivity.ARG_PHOTO_URL);
+            Log.i("PHOTO URL", photoURL);
+            setResult(RESULT_OK, data);  // passing data to stacked activity
+            finish();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
@@ -83,10 +96,10 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        List<FacebookAlbumItem> albums = getFacebookAlbums(recyclerView);
+        getFacebookAlbums(recyclerView);
     }
 
-    public List<FacebookAlbumItem> getFacebookAlbums(final RecyclerView recyclerView) {
+    public void getFacebookAlbums(final RecyclerView recyclerView) {
         final List<FacebookAlbumItem> albums = new ArrayList<>();
         new FacebookService().getAlbums(new Callback<FacebookAlbumItem[]>() {
             @Override
@@ -100,7 +113,6 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
 
             }
         });
-        return albums;
     }
 
     public class SimpleItemRecyclerViewAdapter
