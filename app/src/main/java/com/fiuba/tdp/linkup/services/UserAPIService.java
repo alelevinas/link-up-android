@@ -3,6 +3,7 @@ package com.fiuba.tdp.linkup.services;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.domain.UserAround;
+import com.fiuba.tdp.linkup.domain.UserPreferences;
 import com.fiuba.tdp.linkup.domain.UsersAround;
 
 import java.util.ArrayList;
@@ -25,4 +26,7 @@ public interface UserAPIService {
 
     @POST("/api/linkup/users/{userId}/preferences")
     Call<ServerResponse> postPreferences(@Path("userId") String userId, @Body HashMap<String, String> parameters);
+
+    @GET("/api/linkup/users/{userId}/preferences")
+    Call<ServerResponse<UserPreferences>> getUserPreferences(@Path("userId") String userId);
 }

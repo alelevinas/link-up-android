@@ -5,6 +5,7 @@ import android.util.Log;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.User;
 import com.fiuba.tdp.linkup.domain.UserAround;
+import com.fiuba.tdp.linkup.domain.UserPreferences;
 import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.util.Globals;
 
@@ -116,6 +117,25 @@ public class UserService {
                 Log.d(LOG_TAG, "----onFailure------");
                 Log.e(LOG_TAG, t.getMessage());
                 Log.d(LOG_TAG, "----onFailure------");
+            }
+        });
+    }
+
+
+    public void getUserPreferences(String userId, final Callback<ServerResponse<UserPreferences>> callback) {
+        api.getUserPreferences(userId).enqueue(new Callback<ServerResponse<UserPreferences>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<UserPreferences>> call, Response<ServerResponse<UserPreferences>> response) {
+                UserPreferences serverResponse = response.body().data;
+                if (serverResponse != null) {
+                    Log.i("SERVER RESPONSE", serverResponse.toString());
+                    callback.onResponse(call, Response.success(response.body()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<UserPreferences>> call, Throwable t) {
+                callback.onFailure(call, t);
             }
         });
     }
