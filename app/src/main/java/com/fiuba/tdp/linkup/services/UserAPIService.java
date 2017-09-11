@@ -2,8 +2,11 @@ package com.fiuba.tdp.linkup.services;
 
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.User;
+import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UsersAround;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -17,8 +20,8 @@ public interface UserAPIService {
     @GET("/users/{userId}")
     Call<ServerResponse<User>> getUser(@Path("userId") String userId);
 
-    @GET("/users/{userId}/around")
-    Call<ServerResponse<UsersAround>> getUsersCompatible(@Path("userId") String userId);
+    @GET("/api/linkup/users/{userId}/around")
+    Call<ServerResponse<ArrayList<UserAround>>> getUsersCompatible(@Path("userId") String userId);
 
     @POST("/api/linkup/users/{userId}/preferences")
     Call<ServerResponse> postPreferences(@Path("userId") String userId, @Body HashMap<String, String> parameters);

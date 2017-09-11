@@ -9,6 +9,10 @@ public class UsersAround {
         this.usersAround = usersAround;
     }
 
+    public int getSize(){
+        return this.usersAround.size();
+    }
+
     public ArrayList<String> getIds() {
         ArrayList<String> ids = new ArrayList<>(this.usersAround.size());
         for(int i = 0; i < this.usersAround.size(); i++) {

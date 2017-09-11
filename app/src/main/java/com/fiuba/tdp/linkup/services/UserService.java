@@ -4,8 +4,12 @@ import android.util.Log;
 
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.User;
+import com.fiuba.tdp.linkup.domain.UserAround;
+import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.util.Globals;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -56,19 +60,27 @@ public class UserService {
         });
     }
 
-    public void getUsersCompatible(String userId, final Callback<ServerResponse<User>> callback) {
-        api.getUsersCompatible(userId).enqueue(new Callback<ServerResponse<User>>() {
+    public void getUsersCompatible(final String userId, final Callback<ServerResponse<ArrayList<UserAround>>> callback) {
+        final String LOG_TAG = "GET AROUNDS";
+
+        api.getUsersCompatible(userId).enqueue(new Callback<ServerResponse<ArrayList<UserAround>>> () {
             @Override
-            public void onResponse(Call<ServerResponse<User>> call, Response<ServerResponse<User>> response) {
-                User serverResponse = response.body().data;
-                if (serverResponse != null) {
-                    Log.i("SERVER RESPONSE", serverResponse.toString());
-                    callback.onResponse(call, Response.success(response.body()));
+            public void onResponse(Call<ServerResponse<ArrayList<UserAround>>> call, Response<ServerResponse<ArrayList<UserAround>>> response) {
+                Log.d(LOG_TAG, "Id usuario: " + userId);
+
+                try {
+                    ArrayList<UserAround> serverResponse = response.body().data;
+                    if (serverResponse != null) {
+                        Log.i("SERVER RESPONSE", serverResponse.toString());
+                        callback.onResponse(call, Response.success(response.body()));
+                    }
+                } catch (NullPointerException e) {
+                    // response.body().data; could throw this exception id data not exists
                 }
             }
 
             @Override
-            public void onFailure(Call<ServerResponse<User>> call, Throwable t) {
+            public void onFailure(Call<ServerResponse<ArrayList<UserAround>>> call, Throwable t) {
                 callback.onFailure(call, t);
             }
         });

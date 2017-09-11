@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -11,6 +14,7 @@ import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +23,24 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.domain.UserAround;
+import com.fiuba.tdp.linkup.domain.UsersAround;
+import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.util.DownloadImage;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.R.color.holo_orange_light;
 import static android.R.color.holo_red_light;
@@ -107,20 +128,31 @@ public class ExploreFragment extends Fragment{
             }
         }
 
-        /**
-         * Adapter to display recycler view.
-         */
         public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-            // Set numbers of Card in RecyclerView.
-            private static final int LENGTH = 1;
+            private static int LENGTH = 0;
 
-            //private final String[] mUsers;
-            //private final String[] mUsersDesc;
             private final Drawable[] mUsersPictures;
+            private UserService userService;
+            private static UsersAround usersAround;
 
             public ContentAdapter(Context context) {
+                userService = new UserService();
+
+                userService.getUsersCompatible(Profile.getCurrentProfile().getId(), new Callback<ServerResponse<ArrayList<UserAround>>>() {
+                    @Override
+                    public void onResponse(Call<ServerResponse<ArrayList<UserAround>>> call, Response<ServerResponse<ArrayList<UserAround>>> response) {
+                        usersAround = new UsersAround(response.body().data);
+                        LENGTH = usersAround.getSize();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServerResponse<ArrayList<UserAround>>> call, Throwable t) {
+                        Log.w("ERROR", "Error getting users around!");
+                    }
+                });
                 mUsersPictures = new Drawable[1];
                 mUsersPictures[0] = ContextCompat.getDrawable(context, R.drawable.a);
+                notifyDataSetChanged();
             }
 
             @Override
@@ -130,9 +162,9 @@ public class ExploreFragment extends Fragment{
 
             @Override
             public void onBindViewHolder(ViewHolder holder, int position) {
-                holder.picture.setImageDrawable(mUsersPictures[0]);
-                holder.name.setText("Sabrina");
-                holder.description.setText("Me gusta hacer piruetas, soy muy piola, y me gustaria conocer chicoss!! Hablame!");
+                new DownloadImage(holder.picture).execute(usersAround.getPictures().get(position));
+                holder.name.setText(usersAround.getNames().get(position));
+                holder.description.setText(usersAround.getDescriptions().get(position));
             }
 
             @Override
@@ -141,3 +173,4 @@ public class ExploreFragment extends Fragment{
             }
         }
 }
+
