@@ -76,13 +76,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.fiuba.tdp.linkup.components.FacebookAlbumListActivity" />
         </activity>
-        <activity android:name=".views.PreferencesActivity"
+        <activity
+            android:name=".views.PreferencesActivity"
             android:label="Preferencias"
             android:parentActivityName=".views.FirstSignUpActivity"
             android:theme="@style/AppTheme">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".views.FirstSignUpActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".views.FirstSignUpActivity" />
         </activity>
     </application>
 

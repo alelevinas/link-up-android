@@ -6,4 +6,5 @@
     android:layout_height="100dp"
     android:layout_weight="1"
     android:paddingBottom="10dp"
+    app:layout_constraintDimensionRatio="w,1:1"
     app:srcCompat="@drawable/com_facebook_auth_dialog_cancel_background" />

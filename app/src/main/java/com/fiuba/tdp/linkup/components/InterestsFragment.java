@@ -40,7 +40,6 @@ public class InterestsFragment extends Fragment {
     public InterestsFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static InterestsFragment newInstance(int columnCount) {
         InterestsFragment fragment = new InterestsFragment();

@@ -145,7 +145,7 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
                     Intent intent = new Intent(context, FacebookPhotoGridActivity.class);
                     intent.putExtra(FacebookPhotoGridActivity.ARG_ITEM_ID, holder.mItem.id);
 
-                    context.startActivity(intent);
+                    startActivityForResult(intent, 10);
 
                 }
             });

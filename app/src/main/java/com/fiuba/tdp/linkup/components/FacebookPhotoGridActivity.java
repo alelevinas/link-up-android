@@ -43,7 +43,7 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facebookphoto_detail);
+        setContentView(R.layout.activity_facebookphoto_grid);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -103,7 +103,7 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
         @Override
         public FacebookPhotoGridActivity.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.facebookphoto_detail_content, parent, false);
+                    .inflate(R.layout.facebookphoto_grid_content, parent, false);
             return new FacebookPhotoGridActivity.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
@@ -115,7 +115,6 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     Intent intent = new Intent();
                     String photoURL = String.valueOf(holder.mItem.getSource());
                     intent.putExtra(ARG_PHOTO_URL, photoURL);
