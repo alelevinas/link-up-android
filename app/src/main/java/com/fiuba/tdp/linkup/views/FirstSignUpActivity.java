@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 
 public class FirstSignUpActivity extends AppCompatActivity implements InterestsFragment.OnListFragmentInteractionListener {
 

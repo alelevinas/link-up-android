@@ -27,7 +27,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/facebookphoto_detail" />
+        <include layout="@layout/facebookphoto_grid" />
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

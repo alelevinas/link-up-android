@@ -14,11 +14,11 @@ public class LinkUpUser {
     private String picture;
     private String description;
     private LinkUpEducation[] education;
-    private LinkUpLikes[] likes;
-    private LinkUpPictures[] pictures;
+    private LinkUpLike[] likes;
+    private LinkUpPicture[] pictures;
 
 
-    public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLikes[] likes, LinkUpPictures[] pictures) {
+    public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLike[] likes, LinkUpPicture[] pictures) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -63,12 +63,16 @@ public class LinkUpUser {
         return education;
     }
 
-    public LinkUpLikes[] getLikes() {
+    public LinkUpLike[] getLikes() {
         return likes;
     }
 
-    public LinkUpPictures[] getPictures() {
+    public LinkUpPicture[] getPictures() {
         return pictures;
+    }
+
+    public void setPictures(LinkUpPicture[] pictures) {
+        this.pictures = pictures;
     }
 
     /**
@@ -112,27 +116,15 @@ public class LinkUpUser {
         }
     }
 
-    public class LinkUpLikes {
+    public class LinkUpLike {
         String name;
 
-        public LinkUpLikes(String name) {
+        public LinkUpLike(String name) {
             this.name = name;
         }
 
         public String getName() {
             return name;
-        }
-    }
-
-    public class LinkUpPictures {
-        String url;
-
-        public LinkUpPictures(String url) {
-            this.url = url;
-        }
-
-        public String getUrl() {
-            return url;
         }
     }
 }
