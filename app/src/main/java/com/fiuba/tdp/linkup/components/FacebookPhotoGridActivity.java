@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.domain.FacebookPhotoItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookPhotoItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 

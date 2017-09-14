@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 

@@ -7,9 +7,9 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.fiuba.tdp.linkup.domain.FacebookAlbumItem;
-import com.fiuba.tdp.linkup.domain.FacebookPhotoItem;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookAlbumItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookPhotoItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;

@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.domain.FacebookAlbumItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookAlbumItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 

@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 import com.fiuba.tdp.linkup.services.UserManager;
 
 import java.util.ArrayList;
@@ -73,9 +73,9 @@ public class InterestsFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
 
-            LinkUpUser.LinkUpLikes[] linkUpLikes = UserManager.getInstance().getMyUser().getLikes();
+            LinkUpUser.LinkUpLike[] linkUpLikes = UserManager.getInstance().getMyUser().getLikes();
 
-            List<LinkUpUser.LinkUpLikes> likes = new ArrayList<>();
+            List<LinkUpUser.LinkUpLike> likes = new ArrayList<>();
             Collections.addAll(likes, linkUpLikes);
 
             recyclerView.setAdapter(new MyInterestsRecyclerViewAdapter(likes, mListener));

@@ -33,6 +33,7 @@ public class PhotoPickerFragment extends Fragment {
     private ImageButton mRemoveImageButton;
 
     private OnPhotoPickerFragmentInteractionListener mListener;
+    private int number;
 
     public PhotoPickerFragment() {
         // Required empty public constructor
@@ -98,15 +99,20 @@ public class PhotoPickerFragment extends Fragment {
         super.onResume();
     }
 
+    public void setImage(String photoUrl) {
+        new DownloadImage(mAddImageButton).execute(photoUrl);
+        this.photoUrl = photoUrl;
+    }
+
     public void onImageChanged(String photoUrl) {
         if (mListener != null) {
-            mListener.onImageChanged(photoUrl);
+            mListener.onImageChanged(number, photoUrl);
         }
     }
 
     public void onImageRemoved(String photoUrl) {
         if (mListener != null) {
-            mListener.onImageRemoved(photoUrl);
+            mListener.onImageRemoved(number, photoUrl);
         }
     }
 
@@ -145,6 +151,10 @@ public class PhotoPickerFragment extends Fragment {
         }
     }
 
+    public void setNumber(int number) {
+        this.number = number;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -156,9 +166,9 @@ public class PhotoPickerFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPhotoPickerFragmentInteractionListener {
-        void onImageChanged(String photoUrl);
+        void onImageChanged(int number, String photoUrl);
 
-        void onImageRemoved(String photoUrl);
+        void onImageRemoved(int number, String photoUrl);
     }
 
 }

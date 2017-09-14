@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment;
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
         InterestsFragment.OnListFragmentInteractionListener{
