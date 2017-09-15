@@ -3,12 +3,12 @@ package com.fiuba.tdp.linkup.services;
 import android.location.Location;
 import android.util.Log;
 
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 import com.fiuba.tdp.linkup.util.Globals;
 import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
@@ -220,4 +220,8 @@ public class UserService {
     }
 
 
+
+    public void updateUser(String userId, LinkUpUser user, final Callback<ServerResponse<String>> callback) {
+        api.updateUser(userId, user).enqueue(callback);
+    }
 }

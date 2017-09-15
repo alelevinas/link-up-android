@@ -1,4 +1,4 @@
-package com.fiuba.tdp.linkup.domain;
+package com.fiuba.tdp.linkup.domain.facebook;
 
 /**
  * Created by alejandro on 9/10/17.

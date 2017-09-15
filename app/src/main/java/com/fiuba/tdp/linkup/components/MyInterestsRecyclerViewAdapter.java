@@ -13,16 +13,16 @@ import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link LinkUpUser.LinkUpLikes} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link LinkUpUser.LinkUpLike} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInterestsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<LinkUpUser.LinkUpLikes> mValues;
+    private final List<LinkUpUser.LinkUpLike> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyInterestsRecyclerViewAdapter(List<LinkUpUser.LinkUpLikes> items, OnListFragmentInteractionListener listener) {
+    public MyInterestsRecyclerViewAdapter(List<LinkUpUser.LinkUpLike> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -48,7 +48,7 @@ public class MyInterestsRecyclerViewAdapter extends RecyclerView.Adapter<MyInter
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public LinkUpUser.LinkUpLikes mItem;
+        public LinkUpUser.LinkUpLike mItem;
 
         public ViewHolder(View view) {
             super(view);

@@ -40,4 +40,6 @@
     <string name="button_preferences">Preferencias</string>
     <string name="years">años</string>
     <string name="ok">Entendido</string>
+    <string name="image_for_profile">profile_extra_image_description</string>
+    <string name="title_edit_info">Edita tu perfil</string>
 </resources>

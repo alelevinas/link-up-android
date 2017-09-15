@@ -1,10 +1,10 @@
 package com.fiuba.tdp.linkup.services;
 
-import com.fiuba.tdp.linkup.domain.FacebookUserItem;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +20,9 @@ public interface UserAPIService {
 
     @GET("/api/linkup/users/{userId}")
     Call<ServerResponse<LinkUpUser>> getUser(@Path("userId") String userId);
+
+    @PUT("/api/linkup/users/{userId}")
+    Call<ServerResponse<String>> updateUser(@Path("userId") String userId, @Body LinkUpUser user);
 
     @POST("/api/linkup/users")
     Call<ServerResponse<LinkUpUser>> postUser(@Body FacebookUserItem body);

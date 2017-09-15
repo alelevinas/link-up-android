@@ -88,20 +88,30 @@ public class LogInActivity extends AppCompatActivity {
         profile = Profile.getCurrentProfile();
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_friends", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
+        loginButton.setReadPermissions("user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
+                    showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
+                    LoginManager.getInstance().logOut();
+                    return;
+                }
                 profile = Profile.getCurrentProfile();
+
                 nextActivity(profile);
             }
 
             @Override
             public void onCancel() {
+                showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
+                LoginManager.getInstance().logOut();
             }
 
             @Override
             public void onError(FacebookException e) {
+                showAlert("Ha habido un error al comunicarse con Facebook. Por favor intenta mas tarde");
+                LoginManager.getInstance().logOut();
             }
         });
     }
@@ -266,6 +276,7 @@ public class LogInActivity extends AppCompatActivity {
                                     //tiene menos de 18 anos
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("El usuario es menor a 18 años, vuelva mas tarde");
+                                    LoginManager.getInstance().logOut();
                                     return;
                                 }
 
@@ -273,6 +284,7 @@ public class LogInActivity extends AppCompatActivity {
                                     //tiene menos de 18 anos
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("Debes tener una foto de perfil en Facebook para usar esta app, vuelva mas tarde");
+                                    LoginManager.getInstance().logOut();
                                     return;
                                 }
                                 Log.e("LOGIN ACTIVITY SERVER", "ERROR POSTING USER TO LINK UP SERVERS");
@@ -302,7 +314,6 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
                 dialog.dismiss();
-                LoginManager.getInstance().logOut();
             }
         });
 

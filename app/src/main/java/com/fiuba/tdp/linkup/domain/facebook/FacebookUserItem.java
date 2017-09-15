@@ -1,4 +1,4 @@
-package com.fiuba.tdp.linkup.domain;
+package com.fiuba.tdp.linkup.domain.facebook;
 
 import java.util.Calendar;
 

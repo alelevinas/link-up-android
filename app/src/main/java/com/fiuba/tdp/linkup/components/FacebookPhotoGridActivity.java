@@ -3,19 +3,20 @@ package com.fiuba.tdp.linkup.components;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.domain.FacebookPhotoItem;
+import com.fiuba.tdp.linkup.domain.facebook.FacebookPhotoItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 
@@ -36,12 +37,13 @@ import retrofit2.Response;
 public class FacebookPhotoGridActivity extends AppCompatActivity {
 
     public static String ARG_ITEM_ID = "ITEM_ID";
+    public static String ARG_PHOTO_URL = "PHOTO_URL";
     private String albumId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_facebookphoto_detail);
+        setContentView(R.layout.activity_facebookphoto_grid);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -101,7 +103,7 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
         @Override
         public FacebookPhotoGridActivity.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.facebookphoto_detail_content, parent, false);
+                    .inflate(R.layout.facebookphoto_grid_content, parent, false);
             return new FacebookPhotoGridActivity.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
@@ -113,9 +115,12 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    //TODO: elegir la foto para el perfil!
-
+                    Intent intent = new Intent();
+                    String photoURL = String.valueOf(holder.mItem.getSource());
+                    intent.putExtra(ARG_PHOTO_URL, photoURL);
+                    setResult(RESULT_OK, intent);
+                    Log.i("PHOTO URL", photoURL);
+                    finish();
                 }
             });
         }
