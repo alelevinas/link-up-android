@@ -3,6 +3,7 @@ package com.fiuba.tdp.linkup.services;
 import android.util.Log;
 
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
@@ -60,7 +61,7 @@ public class UserService {
         });
     }
 
-    public void postActualFacebookUser(final String name, final Callback<ServerResponse<LinkUpUser>> callback) {
+    public void postActualFacebookUser(final String name, final String profilePicture, final Callback<ServerResponse<LinkUpUser>> callback) {
         final String LOG_TAG = "POST USER";
 
         new FacebookService().getUserData(new Callback<FacebookUserItem>() {
@@ -69,6 +70,8 @@ public class UserService {
                 FacebookUserItem body = response.body();
 
                 body.setName(name);
+
+                body.setProfilePicture(profilePicture);
 
                 if (Integer.parseInt(body.getAge()) < 18) {
                     callback.onFailure(null, new UserIsNotOldEnoughException("User is under 18 years old"));
@@ -187,6 +190,37 @@ public class UserService {
             }
         });
     }
+
+    public void putLocation(String userId, LocationUser location) {
+        final String LOG_TAG = "POST LOCATION";
+
+        HashMap<String, Double> parameters = new HashMap<>();
+        parameters.put("lat", location.getLat());
+        parameters.put("lon", location.getLon());
+
+        Log.d(LOG_TAG,"Valores: "+userId+", "+location.getLat()+", "+location.getLon());
+
+        api.putLocation(userId, parameters).enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+                Log.d(LOG_TAG, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_TAG, "-----isSuccess----");
+                } else {
+                    Log.d(LOG_TAG, "-----isFalse-----");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Log.d(LOG_TAG, "----onFailure------");
+                Log.e(LOG_TAG, t.getMessage());
+                Log.d(LOG_TAG, "----onFailure------");
+            }
+        });
+    }
+
+
 
     public void updateUser(String userId, LinkUpUser user, final Callback<ServerResponse<String>> callback) {
         api.updateUser(userId, user).enqueue(callback);

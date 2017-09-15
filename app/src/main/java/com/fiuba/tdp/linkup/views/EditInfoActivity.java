@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageButton;
 
-import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.PhotoPickerFragment;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
@@ -20,7 +19,7 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
         setContentView(R.layout.activity_edit_info);
 
         ImageButton profileImage = (ImageButton) findViewById(R.id.photo_profile);
-        new DownloadImage(profileImage).execute(Profile.getCurrentProfile().getProfilePictureUri(700, 700).toString());
+        new DownloadImage(profileImage).execute(UserManager.getInstance().getMyUser().getPicture());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

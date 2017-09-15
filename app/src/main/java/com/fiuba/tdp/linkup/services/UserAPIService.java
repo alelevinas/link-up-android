@@ -36,4 +36,7 @@ public interface UserAPIService {
 
     @GET("/api/linkup/users/{userId}/preferences")
     Call<ServerResponse<UserPreferences>> getUserPreferences(@Path("userId") String userId);
+
+    @PUT("/api/linkup/users/{userId}/location")
+    Call<ServerResponse> putLocation(@Path("userId") String userId, @Body HashMap<String, Double> parameters);
 }

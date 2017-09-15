@@ -2,7 +2,9 @@ package com.fiuba.tdp.linkup;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +21,9 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
@@ -31,8 +35,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.fiuba.tdp.linkup.services.LocationManager.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+
 public class LogInActivity extends AppCompatActivity {
 
+    private static final String LOCATION_TAG = "login location";
+
+    LocationManager locationManager = new LocationManager();
+    
     Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
@@ -41,6 +51,8 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        locationManager.getLocationPermission(this);
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -65,7 +77,6 @@ public class LogInActivity extends AppCompatActivity {
 
         profile = Profile.getCurrentProfile();
 
-
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -78,7 +89,7 @@ public class LogInActivity extends AppCompatActivity {
                 }
                 profile = Profile.getCurrentProfile();
 
-                nextActivity(profile);
+                // nextActivity(profile); Como se crea otra actividad para el login, luego se llama al on resume y llama a nextActivity desde ahi
             }
 
             @Override
@@ -94,6 +105,31 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Handles the result of the request for location permissions.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        System.out.println("PERMISSIONS ??? ");
+        System.out.println(requestCode);
+
+
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    System.out.println("PERMISSIONS GRANTED 2");
+                    locationManager.getDeviceLocation(this);
+                }
+            }
+        }
+    }
+
 
     @Override
     protected void onResume() {
@@ -128,22 +164,44 @@ public class LogInActivity extends AppCompatActivity {
 
             final String name = profile.getName();
 
+            final String profilePicture = profile.getProfilePictureUri(300, 300).toString();
+
             new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
                 @Override
                 public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                     if (response.isSuccessful()) {
                         UserManager.getInstance().setMyUser(response.body().data);
+                        if (locationManager.getLastKnownLocation() != null) {
+                            Log.d(LOCATION_TAG, "set location");
+                            LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+                            new UserService().putLocation(profile.getId(), userLoc);
+                        } else {
+                            Log.d(LOCATION_TAG, "set default location");
+                            LocationUser userLoc = new LocationUser(-34.59,-58.41);
+                            new UserService().putLocation(profile.getId(), userLoc);
+                        }
 
                         Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
                         startActivity(main);
                         finish();
                     } else if (response.code() == 404) {
-                        new UserService().postActualFacebookUser(name, new Callback<ServerResponse<LinkUpUser>>() {
+                        new UserService().postActualFacebookUser(name, profilePicture, new Callback<ServerResponse<LinkUpUser>>() {
                             @Override
                             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                                 Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");
 
                                 UserManager.getInstance().setMyUser(response.body().data);
+                                if (locationManager.getLastKnownLocation() != null) {
+                                    Log.d(LOCATION_TAG, "set location");
+                                    LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+                                    //profile = Profile.getCurrentProfile();
+                                    new UserService().putLocation(profile.getId(), userLoc);
+                                } else {
+                                    Log.d(LOCATION_TAG, "set default location");
+                                    LocationUser userLoc = new LocationUser(-34.59,-58.41);
+                                    //profile = Profile.getCurrentProfile();
+                                    new UserService().putLocation(profile.getId(), userLoc);
+                                }
 
                                 Intent main = new Intent(getBaseContext(), FirstSignUpActivity.class);
                                 startActivity(main);
@@ -203,5 +261,7 @@ public class LogInActivity extends AppCompatActivity {
         dialog.show();
 
     }
+
+
 
 }
