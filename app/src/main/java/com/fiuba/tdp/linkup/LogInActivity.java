@@ -27,6 +27,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
@@ -34,11 +35,9 @@ import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
 import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import retrofit2.Call;
@@ -54,8 +53,6 @@ public class LogInActivity extends AppCompatActivity {
     private ProfileTracker profileTracker;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
-    private GoogleApiClient mGoogleApiClient;
 
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
@@ -64,9 +61,7 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Construct a FusedLocationProviderClient.
 
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermission();
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -91,22 +86,6 @@ public class LogInActivity extends AppCompatActivity {
         //  si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
 
         profile = Profile.getCurrentProfile();
-
-        /*mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        System.out.println("====== MY LOCATION 1 ======   ");
-                       // System.out.print(location.getLatitude());
-                       // System.out.print(location.getLatitude());
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            System.out.println("====== MY LOCATION ======   ");
-                            System.out.println(location.toString());
-                        }
-                    }
-                });*/
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
@@ -137,26 +116,22 @@ public class LogInActivity extends AppCompatActivity {
          * cases when a location is not available.
          */
         try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            if (mLastKnownLocation != null) {
-                                System.out.println("MY LOCATION");
-                                System.out.println(mLastKnownLocation.getLatitude());
-                                System.out.println(mLastKnownLocation.getLongitude());
-                            } else {
-                                System.out.println("MY LOCATION IS NULL");
+                // Construct a FusedLocationProviderClient.
+                mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // Got last known location. In some rare situations this can be null.
+                            if (location != null) {
+                                mLastKnownLocation = location;
+                                Log.d(TAG+" lat", String.valueOf(location.getLatitude()));
+                                Log.d(TAG+" long", String.valueOf(location.getLongitude()));
 
+                                // ...
                             }
                         }
-                    }
-                });
-            }
+                    });
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
@@ -174,26 +149,14 @@ public class LogInActivity extends AppCompatActivity {
          */
 
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             System.out.println("PERMISSIONS GRANTED");
-            mLocationPermissionGranted = true;
+            getDeviceLocation();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
-    public void checkPermission(){
-        System.out.println("CHECK PERMISSIONS");
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                ){//Can add more as per requirement
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
-                    123);
         }
     }
 
@@ -204,21 +167,18 @@ public class LogInActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
         System.out.println("PERMISSIONS ??? ");
         System.out.println(requestCode);
 
 
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                System.out.print("grantResults");
-                System.out.print(grantResults.toString());
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     System.out.println("PERMISSIONS GRANTED 2");
-                    mLocationPermissionGranted = true;
+                    getDeviceLocation();
                 }
             }
         }
@@ -248,9 +208,6 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
-        Log.i(TAG, "GoogleApiClient connected!");
-        getDeviceLocation();
-        Log.i(TAG, " Location: ");
         //Facebook login
         callbackManager.onActivityResult(requestCode, responseCode, intent);
     }
@@ -264,9 +221,17 @@ public class LogInActivity extends AppCompatActivity {
             new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
                 @Override
                 public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
-                    //getDeviceLocation();
                     if (response.isSuccessful()) {
                         UserManager.getInstance().setMyUser(response.body().data);
+                        if (mLastKnownLocation != null) {
+                            Log.d(TAG, "set location");
+                            LocationUser userLoc = new LocationUser(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                            new UserService().putLocation(profile.getId(), userLoc);
+                        } else {
+                            Log.d(TAG, "set default location");
+                            LocationUser userLoc = new LocationUser(-34.59,-58.41);
+                            new UserService().putLocation(profile.getId(), userLoc);
+                        }
 
                         Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
                         startActivity(main);
@@ -278,6 +243,17 @@ public class LogInActivity extends AppCompatActivity {
                                 Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");
 
                                 UserManager.getInstance().setMyUser(response.body().data);
+                                if (mLastKnownLocation != null) {
+                                    Log.d(TAG, "set location");
+                                    LocationUser userLoc = new LocationUser(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                                    //profile = Profile.getCurrentProfile();
+                                    new UserService().putLocation(profile.getId(), userLoc);
+                                } else {
+                                    Log.d(TAG, "set default location");
+                                    LocationUser userLoc = new LocationUser(-34.59,-58.41);
+                                    //profile = Profile.getCurrentProfile();
+                                    new UserService().putLocation(profile.getId(), userLoc);
+                                }
 
                                 Intent main = new Intent(getBaseContext(), FirstSignUpActivity.class);
                                 startActivity(main);

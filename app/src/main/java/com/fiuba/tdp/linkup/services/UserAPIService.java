@@ -13,6 +13,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface UserAPIService {
@@ -32,4 +33,7 @@ public interface UserAPIService {
 
     @GET("/api/linkup/users/{userId}/preferences")
     Call<ServerResponse<UserPreferences>> getUserPreferences(@Path("userId") String userId);
+
+    @PUT("/api/linkup/users/{userId}/location")
+    Call<ServerResponse> putLocation(@Path("userId") String userId, @Body HashMap<String, Double> parameters);
 }
