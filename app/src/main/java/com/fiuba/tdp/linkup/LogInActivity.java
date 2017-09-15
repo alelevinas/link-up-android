@@ -1,16 +1,10 @@
 package com.fiuba.tdp.linkup;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,40 +23,36 @@ import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
 import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.fiuba.tdp.linkup.services.LocationManager.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+
 public class LogInActivity extends AppCompatActivity {
 
-    private static final String TAG = "login location";
+    private static final String LOCATION_TAG = "login location";
+
+    LocationManager locationManager = new LocationManager();
+    
     Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private ProfileTracker profileTracker;
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
-    private Location mLastKnownLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getLocationPermission();
+        locationManager.getLocationPermission(this);
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -99,7 +89,7 @@ public class LogInActivity extends AppCompatActivity {
                 }
                 profile = Profile.getCurrentProfile();
 
-                nextActivity(profile);
+                // nextActivity(profile); Como se crea otra actividad para el login, luego se llama al on resume y llama a nextActivity desde ahi
             }
 
             @Override
@@ -114,60 +104,6 @@ public class LogInActivity extends AppCompatActivity {
                 LoginManager.getInstance().logOut();
             }
         });
-    }
-
-
-    /**
-     * Gets the current location of the device, and positions the map's camera.
-     */
-    public void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-                // Construct a FusedLocationProviderClient.
-                mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-                            if (location != null) {
-                                mLastKnownLocation = location;
-                                Log.d(TAG+" lat", String.valueOf(location.getLatitude()));
-                                Log.d(TAG+" long", String.valueOf(location.getLongitude()));
-
-                                // ...
-                            }
-                        }
-                    });
-        } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-
-    /**
-     * Prompts the user for permission to use the device location.
-     */
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            System.out.println("PERMISSIONS GRANTED");
-            getDeviceLocation();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
     }
 
     /**
@@ -188,7 +124,7 @@ public class LogInActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     System.out.println("PERMISSIONS GRANTED 2");
-                    getDeviceLocation();
+                    locationManager.getDeviceLocation(this);
                 }
             }
         }
@@ -228,17 +164,19 @@ public class LogInActivity extends AppCompatActivity {
 
             final String name = profile.getName();
 
+            final String profilePicture = profile.getProfilePictureUri(300, 300).toString();
+
             new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
                 @Override
                 public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                     if (response.isSuccessful()) {
                         UserManager.getInstance().setMyUser(response.body().data);
-                        if (mLastKnownLocation != null) {
-                            Log.d(TAG, "set location");
-                            LocationUser userLoc = new LocationUser(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        if (locationManager.getLastKnownLocation() != null) {
+                            Log.d(LOCATION_TAG, "set location");
+                            LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
                             new UserService().putLocation(profile.getId(), userLoc);
                         } else {
-                            Log.d(TAG, "set default location");
+                            Log.d(LOCATION_TAG, "set default location");
                             LocationUser userLoc = new LocationUser(-34.59,-58.41);
                             new UserService().putLocation(profile.getId(), userLoc);
                         }
@@ -247,19 +185,19 @@ public class LogInActivity extends AppCompatActivity {
                         startActivity(main);
                         finish();
                     } else if (response.code() == 404) {
-                        new UserService().postActualFacebookUser(name, new Callback<ServerResponse<LinkUpUser>>() {
+                        new UserService().postActualFacebookUser(name, profilePicture, new Callback<ServerResponse<LinkUpUser>>() {
                             @Override
                             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                                 Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");
 
                                 UserManager.getInstance().setMyUser(response.body().data);
-                                if (mLastKnownLocation != null) {
-                                    Log.d(TAG, "set location");
-                                    LocationUser userLoc = new LocationUser(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                                if (locationManager.getLastKnownLocation() != null) {
+                                    Log.d(LOCATION_TAG, "set location");
+                                    LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
                                     //profile = Profile.getCurrentProfile();
                                     new UserService().putLocation(profile.getId(), userLoc);
                                 } else {
-                                    Log.d(TAG, "set default location");
+                                    Log.d(LOCATION_TAG, "set default location");
                                     LocationUser userLoc = new LocationUser(-34.59,-58.41);
                                     //profile = Profile.getCurrentProfile();
                                     new UserService().putLocation(profile.getId(), userLoc);

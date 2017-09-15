@@ -1,6 +1,5 @@
 package com.fiuba.tdp.linkup.services;
 
-import android.location.Location;
 import android.util.Log;
 
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
@@ -62,7 +61,7 @@ public class UserService {
         });
     }
 
-    public void postActualFacebookUser(final String name, final Callback<ServerResponse<LinkUpUser>> callback) {
+    public void postActualFacebookUser(final String name, final String profilePicture, final Callback<ServerResponse<LinkUpUser>> callback) {
         final String LOG_TAG = "POST USER";
 
         new FacebookService().getUserData(new Callback<FacebookUserItem>() {
@@ -71,6 +70,8 @@ public class UserService {
                 FacebookUserItem body = response.body();
 
                 body.setName(name);
+
+                body.setProfilePicture(profilePicture);
 
                 if (Integer.parseInt(body.getAge()) < 18) {
                     callback.onFailure(null, new UserIsNotOldEnoughException("User is under 18 years old"));

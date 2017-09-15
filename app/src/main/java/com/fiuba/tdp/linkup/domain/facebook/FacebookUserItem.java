@@ -110,6 +110,10 @@ public class FacebookUserItem {
         return ageS;
     }
 
+    public void setProfilePicture(String profilePicture) {
+        this.picture.data.url = profilePicture;
+    }
+
     public class FacebookEducationItem {
         String id;
         FacebookSchoolItem school;
