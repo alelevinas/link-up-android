@@ -225,4 +225,8 @@ public class UserService {
     public void updateUser(String userId, LinkUpUser user, final Callback<ServerResponse<String>> callback) {
         api.updateUser(userId, user).enqueue(callback);
     }
+
+    public void postLikeToUser(String userId, final Callback<ServerResponse<String>> callback) {
+        api.postLikeToUser(userId).enqueue(callback);
+    }
 }
