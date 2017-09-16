@@ -17,13 +17,13 @@
 
     <ImageButton
         android:id="@+id/removeButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="78dp"
         android:layout_marginTop="78dp"
         app:layout_constraintLeft_toLeftOf="@+id/photo"
         app:layout_constraintTop_toTopOf="@+id/photo"
-        app:srcCompat="@drawable/com_facebook_close"
+        app:srcCompat="@android:drawable/ic_delete"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 
