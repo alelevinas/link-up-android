@@ -43,33 +43,33 @@
             android:layout_height="@dimen/card_title_height"
             android:layout_alignBottom="@+id/card_image"
             android:layout_marginLeft="@dimen/md_keylines"
-            tools:text="@string/item_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            tools:text="@string/item_title" />
 
         <TextView
             android:id="@+id/card_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_image"
-            android:layout_marginLeft="@dimen/md_keylines"
-            android:layout_marginTop="@dimen/md_keylines"
             android:layout_marginBottom="@dimen/md_keylines"
+            android:layout_marginLeft="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
-            tools:text="@string/item_desc"
+            android:layout_marginTop="@dimen/md_keylines"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/dark_grey"
-            android:textSize="@dimen/article_subheading" />
+            android:textSize="@dimen/article_subheading"
+            tools:text="@string/item_desc" />
 
         <Button
-            android:id="@+id/action_button"
+            android:id="@+id/message_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_text"
-            style="?android:attr/borderlessButtonStyle"
-            android:textColor="?attr/colorPrimary"
-            android:text="Mensaje" />
+            android:text="Mensaje"
+            android:textColor="?attr/colorPrimary" />
 
         <ImageButton
             android:id="@+id/superlike_button"
@@ -85,14 +85,14 @@
 
         <ImageButton
             android:id="@+id/favorite_button"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/cards_button_width"
             android:layout_height="@dimen/cards_button_height"
-            android:layout_marginRight="@dimen/md_keylines"
-            app:srcCompat="@drawable/ic_favorite"
             android:layout_below="@+id/card_text"
+            android:layout_marginRight="@dimen/md_keylines"
             android:layout_toLeftOf="@id/superlike_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:tint="@color/button_grey" />
+            android:tint="@color/button_grey"
+            app:srcCompat="@drawable/ic_favorite" />
 
         <ImageButton
             android:id="@+id/closeButton"
