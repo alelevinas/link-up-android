@@ -72,7 +72,20 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
     }
 
     public void postChanges(){
+        LinkUpUser user = UserManager.getInstance().getMyUser();
+        user.setDescription(textDescription.getText().toString());
 
+        new UserService().updateUser(user.getId(), user, new Callback<ServerResponse<String>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d("EDIT INFO ACTIVITY", "USER DESCRIPTION UPDATED");
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                Log.e("EDIT INFO ACTIVITY", "FAILED TO UPDATE USER DESCRIPTION");
+            }
+        });
     }
 
         @Override
