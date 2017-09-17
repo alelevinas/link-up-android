@@ -12,12 +12,12 @@ public class LinkUpUser {
     private String gender;
     private String birthday;
     private String picture;
+
     private String description;
+
     private LinkUpEducation[] education;
     private LinkUpLike[] likes;
     private LinkUpPicture[] pictures;
-
-
     public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLike[] likes, LinkUpPicture[] pictures) {
         this.id = id;
         this.name = name;
@@ -29,6 +29,7 @@ public class LinkUpUser {
         this.likes = likes;
         this.pictures = pictures;
     }
+
 
     public String getId() {
         return id;
@@ -57,6 +58,10 @@ public class LinkUpUser {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LinkUpEducation[] getEducation() {

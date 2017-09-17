@@ -6,16 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.fiuba.tdp.linkup.views.EditInfoActivity">
 
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <ImageButton
             android:id="@+id/photo_profile"
             android:layout_width="220dp"
             android:layout_height="220dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="24dp"
             android:contentDescription="@string/profile_picture"
             app:layout_constraintDimensionRatio="h,1:1"
@@ -29,9 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/photo_profile"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintLeft_toRightOf="@+id/photo_profile"
@@ -45,9 +48,10 @@
             android:name="com.fiuba.tdp.linkup.components.PhotoPickerFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="32dp"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="@+id/photo_profile"
@@ -63,7 +67,6 @@
             android:name="com.fiuba.tdp.linkup.components.PhotoPickerFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
             android:layout_marginTop="16dp"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintLeft_toLeftOf="@+id/photo_profile"
@@ -75,8 +78,6 @@
             android:name="com.fiuba.tdp.linkup.components.PhotoPickerFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="0dp"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintRight_toRightOf="@+id/photo_profile"
             app:layout_constraintTop_toTopOf="@+id/photo_3"
@@ -87,14 +88,70 @@
             android:name="com.fiuba.tdp.linkup.components.PhotoPickerFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="0dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintLeft_toLeftOf="@+id/photo_2"
             app:layout_constraintRight_toRightOf="@+id/photo_2"
             app:layout_constraintTop_toTopOf="@+id/photo_4"
             tools:layout="@layout/fragment_photo_picker" />
 
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="180dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/photo_4">
+
+
+            <TextView
+                android:id="@+id/AboutMeLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="5dp"
+                android:text="Acerca de mi"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_invisible"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/AboutMeLabel"
+                android:layout_gravity="center"
+                android:elevation="24dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="1dp"
+                app:contentPadding="10dp">
+
+                <EditText
+                    android:id="@+id/txt_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:capitalize="sentences"
+                    android:contentDescription="Ingrese una descripción"
+                    android:ems="10"
+                    android:gravity="top"
+                    android:hint="Ingrese una descripción"
+                    android:inputType="text|textAutoCorrect|textMultiLine"
+                    android:lines="5"
+                    android:maxLines="10"
+                    android:minLines="1"
+                    android:singleLine="false" />
+            </android.support.v7.widget.CardView>
+
+        </RelativeLayout>
+
     </android.support.constraint.ConstraintLayout>
+
+
 </ScrollView>
