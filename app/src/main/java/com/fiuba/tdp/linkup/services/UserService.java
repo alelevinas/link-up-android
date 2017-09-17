@@ -73,6 +73,7 @@ public class UserService {
 
                 body.setProfilePicture(profilePicture);
 
+                body.setAge(body.getAge());
                 if (Integer.parseInt(body.getAge()) < 18) {
                     callback.onFailure(null, new UserIsNotOldEnoughException("User is under 18 years old"));
                     return;
