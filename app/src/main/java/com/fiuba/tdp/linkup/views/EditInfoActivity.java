@@ -3,6 +3,7 @@ package com.fiuba.tdp.linkup.views;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.fiuba.tdp.linkup.R;
@@ -17,6 +18,8 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_info);
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
         ImageButton profileImage = (ImageButton) findViewById(R.id.photo_profile);
         new DownloadImage(profileImage).execute(UserManager.getInstance().getMyUser().getPicture());
