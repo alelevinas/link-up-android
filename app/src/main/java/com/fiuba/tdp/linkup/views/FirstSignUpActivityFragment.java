@@ -33,7 +33,6 @@ public class FirstSignUpActivityFragment extends Fragment {
 
         bindUserData(view, UserManager.getInstance().getMyUser());
 
-
         Button buttonEditInfo = (Button) view.findViewById(R.id.button_edit_info);
 
         buttonEditInfo.setOnClickListener(new View.OnClickListener() {
