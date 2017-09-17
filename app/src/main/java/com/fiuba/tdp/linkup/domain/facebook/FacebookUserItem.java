@@ -10,6 +10,7 @@ public class FacebookUserItem {
     String id;
     String name;
     String birthday;
+    String age;
     String gender;
     FacebookEducationItem[] education;
     FacebookLikesItem likes;
@@ -44,6 +45,10 @@ public class FacebookUserItem {
     public String getAge() {
         String[] dob = birthday.split("/");
         return getAgeFromDoB(Integer.parseInt(dob[2]), Integer.parseInt(dob[0]), Integer.parseInt(dob[1]));
+    }
+
+    public void setAge(String age) {
+        this.age = age;
     }
 
     public String getGender() {
