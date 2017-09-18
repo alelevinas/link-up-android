@@ -19,6 +19,7 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
     private Fragment exploreFragment = new ExploreFragment();
     private Fragment profileFragment = new FirstSignUpActivityFragment();
+    private Fragment comingSoon = new CommingSoonFragment();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -55,10 +56,10 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
                 pushFragment(exploreFragment);
                 return true;
             case R.id.navigation_notifications:
-                pushFragment(profileFragment);
+                pushFragment(comingSoon);
                 return true;
             case R.id.navigation_messages:
-                pushFragment(profileFragment);
+                pushFragment(comingSoon);
                 return true;
             case R.id.navigation_profile:
                 pushFragment(profileFragment);

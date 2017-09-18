@@ -67,7 +67,13 @@ public class FirstSignUpActivityFragment extends Fragment {
         TextView genreView = (TextView) view.findViewById(R.id.label_genre);
         genreView.setText(myUser.getGender().compareTo("male") == 0 ? "Hombre" : "Mujer");
 
+
         TextView studiesView = (TextView) view.findViewById(R.id.label_studies);
-        studiesView.setText(myUser.getEducation()[myUser.getEducation().length - 1].getName());
+
+        if (myUser.getEducation() != null && myUser.getEducation().length > 0) {
+            studiesView.setText(myUser.getEducation()[myUser.getEducation().length - 1].getName());
+        } else {
+            studiesView.setText("No hay información de la educación");
+        }
     }
 }
