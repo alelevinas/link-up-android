@@ -164,7 +164,7 @@ public class LogInActivity extends AppCompatActivity {
 
             final String name = profile.getName();
 
-            final String profilePicture = profile.getProfilePictureUri(300, 300).toString();
+            final String profilePicture = profile.getProfilePictureUri(500, 500).toString();
 
             new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
                 @Override

@@ -20,6 +20,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="24dp"
             android:contentDescription="@string/profile_picture"
+            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
