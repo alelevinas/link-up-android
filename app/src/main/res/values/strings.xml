@@ -42,4 +42,8 @@
     <string name="ok">Entendido</string>
     <string name="image_for_profile">profile_extra_image_description</string>
     <string name="title_edit_info">Edita tu perfil</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

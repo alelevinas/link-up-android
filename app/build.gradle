@@ -33,6 +33,7 @@ dependencies {
     })
 
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.android.support:design:25.3.1'
@@ -44,7 +45,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.google.android.gms:play-services-location:11.2.2'
     compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.android.gms:play-services-plus:11.0.4'
     testCompile 'junit:junit:4.12'
 }
