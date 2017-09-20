@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.fiuba.tdp.linkup.LogInActivity;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;

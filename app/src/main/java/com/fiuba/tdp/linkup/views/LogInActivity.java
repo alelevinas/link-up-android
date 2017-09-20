@@ -1,4 +1,4 @@
-package com.fiuba.tdp.linkup;
+package com.fiuba.tdp.linkup.views;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +20,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
@@ -28,8 +29,6 @@ import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
-import com.fiuba.tdp.linkup.views.FirstSignUpActivity;
-import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,7 +66,7 @@ public class LogInActivity extends AppCompatActivity {
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-//                nextActivity(newProfile);
+                nextActivity(newProfile);
             }
         };
         accessTokenTracker.startTracking();
@@ -136,7 +135,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onResume();
         //Facebook login
         profile = Profile.getCurrentProfile();
-        nextActivity(profile);
+//        nextActivity(profile);
     }
 
     @Override
