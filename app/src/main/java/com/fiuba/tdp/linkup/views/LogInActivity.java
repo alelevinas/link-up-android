@@ -233,9 +233,34 @@ public class LogInActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
                     Log.e("LOGIN ACTIVITY SERVER", "ERROR GETING USER FROM LINK UP SERVERS");
+                    showAlertAndExit("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta mas tarde");
                 }
             });
         }
+    }
+
+    private void showAlertAndExit(String message) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message)
+                .setTitle("Atención");
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 
     private void showAlert(String s) {
