@@ -38,7 +38,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     public ImageView picture;
     public TextView name;
     public TextView description;
-    boolean favoriteImageButtonChecked = false;
+    public boolean favoriteImageButtonChecked = false;
     boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
 
@@ -84,7 +84,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         favoriteImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pressLikeButton();
+                pressLikeButton(v);
             }
         });
 
@@ -105,34 +105,73 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private void pressLikeButton() {
-        if (favoriteImageButtonChecked) {
-            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
-        } else {
-            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
-
-            new UserService().postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
-                String LOG_LIKE = "LIKE USER";
-
-                @Override
-                public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
-                    Log.d(LOG_LIKE, "message = " + response.message());
-                    if (response.isSuccessful()) {
-                        Log.d(LOG_LIKE, "-----isSuccess----");
-                        Log.d(LOG_LIKE, response.body().data);
-                    } else {
-                        Log.d(LOG_LIKE, "-----isFalse-----");
-                        this.onFailure(call, null);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
-                    favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
-                    favoriteImageButtonChecked = !favoriteImageButtonChecked;
-                }
-            });
-        }
+    private void pressLikeButton(View v) {
         favoriteImageButtonChecked = !favoriteImageButtonChecked;
+        updateLikeStatus();
+        if (favoriteImageButtonChecked) {
+            sendLikeToServer(v);
+        } else {
+            sendDeleteLikeToServer(v);
+        }
+    }
+
+    private void sendDeleteLikeToServer(final View v) {
+        new UserService().deleteLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+            String LOG_LIKE = "DELETE LIKE FROM USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data);
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                favoriteImageButtonChecked = !favoriteImageButtonChecked;
+                updateLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendLikeToServer(final View v) {
+        new UserService().postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+            String LOG_LIKE = "LIKE USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data);
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                favoriteImageButtonChecked = !favoriteImageButtonChecked;
+                updateLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void updateLikeStatus() {
+        if (favoriteImageButtonChecked) {
+            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
+        } else {
+            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+        }
     }
 }

@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -43,6 +44,9 @@ public interface UserAPIService {
 
     @POST("/api/linkup/users/{myUserId}/likes")
     Call<ServerResponse<String>> postLikeToUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
+
+    @DELETE("/api/linkup/users/{myUserId}/likes/{otherUserId}")
+    Call<ServerResponse<String>> deleteLikeToUser(@Path("myUserId") String myUserId, @Path("otherUserId") String otherUserId);
 
     @GET("/api/linkup/users/{myUserId}/links")
     Call<ServerResponse<LinkUpMatch[]>> getMatchesWithoutChat(@Path("myUserId") String myUserId);

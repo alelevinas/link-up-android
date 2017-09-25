@@ -45,4 +45,8 @@ public class UsersAround {
         return ids;
     }
 
+    public UserAround getUser(int i) {
+        return usersAround.get(i);
+    }
+
 }
