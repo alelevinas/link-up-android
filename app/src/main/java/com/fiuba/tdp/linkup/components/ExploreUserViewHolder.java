@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 
 import retrofit2.Call;
@@ -110,7 +111,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         } else {
             favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
 
-            new UserService().postLikeToUser(userId, new Callback<ServerResponse<String>>() {
+            new UserService().postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
                 String LOG_LIKE = "LIKE USER";
 
                 @Override
