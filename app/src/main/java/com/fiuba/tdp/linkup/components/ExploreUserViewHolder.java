@@ -44,7 +44,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
 
     public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent) {
-        super(inflater.inflate(R.layout.item_card, parent, false));
+        super(inflater.inflate(R.layout.fragment_explore_item_card, parent, false));
 
         this.parent = parent;
 
@@ -119,6 +119,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                     Log.d(LOG_LIKE, "message = " + response.message());
                     if (response.isSuccessful()) {
                         Log.d(LOG_LIKE, "-----isSuccess----");
+                        Log.d(LOG_LIKE, response.body().data);
                     } else {
                         Log.d(LOG_LIKE, "-----isFalse-----");
                         this.onFailure(call, null);
