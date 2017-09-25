@@ -63,10 +63,6 @@ public class LogInActivity extends AppCompatActivity {
         };
 
         accessTokenTracker.startTracking();
-        //profileTracker.startTracking();
-
-        //  si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
-
         profile = Profile.getCurrentProfile();
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
@@ -80,12 +76,12 @@ public class LogInActivity extends AppCompatActivity {
                     profileTracker = new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                            profileTracker.stopTracking();
                             if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
                                 showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
                                 LoginManager.getInstance().logOut();
                                 return;
                             }
+                            profileTracker.stopTracking();
                             nextActivity(newProfile);
                         }
                     };
@@ -96,7 +92,7 @@ public class LogInActivity extends AppCompatActivity {
                         return;
                     }
                     profile = Profile.getCurrentProfile();
-                    nextActivity(profile);// Como se crea otra actividad para el login, luego se llama al on resume y llama a nextActivity desde ahi
+                    nextActivity(profile);
                 }
             }
 
@@ -121,10 +117,6 @@ public class LogInActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[],
                                            @NonNull int[] grantResults) {
-        System.out.println("PERMISSIONS ??? ");
-        System.out.println(requestCode);
-
-
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -138,13 +130,9 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
-        //Facebook login
-        profile = Profile.getCurrentProfile();
-        nextActivity(profile);
     }
 
     @Override
@@ -161,7 +149,9 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
-        //Facebook login
+
+        // if you don't add following block,
+        // your registered `FacebookCallback` won't be called
         if (callbackManager.onActivityResult(requestCode, responseCode, intent)) {
             return;
         }
@@ -270,7 +260,4 @@ public class LogInActivity extends AppCompatActivity {
         dialog.show();
 
     }
-
-
-
 }
