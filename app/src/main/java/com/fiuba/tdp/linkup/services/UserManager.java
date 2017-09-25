@@ -1,5 +1,6 @@
 package com.fiuba.tdp.linkup.services;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
@@ -38,7 +39,7 @@ public class UserManager {
         this.myUser = myUser;
     }
 
-    public void updatePicture(int i, String url) {
+    public void updatePicture(int i, String url, Context context) {
         LinkUpPicture[] arrayPictures = myUser.getPictures();
         if (arrayPictures.length < PICTURE_COUNT) {
             List<LinkUpPicture> pictures = new ArrayList<>(PICTURE_COUNT);
@@ -51,7 +52,7 @@ public class UserManager {
         arrayPictures[i].setUrl(url);
         myUser.setPictures(arrayPictures);
 
-        new UserService().updateUser(myUser.getId(), myUser, new Callback<ServerResponse<String>>() {
+        new UserService(context).updateUser(myUser.getId(), myUser, new Callback<ServerResponse<String>>() {
             @Override
             public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
                 if (response.isSuccessful()) {

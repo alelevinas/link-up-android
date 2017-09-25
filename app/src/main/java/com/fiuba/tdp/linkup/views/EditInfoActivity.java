@@ -75,7 +75,7 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
         LinkUpUser user = UserManager.getInstance().getMyUser();
         user.setDescription(textDescription.getText().toString());
 
-        new UserService().updateUser(user.getId(), user, new Callback<ServerResponse<String>>() {
+        new UserService(labelAboutMe.getContext()).updateUser(user.getId(), user, new Callback<ServerResponse<String>>() {
             @Override
             public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
                 Log.d("EDIT INFO ACTIVITY", "USER DESCRIPTION UPDATED");
@@ -91,17 +91,17 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
         @Override
     public void onImageChanged(int number, String photoUrl) {
         Log.e("IMAGE CHANGED", photoUrl);
-        UserManager.getInstance().updatePicture(number, photoUrl);
+            UserManager.getInstance().updatePicture(number, photoUrl, getBaseContext());
     }
 
     @Override
     public void onImageRemoved(int number, String photoUrl) {
         Log.e("IMAGE REMOVED", photoUrl);
-        UserManager.getInstance().updatePicture(number, "");
+        UserManager.getInstance().updatePicture(number, "", getBaseContext());
     }
 
     public void getDescription() {
-        new UserService().getUser(UserManager.getInstance().getMyUser().getId(), new Callback<ServerResponse<LinkUpUser>>() {
+        new UserService(getBaseContext()).getUser(UserManager.getInstance().getMyUser().getId(), new Callback<ServerResponse<LinkUpUser>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                 if (response.isSuccessful()) {

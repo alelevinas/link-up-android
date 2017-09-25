@@ -66,7 +66,7 @@ public class ExploreFragment extends Fragment {
         private UserService userService;
 
         public ExploreUserContentAdapter(final ExploreFragment exploreFragment) {
-            userService = new UserService();
+            userService = new UserService(exploreFragment.getContext());
 
             userService.getUsersCompatible(Profile.getCurrentProfile().getId(), new Callback<ServerResponse<ArrayList<UserAround>>>() {
                 @Override

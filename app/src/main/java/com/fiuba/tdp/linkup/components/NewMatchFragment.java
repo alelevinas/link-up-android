@@ -63,7 +63,7 @@ public class NewMatchFragment extends Fragment {
 
     private void setUpRecyclerViewAdapter(final RecyclerView recyclerView) {
         final List<LinkUpMatch> matchs = new ArrayList<>();
-        new UserService().getMatchesWithoutChat(UserManager.getInstance().getMyUser().getId(), new Callback<ServerResponse<LinkUpMatch[]>>() {
+        new UserService(getContext()).getMatchesWithoutChat(UserManager.getInstance().getMyUser().getId(), new Callback<ServerResponse<LinkUpMatch[]>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpMatch[]>> call, Response<ServerResponse<LinkUpMatch[]>> response) {
                 Collections.addAll(matchs, response.body().data);

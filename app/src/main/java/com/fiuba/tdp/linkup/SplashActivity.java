@@ -38,6 +38,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_splash);
+
         callbackManager = CallbackManager.Factory.create();
 
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
@@ -87,17 +89,17 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void handleFacebookAlreadyLoggedIn() {
-        new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
+        new UserService(getBaseContext()).getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                 if (response.isSuccessful()) {
                     UserManager.getInstance().setMyUser(response.body().data);
                     if (locationManager.getLastKnownLocation() != null) {
                         LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
-                        new UserService().putLocation(profile.getId(), userLoc);
+                        new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                     } else {
                         LocationUser userLoc = new LocationUser(-34.59, -58.41);
-                        new UserService().putLocation(profile.getId(), userLoc);
+                        new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                     }
 
                     Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);

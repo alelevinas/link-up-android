@@ -85,7 +85,7 @@ public class ProfileFragment extends Fragment {
     private void getFacebookData(final View view) {
         new DownloadImage((ImageView) view.findViewById(R.id.profileImage)).execute(profile.getProfilePictureUri(200, 200).toString());
 
-        new FacebookService().getUserData(new Callback<FacebookUserItem>() {
+        new FacebookService(view.getContext()).getUserData(new Callback<FacebookUserItem>() {
             @Override
             public void onResponse(Call<FacebookUserItem> call, Response<FacebookUserItem> response) {
                 FacebookUserItem userData = response.body();

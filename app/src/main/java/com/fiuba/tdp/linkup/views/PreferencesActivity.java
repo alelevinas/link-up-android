@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Switch;
 
 import com.facebook.Profile;
@@ -45,7 +44,7 @@ public class PreferencesActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        userService = new UserService();
+        userService = new UserService(getBaseContext());
 
         linkUpPlusButton = (Button) findViewById(R.id.txt_linkup_plus);
         linkUpPlusButton.setOnClickListener(new View.OnClickListener(){
