@@ -28,7 +28,7 @@ import retrofit2.Response;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final long SPLASH_TIME_OUT = 1500;
+    private static final long SPLASH_TIME_OUT = 150;
     LocationManager locationManager = new LocationManager();
 
     Profile profile;
