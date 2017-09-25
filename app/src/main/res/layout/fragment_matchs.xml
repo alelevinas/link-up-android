@@ -53,6 +53,14 @@
             android:text="@string/fragment_newmatch_no_chats"
             android:textAlignment="center"
             android:textSize="16sp" />
+
+        <!--<fragment
+            android:id="@+id/chats_fragment"
+            android:name="com.fiuba.tdp.linkup.components.ChatsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:layout="@layout/fragment_chats_list" />-->
     </LinearLayout>
 
 

@@ -3,10 +3,12 @@ package com.fiuba.tdp.linkup.views;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -102,5 +104,30 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
     @Override
     public void onListFragmentInteraction(LinkUpMatch item) {
         Log.e("NEW MATCH", "CLICKED ON NEW MATCH!!");
+        showAlert("Proximamente", "Iniciar nuevo chat con " + item.getName());
+    }
+
+
+    private void showAlert(String title, String message) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message)
+                .setTitle(title);
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 }
