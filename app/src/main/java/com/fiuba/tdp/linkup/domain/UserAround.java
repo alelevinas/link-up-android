@@ -3,15 +3,15 @@ package com.fiuba.tdp.linkup.domain;
 public class UserAround {
     private String id;
     private String picture;
-    private String compatibility;
+    private String like;
     private String description;
     private String name;
 
 
-    public UserAround(String id, String name, String picture, String description, String compatibility) {
+    public UserAround(String id, String name, String picture, String description, String like) {
         this.id = id;
         this.picture = picture;
-        this.compatibility = compatibility;
+        this.like = like;
         this.description = description;
         this.name = name;
     }
@@ -32,12 +32,12 @@ public class UserAround {
         this.picture = picture;
     }
 
-    public String getCompatibility() {
-        return compatibility;
+    public String getLike() {
+        return like;
     }
 
-    public void setCompatibility(String compatibility) {
-        this.compatibility = compatibility;
+    public void setLike(String like) {
+        this.like = like;
     }
 
     public String getDescription() {
