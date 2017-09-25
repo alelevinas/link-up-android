@@ -2,6 +2,7 @@ package com.fiuba.tdp.linkup.services;
 
 import android.util.Log;
 
+import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
@@ -229,5 +230,9 @@ public class UserService {
 
     public void postLikeToUser(String userId, final Callback<ServerResponse<String>> callback) {
         api.postLikeToUser(userId).enqueue(callback);
+    }
+
+    public void getMatchesWithoutChat(String userId, final Callback<ServerResponse<ArrayList<LinkUpMatch>>> callback) {
+
     }
 }

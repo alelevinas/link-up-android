@@ -8,17 +8,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.InterestsFragment;
+import com.fiuba.tdp.linkup.components.NewMatchFragment;
+import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
-        InterestsFragment.OnListFragmentInteractionListener{
+        InterestsFragment.OnListFragmentInteractionListener, NewMatchFragment.OnNewMatchListFragmentInteractionListener {
 
     private Fragment exploreFragment = new ExploreFragment();
     private Fragment profileFragment = new FirstSignUpActivityFragment();
+    private Fragment matchesFragment = new MatchsFragment();
     private Fragment comingSoon = new CommingSoonFragment();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -59,7 +63,7 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
                 pushFragment(comingSoon);
                 return true;
             case R.id.navigation_messages:
-                pushFragment(comingSoon);
+                pushFragment(matchesFragment);
                 return true;
             case R.id.navigation_profile:
                 pushFragment(profileFragment);
@@ -93,5 +97,10 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
     @Override
     public void onListFragmentInteraction(FacebookUserItem.Like item) {
+    }
+
+    @Override
+    public void onListFragmentInteraction(LinkUpMatch item) {
+        Log.e("NEW MATCH", "CLICKED ON NEW MATCH!!");
     }
 }
