@@ -5,13 +5,24 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.components.dummy.DummyContent;
 import com.fiuba.tdp.linkup.domain.LinkUpMatch;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.UserManager;
+import com.fiuba.tdp.linkup.services.UserService;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A fragment representing a list of Items.
@@ -50,9 +61,21 @@ public class NewMatchFragment extends Fragment {
         return view;
     }
 
-    private void setUpRecyclerViewAdapter(RecyclerView recyclerView) {
-//        new UserService().getMatchesWithoutChat(UserManager.getInstance().getMyUser().getId());
-        recyclerView.setAdapter(new MyNewMatchRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+    private void setUpRecyclerViewAdapter(final RecyclerView recyclerView) {
+        final List<LinkUpMatch> matchs = new ArrayList<>();
+        new UserService().getMatchesWithoutChat(UserManager.getInstance().getMyUser().getId(), new Callback<ServerResponse<LinkUpMatch[]>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<LinkUpMatch[]>> call, Response<ServerResponse<LinkUpMatch[]>> response) {
+                Collections.addAll(matchs, response.body().data);
+                recyclerView.setAdapter(new MyNewMatchRecyclerViewAdapter(matchs, mListener));
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<LinkUpMatch[]>> call, Throwable t) {
+                Log.e("GET MATCHES", "FAILURE");
+            }
+        });
+
     }
 
 

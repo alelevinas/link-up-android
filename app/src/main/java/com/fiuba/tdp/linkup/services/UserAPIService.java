@@ -1,5 +1,6 @@
 package com.fiuba.tdp.linkup.services;
 
+import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
@@ -42,4 +43,7 @@ public interface UserAPIService {
 
     @POST("/api/linkup/users/{myUserId}/likes")
     Call<ServerResponse<String>> postLikeToUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
+
+    @GET("/api/linkup/users/{myUserId}/links")
+    Call<ServerResponse<LinkUpMatch[]>> getMatchesWithoutChat(@Path("myUserId") String myUserId);
 }
