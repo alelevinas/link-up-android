@@ -193,12 +193,10 @@ public class LogInActivity extends AppCompatActivity {
                                 if (locationManager.getLastKnownLocation() != null) {
                                     Log.d(LOCATION_TAG, "set location");
                                     LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
-                                    //profile = Profile.getCurrentProfile();
-                                    new UserService().putLocation(profile.getId(), userLoc);
+                                   new UserService().putLocation(profile.getId(), userLoc);
                                 } else {
                                     Log.d(LOCATION_TAG, "set default location");
                                     LocationUser userLoc = new LocationUser(-34.59,-58.41);
-                                    //profile = Profile.getCurrentProfile();
                                     new UserService().putLocation(profile.getId(), userLoc);
                                 }
 

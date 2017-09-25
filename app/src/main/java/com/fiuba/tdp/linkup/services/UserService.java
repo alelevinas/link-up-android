@@ -227,7 +227,9 @@ public class UserService {
         api.updateUser(userId, user).enqueue(callback);
     }
 
-    public void postLikeToUser(String userId, final Callback<ServerResponse<String>> callback) {
-        api.postLikeToUser(userId).enqueue(callback);
+    public void postLikeToUser(String myUserId, String userId, final Callback<ServerResponse<String>> callback) {
+        HashMap<String, String> info = new HashMap<>();
+        info.put("userId", userId);
+        api.postLikeToUser(myUserId, info).enqueue(callback);
     }
 }
