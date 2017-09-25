@@ -119,7 +119,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void sendDeleteLikeToServer(final View v) {
-        new UserService().deleteLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+        new UserService(v.getContext()).deleteLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
             String LOG_LIKE = "DELETE LIKE FROM USER";
 
             @Override
@@ -145,7 +145,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void sendLikeToServer(final View v) {
-        new UserService().postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<Match>>() {
+        new UserService(v.getContext()).postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<Match>>() {
             String LOG_LIKE = "LIKE USER";
 
             @Override

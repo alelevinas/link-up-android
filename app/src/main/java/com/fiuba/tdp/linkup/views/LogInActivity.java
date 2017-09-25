@@ -165,7 +165,7 @@ public class LogInActivity extends AppCompatActivity {
 
             final String profilePicture = profile.getProfilePictureUri(500, 500).toString();
 
-            new UserService().getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
+            new UserService(getBaseContext()).getUser(profile.getId(), new Callback<ServerResponse<LinkUpUser>>() {
                 @Override
                 public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                     if (response.isSuccessful()) {
@@ -173,18 +173,18 @@ public class LogInActivity extends AppCompatActivity {
                         if (locationManager.getLastKnownLocation() != null) {
                             Log.d(LOCATION_TAG, "set location");
                             LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
-                            new UserService().putLocation(profile.getId(), userLoc);
+                            new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         } else {
                             Log.d(LOCATION_TAG, "set default location");
                             LocationUser userLoc = new LocationUser(-34.59,-58.41);
-                            new UserService().putLocation(profile.getId(), userLoc);
+                            new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         }
 
                         Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
                         startActivity(main);
                         finish();
                     } else if (response.code() == 404) {
-                        new UserService().postActualFacebookUser(name, profilePicture, new Callback<ServerResponse<LinkUpUser>>() {
+                        new UserService(getBaseContext()).postActualFacebookUser(name, profilePicture, new Callback<ServerResponse<LinkUpUser>>() {
                             @Override
                             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                                 Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");
@@ -193,11 +193,11 @@ public class LogInActivity extends AppCompatActivity {
                                 if (locationManager.getLastKnownLocation() != null) {
                                     Log.d(LOCATION_TAG, "set location");
                                     LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
-                                   new UserService().putLocation(profile.getId(), userLoc);
+                                    new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                                 } else {
                                     Log.d(LOCATION_TAG, "set default location");
                                     LocationUser userLoc = new LocationUser(-34.59,-58.41);
-                                    new UserService().putLocation(profile.getId(), userLoc);
+                                    new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                                 }
 
                                 Intent main = new Intent(getBaseContext(), FirstSignUpActivity.class);

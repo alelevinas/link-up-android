@@ -77,7 +77,7 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
 
     public void getFacebookPhotosOfAlbum(final RecyclerView recyclerView) {
         final List<FacebookPhotoItem> photos = new ArrayList<>();
-        new FacebookService().getPhotosFromAlbum(albumId, new Callback<FacebookPhotoItem[]>() {
+        new FacebookService(getBaseContext()).getPhotosFromAlbum(albumId, new Callback<FacebookPhotoItem[]>() {
             @Override
             public void onResponse(Call<FacebookPhotoItem[]> call, Response<FacebookPhotoItem[]> response) {
                 Collections.addAll(photos, response.body());

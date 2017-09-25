@@ -101,7 +101,7 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
 
     public void getFacebookAlbums(final RecyclerView recyclerView) {
         final List<FacebookAlbumItem> albums = new ArrayList<>();
-        new FacebookService().getAlbums(new Callback<FacebookAlbumItem[]>() {
+        new FacebookService(recyclerView.getContext()).getAlbums(new Callback<FacebookAlbumItem[]>() {
             @Override
             public void onResponse(Call<FacebookAlbumItem[]> call, Response<FacebookAlbumItem[]> response) {
                 Collections.addAll(albums, response.body());
