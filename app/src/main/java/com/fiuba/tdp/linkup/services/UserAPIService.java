@@ -2,6 +2,7 @@ package com.fiuba.tdp.linkup.services;
 
 import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.Match;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
@@ -43,7 +44,7 @@ public interface UserAPIService {
     Call<ServerResponse> putLocation(@Path("userId") String userId, @Body HashMap<String, Double> parameters);
 
     @POST("/api/linkup/users/{myUserId}/likes")
-    Call<ServerResponse<String>> postLikeToUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
+    Call<ServerResponse<Match>> postLikeToUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
 
     @DELETE("/api/linkup/users/{myUserId}/likes/{otherUserId}")
     Call<ServerResponse<String>> deleteLikeToUser(@Path("myUserId") String myUserId, @Path("otherUserId") String otherUserId);
