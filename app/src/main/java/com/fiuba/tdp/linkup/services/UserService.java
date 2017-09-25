@@ -5,6 +5,7 @@ import android.util.Log;
 import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
+import com.fiuba.tdp.linkup.domain.Match;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UserPreferences;
@@ -228,10 +229,14 @@ public class UserService {
         api.updateUser(userId, user).enqueue(callback);
     }
 
-    public void postLikeToUser(String myUserId, String userId, final Callback<ServerResponse<String>> callback) {
+    public void postLikeToUser(String myUserId, String otherUserId, final Callback<ServerResponse<Match>> callback) {
         HashMap<String, String> info = new HashMap<>();
-        info.put("userId", userId);
+        info.put("userId", otherUserId);
         api.postLikeToUser(myUserId, info).enqueue(callback);
+    }
+
+    public void deleteLikeToUser(String myUserId, String otherUserId, final Callback<ServerResponse<String>> callback) {
+        api.deleteLikeToUser(myUserId, otherUserId).enqueue(callback);
     }
 
     public void getMatchesWithoutChat(String myUserId, final Callback<ServerResponse<LinkUpMatch[]>> callback) {

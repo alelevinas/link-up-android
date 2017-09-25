@@ -1,7 +1,9 @@
 package com.fiuba.tdp.linkup.components;
 
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.domain.Match;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
@@ -38,7 +41,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     public ImageView picture;
     public TextView name;
     public TextView description;
-    boolean favoriteImageButtonChecked = false;
+    public boolean favoriteImageButtonChecked = false;
     boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
 
@@ -84,7 +87,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         favoriteImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pressLikeButton();
+                pressLikeButton(v);
             }
         });
 
@@ -105,34 +108,101 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    private void pressLikeButton() {
-        if (favoriteImageButtonChecked) {
-            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
-        } else {
-            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
-
-            new UserService().postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
-                String LOG_LIKE = "LIKE USER";
-
-                @Override
-                public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
-                    Log.d(LOG_LIKE, "message = " + response.message());
-                    if (response.isSuccessful()) {
-                        Log.d(LOG_LIKE, "-----isSuccess----");
-                        Log.d(LOG_LIKE, response.body().data);
-                    } else {
-                        Log.d(LOG_LIKE, "-----isFalse-----");
-                        this.onFailure(call, null);
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
-                    favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
-                    favoriteImageButtonChecked = !favoriteImageButtonChecked;
-                }
-            });
-        }
+    private void pressLikeButton(View v) {
         favoriteImageButtonChecked = !favoriteImageButtonChecked;
+        updateLikeStatus();
+        if (favoriteImageButtonChecked) {
+            sendLikeToServer(v);
+        } else {
+            sendDeleteLikeToServer(v);
+        }
+    }
+
+    private void sendDeleteLikeToServer(final View v) {
+        new UserService().deleteLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+            String LOG_LIKE = "DELETE LIKE FROM USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data);
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                favoriteImageButtonChecked = !favoriteImageButtonChecked;
+                updateLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendLikeToServer(final View v) {
+        new UserService().postLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<Match>>() {
+            String LOG_LIKE = "LIKE USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<Match>> call, Response<ServerResponse<Match>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data.getLink().toString());
+
+                    if (response.body().data.getLink()) {
+                        showAlert("Felicitaciones!", "Hay match!");
+                    }
+
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<Match>> call, Throwable t) {
+                favoriteImageButtonChecked = !favoriteImageButtonChecked;
+                updateLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void updateLikeStatus() {
+        if (favoriteImageButtonChecked) {
+            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
+        } else {
+            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+        }
+    }
+
+    private void showAlert(String title, String message) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message)
+                .setTitle(title);
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 }
