@@ -43,7 +43,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
 
     public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent) {
-        super(inflater.inflate(R.layout.item_card, parent, false));
+        super(inflater.inflate(R.layout.fragment_explore_item_card, parent, false));
 
         this.parent = parent;
 

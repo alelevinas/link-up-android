@@ -1,7 +1,6 @@
 package com.fiuba.tdp.linkup.views;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
@@ -27,25 +27,45 @@ import retrofit2.Response;
 
 
 public class ExploreFragment extends Fragment {
+
+    RecyclerView recyclerView;
+    TextView emptyView;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        ExploreUserContentAdapter adapter = new ExploreUserContentAdapter(recyclerView.getContext());
+//        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+//                R.layout.fragment_explore_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_explore_list, container, false);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.explore_list);
+        emptyView = (TextView) view.findViewById(R.id.empty_view);
+
+        ExploreUserContentAdapter adapter = new ExploreUserContentAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+
+        return view;
     }
 
+    private void setEmptyView() {
+        recyclerView.setVisibility(View.GONE);
+        emptyView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmptyView() {
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+    }
 
     public static class ExploreUserContentAdapter extends RecyclerView.Adapter<ExploreUserViewHolder> {
         private static int LENGTH = 0;
         private static UsersAround usersAround;
         private UserService userService;
 
-        public ExploreUserContentAdapter(Context context) {
+        public ExploreUserContentAdapter(final ExploreFragment exploreFragment) {
             userService = new UserService();
 
             userService.getUsersCompatible(Profile.getCurrentProfile().getId(), new Callback<ServerResponse<ArrayList<UserAround>>>() {
@@ -54,11 +74,18 @@ public class ExploreFragment extends Fragment {
                     usersAround = new UsersAround(response.body().data);
                     LENGTH = usersAround.getSize();
                     notifyDataSetChanged();
+
+                    if (LENGTH == 0) {
+                        exploreFragment.setEmptyView();
+                    } else {
+                        exploreFragment.hideEmptyView();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<ServerResponse<ArrayList<UserAround>>> call, Throwable t) {
                     Log.w("ERROR", "Error getting users around!");
+                    exploreFragment.setEmptyView();
                 }
             });
         }
@@ -81,5 +108,6 @@ public class ExploreFragment extends Fragment {
             return LENGTH;
         }
     }
+
 }
 
