@@ -45,7 +45,6 @@ public class LogInActivity extends AppCompatActivity {
     Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
-    private ProfileTracker profileTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,32 +62,42 @@ public class LogInActivity extends AppCompatActivity {
             }
         };
 
-        profileTracker = new ProfileTracker() {
-            @Override
-            protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                nextActivity(newProfile);
-            }
-        };
         accessTokenTracker.startTracking();
-        profileTracker.startTracking();
+        //profileTracker.startTracking();
 
         //  si ya tiene user en LinkUp! y esta logueado en facebook ir directo a la MainLinkUpActivity
 
         profile = Profile.getCurrentProfile();
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
+        loginButton.setReadPermissions("public_profile", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
-                    showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
-                    LoginManager.getInstance().logOut();
-                    return;
-                }
-                profile = Profile.getCurrentProfile();
+            private ProfileTracker profileTracker;
 
-                // nextActivity(profile); Como se crea otra actividad para el login, luego se llama al on resume y llama a nextActivity desde ahi
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                if(Profile.getCurrentProfile() == null) {
+                    profileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                            profileTracker.stopTracking();
+                            if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
+                                showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
+                                LoginManager.getInstance().logOut();
+                                return;
+                            }
+                            nextActivity(newProfile);
+                        }
+                    };
+                } else {
+                    if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
+                        showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
+                        LoginManager.getInstance().logOut();
+                        return;
+                    }
+                    profile = Profile.getCurrentProfile();
+                    nextActivity(profile);// Como se crea otra actividad para el login, luego se llama al on resume y llama a nextActivity desde ahi
+                }
             }
 
             @Override
@@ -135,7 +144,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onResume();
         //Facebook login
         profile = Profile.getCurrentProfile();
-//        nextActivity(profile);
+        nextActivity(profile);
     }
 
     @Override
@@ -147,14 +156,15 @@ public class LogInActivity extends AppCompatActivity {
         super.onStop();
         //Facebook login
         accessTokenTracker.stopTracking();
-        profileTracker.stopTracking();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         super.onActivityResult(requestCode, responseCode, intent);
         //Facebook login
-        callbackManager.onActivityResult(requestCode, responseCode, intent);
+        if (callbackManager.onActivityResult(requestCode, responseCode, intent)) {
+            return;
+        }
     }
 
     private void nextActivity(final Profile profile) {
