@@ -228,8 +228,11 @@ public class UserService {
         api.updateUser(userId, user).enqueue(callback);
     }
 
-    public void postLikeToUser(String userId, final Callback<ServerResponse<String>> callback) {
-        api.postLikeToUser(userId).enqueue(callback);
+    public void postLikeToUser(String myUserId, String userLikedId, final Callback<ServerResponse<String>> callback) {
+        HashMap<String, Long> parameters = new HashMap<>();
+        parameters.put("userId", Long.parseLong(userLikedId));
+
+        api.postLikeToUser(myUserId, parameters).enqueue(callback);
     }
 
     public void getMatchesWithoutChat(String userId, final Callback<ServerResponse<ArrayList<LinkUpMatch>>> callback) {

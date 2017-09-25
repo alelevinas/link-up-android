@@ -41,5 +41,5 @@ public interface UserAPIService {
     Call<ServerResponse> putLocation(@Path("userId") String userId, @Body HashMap<String, Double> parameters);
 
     @POST("/api/linkup/users/{userId}/likes")
-    Call<ServerResponse<String>> postLikeToUser(@Path("userId") String userId);
+    Call<ServerResponse<String>> postLikeToUser(@Path("userId") String myUserId, @Body HashMap<String, Long> parameters);
 }

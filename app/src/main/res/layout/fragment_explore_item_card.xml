@@ -24,7 +24,8 @@
     android:layout_marginBottom="@dimen/md_keylines"
     android:layout_marginLeft="@dimen/md_keylines"
     android:layout_marginRight="@dimen/md_keylines"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,9 +43,12 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_title_height"
             android:layout_alignBottom="@+id/card_image"
-            android:layout_marginLeft="@dimen/md_keylines"
+            android:background="#3f000000"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/white"
+            android:textColor="#ffffffff"
             tools:text="@string/item_title" />
 
         <TextView
