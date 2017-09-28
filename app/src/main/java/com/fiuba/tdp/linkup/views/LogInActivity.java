@@ -82,7 +82,7 @@ public class LogInActivity extends AppCompatActivity {
         profile = Profile.getCurrentProfile();
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions("public_profile", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
+        loginButton.setReadPermissions("public_profile", "email", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {
