@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -29,6 +30,13 @@ import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.UserDoesNotHaveFacebookPicture;
 import com.fiuba.tdp.linkup.util.UserIsNotOldEnoughException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,10 +49,14 @@ public class LogInActivity extends AppCompatActivity {
     private static final String LOCATION_TAG = "login location";
 
     LocationManager locationManager = new LocationManager();
-    
+
+    //Facebook
     Profile profile;
+    ProfileTracker profileTracker;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
+    //Firebase
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +67,10 @@ public class LogInActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Firebase
+        mAuth = FirebaseAuth.getInstance();
+
+        // Facebook
         callbackManager = CallbackManager.Factory.create();
         accessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -68,32 +84,10 @@ public class LogInActivity extends AppCompatActivity {
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            private ProfileTracker profileTracker;
-
             @Override
             public void onSuccess(final LoginResult loginResult) {
-                if(Profile.getCurrentProfile() == null) {
-                    profileTracker = new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-                            if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
-                                showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
-                                LoginManager.getInstance().logOut();
-                                return;
-                            }
-                            profileTracker.stopTracking();
-                            nextActivity(newProfile);
-                        }
-                    };
-                } else {
-                    if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
-                        showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
-                        LoginManager.getInstance().logOut();
-                        return;
-                    }
-                    profile = Profile.getCurrentProfile();
-                    nextActivity(profile);
-                }
+                Log.d("FACEBOOK", "facebook:onSuccess:" + loginResult);
+                handleFacebookAccessToken(loginResult);
             }
 
             @Override
@@ -131,6 +125,14 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        updateUI(currentUser);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
     }
@@ -157,6 +159,66 @@ public class LogInActivity extends AppCompatActivity {
         }
     }
 
+    private void handleFacebookAccessToken(final LoginResult loginResult) {
+        if (Profile.getCurrentProfile() == null) {
+            profileTracker = new ProfileTracker() {
+                @Override
+                protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
+                    if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
+                        showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
+                        LoginManager.getInstance().logOut();
+                        return;
+                    }
+                    this.stopTracking();
+
+                    firebaseAuthenticate(loginResult.getAccessToken());
+
+                    nextActivity(newProfile);
+                }
+            };
+        } else {
+            if (!loginResult.getRecentlyDeniedPermissions().isEmpty()) {
+                showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
+                LoginManager.getInstance().logOut();
+                return;
+            }
+            profile = Profile.getCurrentProfile();
+            nextActivity(profile);
+        }
+    }
+
+    private void firebaseAuthenticate(AccessToken token) {
+        final String TAG = "FIREBASE AUTH";
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+        // [START_EXCLUDE silent]
+//        showProgressDialog();
+        // [END_EXCLUDE]
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+//                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(LogInActivity.this, "Firebase Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                        }
+
+                        // [START_EXCLUDE]
+//                        hideProgressDialog();
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+
     private void nextActivity(final Profile profile) {
         if (profile != null) {
             // si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
@@ -176,7 +238,7 @@ public class LogInActivity extends AppCompatActivity {
                             new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         } else {
                             Log.d(LOCATION_TAG, "set default location");
-                            LocationUser userLoc = new LocationUser(-34.59,-58.41);
+                            LocationUser userLoc = new LocationUser(-34.59, -58.41);
                             new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         }
 
@@ -196,7 +258,7 @@ public class LogInActivity extends AppCompatActivity {
                                     new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                                 } else {
                                     Log.d(LOCATION_TAG, "set default location");
-                                    LocationUser userLoc = new LocationUser(-34.59,-58.41);
+                                    LocationUser userLoc = new LocationUser(-34.59, -58.41);
                                     new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                                 }
 

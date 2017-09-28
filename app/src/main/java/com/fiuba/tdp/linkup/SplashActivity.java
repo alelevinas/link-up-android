@@ -4,8 +4,11 @@ package com.fiuba.tdp.linkup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -21,6 +24,13 @@ import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.views.LogInActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,12 +44,20 @@ public class SplashActivity extends AppCompatActivity {
     Profile profile;
     private CallbackManager callbackManager;
 
+    //Firebase
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
 
+        // Firebase
+        mAuth = FirebaseAuth.getInstance();
+
+
+        // Facebook
         callbackManager = CallbackManager.Factory.create();
 
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
@@ -121,6 +139,38 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void firebaseAuthenticate(AccessToken token) {
+        final String TAG = "FIREBASE AUTH";
+        Log.d(TAG, "handleFacebookAccessToken:" + token);
+        // [START_EXCLUDE silent]
+//        showProgressDialog();
+        // [END_EXCLUDE]
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+//                            updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(SplashActivity.this, "Firebase Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+//                            updateUI(null);
+                        }
+
+                        // [START_EXCLUDE]
+//                        hideProgressDialog();
+                        // [END_EXCLUDE]
+                    }
+                });
     }
 
     @Override

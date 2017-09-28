@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -104,7 +105,12 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
     @Override
     public void onListFragmentInteraction(LinkUpMatch item) {
         Log.e("NEW MATCH", "CLICKED ON NEW MATCH!!");
-        showAlert("Proximamente", "Iniciar nuevo chat con " + item.getName());
+//        showAlert("Proximamente", "Iniciar nuevo chat con " + item.getName());
+        Intent intentBundle = new Intent(MainLinkUpActivity.this, ChatActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ChatActivity.CHAT_WITH_USER_ID, item.getId());
+        intentBundle.putExtras(bundle);
+        startActivity(intentBundle);
     }
 
 

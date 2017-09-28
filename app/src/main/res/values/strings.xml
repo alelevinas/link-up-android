@@ -43,4 +43,5 @@
     <string name="fragment_newmatch_title_chats">Chats</string>
     <string name="fragment_newmatch_no_chats">Todavía no hay chats!</string>
     <string name="fragment_explore_empty">No hay nadie cerca que matchee con tus preferencias</string>
+    <string name="title_activity_chat">ChatActivity</string>
 </resources>
