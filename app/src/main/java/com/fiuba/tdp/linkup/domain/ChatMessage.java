@@ -5,47 +5,70 @@ package com.fiuba.tdp.linkup.domain;
  */
 
 public class ChatMessage {
-    private String id;
-    private String text;
-    private String name;
+    private String mName;
+    private String mMessage;
+    private String mUid;
+    private String mMessageId;
+    private Boolean mLiked;
 
     public ChatMessage() {
+        // Needed for Firebase
     }
 
-    public ChatMessage(String text, String name) {
-        this.text = text;
-        this.name = name;
+    public ChatMessage(String uid, String name, String message, Boolean liked) {
+        mName = name;
+        mMessage = message;
+        mUid = "";
+        mLiked = liked;
     }
 
-
-    public ChatMessage(String id, String text, String name) {
-        this.id = id;
-        this.text = text;
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public ChatMessage(String messageId, String uid, String name, String message, Boolean liked) {
+        mName = name;
+        mMessage = message;
+        mUid = uid;
+        mLiked = liked;
+        mMessageId = messageId;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        mName = name;
     }
 
-    public String getText() {
-        return text;
+    public String getMessage() {
+        return mMessage;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setMessage(String message) {
+        mMessage = message;
+    }
+
+    public String getUid() {
+        return mUid;
+    }
+
+    public void setUid(String uid) {
+        mUid = uid;
+    }
+
+    public Boolean getLiked() {
+        return mLiked;
+    }
+
+    public void setLiked(Boolean liked) {
+        this.mLiked = liked;
+    }
+
+    public String getMessageId() {
+        return mMessageId;
+    }
+
+    public void setMessageId(String mMessageId) {
+        this.mMessageId = mMessageId;
     }
 }
+
 

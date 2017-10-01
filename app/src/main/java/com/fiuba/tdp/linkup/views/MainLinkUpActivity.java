@@ -19,6 +19,12 @@ import com.fiuba.tdp.linkup.components.InterestsFragment;
 import com.fiuba.tdp.linkup.components.NewMatchFragment;
 import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
+import com.fiuba.tdp.linkup.services.UserManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import java.util.HashMap;
 
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
         InterestsFragment.OnListFragmentInteractionListener, NewMatchFragment.OnNewMatchListFragmentInteractionListener {
@@ -45,6 +51,8 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        saveFireBaseToken();
 
         pushFragment(exploreFragment);
     }
@@ -104,11 +112,11 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
     @Override
     public void onListFragmentInteraction(LinkUpMatch item) {
-        Log.e("NEW MATCH", "CLICKED ON NEW MATCH!!");
-//        showAlert("Proximamente", "Iniciar nuevo chat con " + item.getName());
+        Log.e("CHATS", "CLICKED ON NEW MATCH!!");
         Intent intentBundle = new Intent(MainLinkUpActivity.this, ChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ChatActivity.CHAT_WITH_USER_ID, item.getId());
+        bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, item.getName());
         intentBundle.putExtras(bundle);
         startActivity(intentBundle);
     }
@@ -136,4 +144,23 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         dialog.show();
 
     }
+
+    private void saveFireBaseToken() {
+        // Get token
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+        // Log and toast
+//        String msg = getString(R.string.msg_token_fmt, token);
+        Log.d("FIREBASE INSTANCE ID", token);
+//        Toast.makeText(MainLinkUpActivity.this, token, Toast.LENGTH_SHORT).show();
+
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        HashMap<String, String> tokenObject = new HashMap<>();
+        tokenObject.put("token", token);
+        tokenObject.put("name", UserManager.getInstance().getMyUser().getName());
+
+        mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId()).setValue(tokenObject);
+    }
+
 }

@@ -18,11 +18,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.chat.ChatViewHolder;
 import com.fiuba.tdp.linkup.domain.ChatMessage;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -40,7 +40,9 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final String TAG = "ChatActivity";
     private static final String LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif";
     public static String CHAT_WITH_USER_ID = "CHAT_WITH_USER_ID";
+    public static String CHAT_WITH_USER_NAME = "CHAT_WITH_USER_NAME";
     private String otherUserId;
+    private String otherUserName;
     private String myUserId;
     private String messageId;
     private String firebaseChatLocation;
@@ -57,7 +59,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseAuth mFirebaseAuth;
     private FirebaseUser mFirebaseUser;
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<ChatMessage, MessageViewHolder>
+    private FirebaseRecyclerAdapter<ChatMessage, ChatViewHolder>
             mFirebaseAdapter;
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -71,24 +73,9 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intentExtras = getIntent();
-        Bundle extrasBundle = intentExtras.getExtras();
-        if (!extrasBundle.isEmpty()) {
-            otherUserId = extrasBundle.getString(CHAT_WITH_USER_ID);
-            myUserId = UserManager.getInstance().getMyUser().getId();
+        getOtherUserId();
 
-            if (otherUserId.compareTo(myUserId) < 0) {
-                messageId = otherUserId + "_" + myUserId;
-            } else {
-                messageId = myUserId + "_" + otherUserId;
-            }
-
-            firebaseChatLocation = CHATS_CHILD + "/" + messageId + "/" + MESSAGES_CHILD;
-        } else {
-            otherUserId = "";
-            myUserId = "";
-            // hubo un error, ir para atras
-        }
+        toolbar.setTitle(otherUserName);
 
 
         // Initialize Firebase Auth
@@ -114,42 +101,9 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
 
         // New message child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatMessage,
-                MessageViewHolder>(
-                ChatMessage.class,
-                R.layout.item_message,
-                MessageViewHolder.class,
-                mFirebaseDatabaseReference.child(firebaseChatLocation)) {
-
-            @Override
-            protected void populateViewHolder(final MessageViewHolder viewHolder,
-                                              ChatMessage chatMessage, int position) {
-                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                if (chatMessage.getText() != null) {
-                    viewHolder.messageTextView.setText(chatMessage.getText());
-                    viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
-                }
-            }
-        };
 
 
-        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                int friendlyMessageCount = mFirebaseAdapter.getItemCount();
-                int lastVisiblePosition =
-                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-                // If the recycler view is initially being loaded or the
-                // user is at the bottom of the list, scroll to the bottom
-                // of the list to show the newly added message.
-                if (lastVisiblePosition == -1 ||
-                        (positionStart >= (friendlyMessageCount - 1) &&
-                                lastVisiblePosition == (positionStart - 1))) {
-                    mMessageRecyclerView.scrollToPosition(positionStart);
-                }
-            }
-        });
+        attachRecyclerViewAdapter();
 
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
@@ -179,11 +133,82 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onClick(View view) {
 
                 DatabaseReference newChatRef = mFirebaseDatabaseReference.child(firebaseChatLocation).push();
-                String messageKey = newChatRef.getKey();
+                String messageId = newChatRef.getKey();
 
-                ChatMessage chatMessage = new ChatMessage(messageKey, mMessageEditText.getText().toString(), mUsername);
+                ChatMessage chatMessage = new ChatMessage(messageId, UserManager.getInstance().getMyUser().getId(), mUsername, mMessageEditText.getText().toString(), false);
                 newChatRef.setValue(chatMessage);
                 mMessageEditText.setText("");
+            }
+        });
+    }
+
+    private void getOtherUserId() {
+        Intent intentExtras = getIntent();
+        Bundle extrasBundle = intentExtras.getExtras();
+        if (!extrasBundle.isEmpty()) {
+            otherUserId = extrasBundle.getString(CHAT_WITH_USER_ID);
+            otherUserName = extrasBundle.getString(CHAT_WITH_USER_NAME);
+            myUserId = UserManager.getInstance().getMyUser().getId();
+
+
+            if (otherUserId.compareTo(myUserId) < 0) {
+                messageId = otherUserId + "_" + myUserId;
+            } else {
+                messageId = myUserId + "_" + otherUserId;
+            }
+
+            firebaseChatLocation = CHATS_CHILD + "/" + messageId + "/" + MESSAGES_CHILD;
+        } else {
+            otherUserId = "";
+            otherUserName = "Error";
+            myUserId = "";
+            finish();
+            // hubo un error, ir para atras
+        }
+    }
+
+    private FirebaseRecyclerAdapter<ChatMessage, ChatViewHolder> getFirebaseAdapter() {
+        return new FirebaseRecyclerAdapter<ChatMessage,
+                ChatViewHolder>(
+                ChatMessage.class,
+                R.layout.item_message,
+                ChatViewHolder.class,
+                mFirebaseDatabaseReference.child(firebaseChatLocation)) {
+
+            @Override
+            protected void populateViewHolder(final ChatViewHolder viewHolder,
+                                              ChatMessage chatMessage, int position) {
+                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                viewHolder.bind(chatMessage, mFirebaseDatabaseReference.child(firebaseChatLocation));
+            }
+
+            @Override
+            public void onDataChanged() {
+                // If there are no chat messages, show a view that invites the user to add a message.
+//                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            }
+        };
+    }
+
+    private void attachRecyclerViewAdapter() {
+
+        mFirebaseAdapter = getFirebaseAdapter();
+
+        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                int friendlyMessageCount = mFirebaseAdapter.getItemCount();
+                int lastVisiblePosition =
+                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+                // If the recycler view is initially being loaded or the
+                // user is at the bottom of the list, scroll to the bottom
+                // of the list to show the newly added message.
+                if (lastVisiblePosition == -1 ||
+                        (positionStart >= (friendlyMessageCount - 1) &&
+                                lastVisiblePosition == (positionStart - 1))) {
+                    mMessageRecyclerView.scrollToPosition(positionStart);
+                }
             }
         });
     }
@@ -210,15 +235,5 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
-    }
-
-
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView messageTextView;
-
-        public MessageViewHolder(View v) {
-            super(v);
-            messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
-        }
     }
 }

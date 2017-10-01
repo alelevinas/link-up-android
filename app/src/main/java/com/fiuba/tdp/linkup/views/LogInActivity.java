@@ -171,8 +171,6 @@ public class LogInActivity extends AppCompatActivity {
                     }
                     this.stopTracking();
 
-                    firebaseAuthenticate(loginResult.getAccessToken());
-
                     nextActivity(newProfile);
                 }
             };
