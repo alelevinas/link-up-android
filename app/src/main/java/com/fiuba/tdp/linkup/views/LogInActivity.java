@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -21,6 +26,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.LoginAsyncTaskLoader;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
@@ -45,6 +51,8 @@ public class LogInActivity extends AppCompatActivity {
     Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
+    private View loginView;
+    private ImageView loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +73,18 @@ public class LogInActivity extends AppCompatActivity {
         accessTokenTracker.startTracking();
         profile = Profile.getCurrentProfile();
 
+        loginView = (View) findViewById(R.id.include);
+        loader = (ImageView) findViewById(R.id.loader);
+        loader.setVisibility(View.GONE);
+
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startLoader();
+            }
+        });
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             private ProfileTracker profileTracker;
 
@@ -100,14 +118,26 @@ public class LogInActivity extends AppCompatActivity {
             public void onCancel() {
                 showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
                 LoginManager.getInstance().logOut();
+                stopLoader();
             }
 
             @Override
             public void onError(FacebookException e) {
                 showAlert("Ha habido un error al comunicarse con Facebook. Por favor intenta mas tarde");
                 LoginManager.getInstance().logOut();
+                stopLoader();
             }
         });
+    }
+
+    private void startLoader() {
+        loginView.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
+    }
+
+    private void stopLoader() {
+        loader.setVisibility(View.GONE);
+        loginView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -212,6 +242,7 @@ public class LogInActivity extends AppCompatActivity {
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("El usuario es menor a 18 años, vuelva mas tarde");
                                     LoginManager.getInstance().logOut();
+                                    stopLoader();
                                     return;
                                 }
 
@@ -220,8 +251,11 @@ public class LogInActivity extends AppCompatActivity {
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("Debes tener una foto de perfil en Facebook para usar esta app, vuelva mas tarde");
                                     LoginManager.getInstance().logOut();
+                                    stopLoader();
                                     return;
                                 }
+
+                                stopLoader();
                                 Log.e("LOGIN ACTIVITY SERVER", "ERROR POSTING USER TO LINK UP SERVERS");
                             }
                         });
@@ -232,6 +266,7 @@ public class LogInActivity extends AppCompatActivity {
                 public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
                     Log.e("LOGIN ACTIVITY SERVER", "ERROR GETING USER FROM LINK UP SERVERS");
                     showAlertAndExit("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta mas tarde");
+                    stopLoader();
                 }
             });
         }

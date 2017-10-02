@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -28,9 +29,9 @@ import retrofit2.Response;
 
 public class ExploreFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    TextView emptyView;
-
+    private RecyclerView recyclerView;
+    private TextView emptyView;
+    private ImageView loader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,22 +42,32 @@ public class ExploreFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.explore_list);
         emptyView = (TextView) view.findViewById(R.id.empty_view);
+        loader = (ImageView) view.findViewById(R.id.loader);
 
         ExploreUserContentAdapter adapter = new ExploreUserContentAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        loader.setVisibility(View.GONE);
 
         return view;
     }
 
     private void setEmptyView() {
+        loader.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
     }
 
     private void hideEmptyView() {
+        loader.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+    }
+
+    private void startLoader() {
+        loader.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
     }
 
@@ -66,6 +77,7 @@ public class ExploreFragment extends Fragment {
         private UserService userService;
 
         public ExploreUserContentAdapter(final ExploreFragment exploreFragment) {
+            exploreFragment.startLoader();
             userService = new UserService(exploreFragment.getContext());
 
             userService.getUsersCompatible(Profile.getCurrentProfile().getId(), new Callback<ServerResponse<ArrayList<UserAround>>>() {
