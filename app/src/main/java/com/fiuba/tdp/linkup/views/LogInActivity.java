@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -21,6 +25,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.LoginAsyncTaskLoader;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
@@ -36,7 +41,7 @@ import retrofit2.Response;
 
 import static com.fiuba.tdp.linkup.services.LocationManager.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     private static final String LOCATION_TAG = "login location";
 
@@ -45,6 +50,7 @@ public class LogInActivity extends AppCompatActivity {
     Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
+    private LoaderManager mLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,12 +67,22 @@ public class LogInActivity extends AppCompatActivity {
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
             }
         };
+        mLoader = getSupportLoaderManager();
 
         accessTokenTracker.startTracking();
         profile = Profile.getCurrentProfile();
+        if(mLoader.getLoader(0) != null){
+            mLoader.initLoader(0, null, this);// deliver the result after the screen rotation
+        }
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startMyAsyncTask(view);
+            }
+        });
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             private ProfileTracker profileTracker;
 
@@ -281,6 +297,27 @@ public class LogInActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         dialog.show();
+
+    }
+
+    public void startMyAsyncTask(View view) {
+        Log.d("LOGIN LOADER", "async task START -----------");
+        mLoader.initLoader(0, null, this);
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new LoginAsyncTaskLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, String data) {
+        Log.d("LOGIN LOADER", "LOAD FINISHED!!!!!!!!!!!");
+        Log.d("LOGIN LOADER", "Result ->" + data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
 
     }
 }
