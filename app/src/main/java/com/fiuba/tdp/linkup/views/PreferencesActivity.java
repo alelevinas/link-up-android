@@ -29,6 +29,7 @@ import retrofit2.Response;
 public class PreferencesActivity extends AppCompatActivity {
 
     private ImageView loader;
+    private ScrollView scrollview;
     private Button linkUpPlusButton;
     private Switch likeMenSwitch;
     private Switch likeWomenSwitch;
@@ -87,7 +88,19 @@ public class PreferencesActivity extends AppCompatActivity {
         });
 
         loader = (ImageView) findViewById(R.id.loader);
+        scrollview = (ScrollView) findViewById(R.id.scrollview);
+
+        startLoader();
+    }
+
+    private void startLoader() {
+        loader.setVisibility(View.VISIBLE);
+        scrollview.setVisibility(View.GONE);
+    }
+
+    private void stopLoader() {
         loader.setVisibility(View.GONE);
+        scrollview.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -121,18 +134,23 @@ public class PreferencesActivity extends AppCompatActivity {
                     radioRelationship.setChecked(true);
                 else
                     radioFriendship.setChecked(true);
+
+                stopLoader();
             }
 
             @Override
             public void onFailure(Call<ServerResponse<UserPreferences>> call, Throwable t) {
                 Log.w("Preferences Activity", "Error: "+t.toString()+", in call: "+call.toString());
+                stopLoader();
             }
         });
     }
 
     @Override
     protected void onStop() {
+        startLoader();
         postPreferences();
+        stopLoader();
         super.onStop();
     }
 
