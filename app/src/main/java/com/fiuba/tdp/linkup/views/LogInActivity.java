@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -41,7 +42,7 @@ import retrofit2.Response;
 
 import static com.fiuba.tdp.linkup.services.LocationManager.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
-public class LogInActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+public class LogInActivity extends AppCompatActivity {
 
     private static final String LOCATION_TAG = "login location";
 
@@ -50,7 +51,8 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
     Profile profile;
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
-    private LoaderManager mLoader;
+    private View loginView;
+    private ImageView loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,20 +69,20 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
             }
         };
-        mLoader = getSupportLoaderManager();
 
         accessTokenTracker.startTracking();
         profile = Profile.getCurrentProfile();
-        if(mLoader.getLoader(0) != null){
-            mLoader.initLoader(0, null, this);// deliver the result after the screen rotation
-        }
+
+        loginView = (View) findViewById(R.id.include);
+        loader = (ImageView) findViewById(R.id.loader);
+        loader.setVisibility(View.GONE);
 
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_birthday", "user_education_history", "user_hometown", "user_likes", "user_photos");
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startMyAsyncTask(view);
+                startLoader();
             }
         });
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -116,14 +118,26 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
             public void onCancel() {
                 showAlert("Debes aceptar todos los permisos solicitados de tu información de Facebook para usar esta app");
                 LoginManager.getInstance().logOut();
+                stopLoader();
             }
 
             @Override
             public void onError(FacebookException e) {
                 showAlert("Ha habido un error al comunicarse con Facebook. Por favor intenta mas tarde");
                 LoginManager.getInstance().logOut();
+                stopLoader();
             }
         });
+    }
+
+    private void startLoader() {
+        loginView.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
+    }
+
+    private void stopLoader() {
+        loader.setVisibility(View.GONE);
+        loginView.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -228,6 +242,7 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("El usuario es menor a 18 años, vuelva mas tarde");
                                     LoginManager.getInstance().logOut();
+                                    stopLoader();
                                     return;
                                 }
 
@@ -236,8 +251,11 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
                                     Log.e("LOGIN ACTIVITY SERVER", "TIENE MENOS DE 18 ANOS");
                                     showAlert("Debes tener una foto de perfil en Facebook para usar esta app, vuelva mas tarde");
                                     LoginManager.getInstance().logOut();
+                                    stopLoader();
                                     return;
                                 }
+
+                                stopLoader();
                                 Log.e("LOGIN ACTIVITY SERVER", "ERROR POSTING USER TO LINK UP SERVERS");
                             }
                         });
@@ -248,6 +266,7 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
                 public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
                     Log.e("LOGIN ACTIVITY SERVER", "ERROR GETING USER FROM LINK UP SERVERS");
                     showAlertAndExit("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta mas tarde");
+                    stopLoader();
                 }
             });
         }
@@ -297,27 +316,6 @@ public class LogInActivity extends AppCompatActivity implements LoaderManager.Lo
         AlertDialog dialog = builder.create();
 
         dialog.show();
-
-    }
-
-    public void startMyAsyncTask(View view) {
-        Log.d("LOGIN LOADER", "async task START -----------");
-        mLoader.initLoader(0, null, this);
-    }
-
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        return new LoginAsyncTaskLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader loader, String data) {
-        Log.d("LOGIN LOADER", "LOAD FINISHED!!!!!!!!!!!");
-        Log.d("LOGIN LOADER", "Result ->" + data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
 
     }
 }
