@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
 import android.widget.Switch;
 
 import com.facebook.Profile;
@@ -26,6 +28,7 @@ import retrofit2.Response;
 
 public class PreferencesActivity extends AppCompatActivity {
 
+    private ImageView loader;
     private Button linkUpPlusButton;
     private Switch likeMenSwitch;
     private Switch likeWomenSwitch;
@@ -82,6 +85,9 @@ public class PreferencesActivity extends AppCompatActivity {
                         Snackbar.LENGTH_LONG).show();
             }
         });
+
+        loader = (ImageView) findViewById(R.id.loader);
+        loader.setVisibility(View.GONE);
     }
 
     @Override
