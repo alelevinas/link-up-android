@@ -1,83 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/message_container"
+    android:id="@+id/message_row"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/message_left_starred"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="-10dp"
-        android:visibility="gone"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_on"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
-    <FrameLayout
-        android:id="@+id/left_arrow"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="2dp"
-        android:background="@drawable/ic_chat_message_arrow"
-        android:rotation="180" />
-
-
-    <LinearLayout
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/message_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="26dp"
-        android:layout_marginRight="26dp"
-        android:background="@drawable/ic_chat_message_background"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toRightOf="@+id/message_left_starred"
+        app:layout_constraintRight_toLeftOf="@+id/message_right_starred"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-        <TextView
-            android:id="@+id/message_text"
-            style="@style/TextAppearance.AppCompat.Medium"
+        <FrameLayout
+            android:id="@+id/right_arrow"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginEnd="141dp"
+            android:layout_marginStart="141dp"
+            android:background="@drawable/ic_chat_message_arrow"
+            android:rotation="180"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/left_arrow"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+
+        <LinearLayout
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textIsSelectable="true"
-            android:textStyle="bold"
-            tools:text="Hey this is a message, look!" />
+            android:layout_marginStart="26dp"
+            android:background="@drawable/ic_chat_message_background"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/left_arrow"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintTop_creator="1">
 
-        <TextView
-            android:id="@+id/name_text"
-            style="@style/TextAppearance.AppCompat.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textIsSelectable="true"
-            tools:text="Some User" />
+            <TextView
+                android:id="@+id/message_text"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"
+                android:textStyle="bold"
+                tools:text="Hey this is a message, look!" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/name_text"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"
+                tools:text="Some User" />
 
-    <FrameLayout
-        android:id="@+id/right_arrow"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignEnd="@+id/message"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/message"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
-        android:background="@drawable/ic_chat_message_arrow"
-        android:rotation="180" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/left_arrow"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/ic_chat_message_arrow"
+            android:rotation="180"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/message"
+            app:layout_constraintRight_toLeftOf="@+id/message"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_constraintBottom_creator="1"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1"
+            tools:layout_constraintTop_creator="1" />
+
+    </RelativeLayout>
+
 
     <ImageView
         android:id="@+id/message_right_starred"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:visibility="gone"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/btn_star_big_on"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

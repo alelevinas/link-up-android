@@ -81,13 +81,14 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    private void updateWithToken(AccessToken currentAccessToken) {
+    private void updateWithToken(final AccessToken currentAccessToken) {
         if (currentAccessToken != null) {
             new Handler().postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
                     profile = Profile.getCurrentProfile();
+                    firebaseAuthenticate(currentAccessToken);
                     handleFacebookAlreadyLoggedIn();
                 }
             }, SPLASH_TIME_OUT);

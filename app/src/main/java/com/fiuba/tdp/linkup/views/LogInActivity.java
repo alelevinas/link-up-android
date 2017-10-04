@@ -170,7 +170,6 @@ public class LogInActivity extends AppCompatActivity {
                         return;
                     }
                     this.stopTracking();
-
                     nextActivity(newProfile);
                 }
             };
@@ -220,6 +219,7 @@ public class LogInActivity extends AppCompatActivity {
     private void nextActivity(final Profile profile) {
         if (profile != null) {
             // si ya tiene usuario en LinkUp! ir directo a la MainLinkUpActivity
+            firebaseAuthenticate(AccessToken.getCurrentAccessToken());
 
             final String name = profile.getName();
 
