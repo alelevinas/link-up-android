@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -94,12 +95,14 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     private void startLoader() {
-        loader.setVisibility(View.VISIBLE);
         scrollview.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
+        loader.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely) );
     }
 
     private void stopLoader() {
         loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         scrollview.setVisibility(View.VISIBLE);
     }
 
