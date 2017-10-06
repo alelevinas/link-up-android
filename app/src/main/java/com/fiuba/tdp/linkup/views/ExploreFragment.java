@@ -21,6 +21,7 @@ import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -111,7 +112,12 @@ public class ExploreFragment extends Fragment {
         public void onBindViewHolder(ExploreUserViewHolder holder, int position) {
             new DownloadImage(holder.picture).execute(usersAround.getPictures().get(position));
             holder.name.setText(usersAround.getNames().get(position));
-            holder.description.setText(usersAround.getDescriptions().get(position));
+            if(Objects.equals(usersAround.getDescriptions().get(position), "")) {
+                holder.description.setVisibility(View.GONE);
+            } else {
+                holder.description.setVisibility(View.VISIBLE);
+                holder.description.setText(usersAround.getDescriptions().get(position));
+            }
             holder.userId = usersAround.getIds().get(position);
             holder.favoriteImageButtonChecked = usersAround.getUser(position).getLike().compareTo("true") == 0;
             holder.updateLikeStatus();
