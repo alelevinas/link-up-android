@@ -1,10 +1,13 @@
 package com.fiuba.tdp.linkup.views;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -94,12 +97,14 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     private void startLoader() {
-        loader.setVisibility(View.VISIBLE);
         scrollview.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
+        loader.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely) );
     }
 
     private void stopLoader() {
         loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         scrollview.setVisibility(View.VISIBLE);
     }
 
@@ -141,7 +146,7 @@ public class PreferencesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ServerResponse<UserPreferences>> call, Throwable t) {
                 Log.w("Preferences Activity", "Error: "+t.toString()+", in call: "+call.toString());
-                stopLoader();
+                showAlertAndFinish("Ha habido un error al comunicarse con nuestros servidores..");
             }
         });
     }
@@ -175,5 +180,29 @@ public class PreferencesActivity extends AppCompatActivity {
             searchMode = "friendship";
 
         userService.postPreferences(userId, gender, distance, minAge, maxAge, mode, searchMode);
+    }
+
+    private void showAlertAndFinish(String s) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(s)
+                .setTitle("Atención");
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 }

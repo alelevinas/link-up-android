@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.facebook.AccessToken;
@@ -133,10 +134,12 @@ public class LogInActivity extends AppCompatActivity {
     private void startLoader() {
         loginView.setVisibility(View.GONE);
         loader.setVisibility(View.VISIBLE);
+        loader.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely));
     }
 
     private void stopLoader() {
         loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         loginView.setVisibility(View.VISIBLE);
     }
 

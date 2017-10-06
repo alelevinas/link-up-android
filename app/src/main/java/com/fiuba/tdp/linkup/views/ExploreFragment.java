@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,18 +57,21 @@ public class ExploreFragment extends Fragment {
 
     private void setEmptyView() {
         loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
     }
 
     private void hideEmptyView() {
         loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         recyclerView.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
     }
 
     private void startLoader() {
         loader.setVisibility(View.VISIBLE);
+        loader.startAnimation(AnimationUtils.loadAnimation(this.getContext(), R.anim.rotate_indefinitely) );
         recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
     }
