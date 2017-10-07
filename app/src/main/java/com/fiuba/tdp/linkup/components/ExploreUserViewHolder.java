@@ -29,10 +29,6 @@ import retrofit2.Response;
 import static android.R.color.holo_orange_light;
 import static android.R.color.holo_red_light;
 
-/**
- * Created by alejandro on 9/16/17.
- */
-
 public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
     private final Button sendMessageButton;
@@ -46,7 +42,6 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     public boolean favoriteImageButtonChecked = false;
     boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
-
 
     public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent) {
         super(inflater.inflate(R.layout.fragment_explore_item_card, parent, false));
@@ -64,6 +59,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                 Snackbar.make(v, "Ver Perfil de " + name.getText().toString(),
                         Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(v.getContext(), OtherProfileActivity.class);
+                intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(userId));
                 v.getContext().startActivity(intent);
             }
         });

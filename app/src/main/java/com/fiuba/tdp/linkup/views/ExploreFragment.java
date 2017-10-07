@@ -38,8 +38,6 @@ public class ExploreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-//                R.layout.fragment_explore_list, container, false);
         View view = inflater.inflate(R.layout.fragment_explore_list, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.explore_list);

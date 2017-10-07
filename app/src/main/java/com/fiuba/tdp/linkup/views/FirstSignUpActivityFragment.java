@@ -177,6 +177,5 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
-
     }
 }
