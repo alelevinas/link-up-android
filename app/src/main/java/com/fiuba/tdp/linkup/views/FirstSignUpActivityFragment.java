@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.Profile;
@@ -29,6 +30,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     private TextView nameView;
     private TextView ageView;
     private TextView genreView;
+    private RelativeLayout aboutMeLayout;
     private TextView description;
     private TextView studiesView;
     private ImageView profile_picture;
@@ -56,6 +58,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
         nameView = (TextView) view.findViewById(R.id.label_name);
         ageView = (TextView) view.findViewById(R.id.label_age);
         genreView = (TextView) view.findViewById(R.id.label_genre);
+        aboutMeLayout = (RelativeLayout) view.findViewById(R.id.aboutMe);
         description = (TextView) view.findViewById(R.id.txt_description);
         studiesView = (TextView) view.findViewById(R.id.label_studies);
         profile_picture = (ImageView) view.findViewById(R.id.profile_picture);
@@ -126,13 +129,19 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
 
         genreView.setText(myUser.getGender().compareTo("male") == 0 ? "Hombre" : "Mujer");
 
-        description.setText(myUser.getDescription());
-
         if (myUser.getEducation() != null && myUser.getEducation().length > 0) {
             studiesView.setText(myUser.getEducation()[myUser.getEducation().length - 1].getName());
         } else {
             studiesView.setText("No hay información de la educación");
         }
+
+        if(Objects.equals(myUser.getDescription(), "")) {
+            aboutMeLayout.setVisibility(View.GONE);
+        } else {
+            aboutMeLayout.setVisibility(View.VISIBLE);
+            description.setText(myUser.getDescription());
+        }
+
     }
 
     public void startMyAsyncTask() {
