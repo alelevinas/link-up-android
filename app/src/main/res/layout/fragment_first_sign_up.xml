@@ -7,372 +7,387 @@
     tools:context="com.fiuba.tdp.linkup.views.FirstSignUpActivityFragment"
     tools:showIn="@layout/activity_first_sign_up">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="10dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_picture"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:focusableInTouchMode="true"
-            android:src="@drawable/com_facebook_profile_picture_blank_square"
-            app:civ_border_color="#00ffffff"
-            app:civ_border_width="2dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/loader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:padding="70dp"
+        app:srcCompat="@drawable/ic_launcher_web" />
 
-        <TextView
-            android:id="@+id/label_name"
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:text="..."
-            android:textSize="30sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
+            android:paddingBottom="10dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/secondary_picture"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:focusableInTouchMode="true"
-            android:src="@drawable/com_facebook_profile_picture_blank_square"
-            app:civ_border_color="#00ffffff"
-            app:civ_border_width="2dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_name" />
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/secondary_picture2"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:focusableInTouchMode="true"
-            android:src="@drawable/com_facebook_profile_picture_blank_square"
-            app:civ_border_color="#00ffffff"
-            app:civ_border_width="2dp"
-            app:layout_constraintLeft_toLeftOf="@+id/secondary_picture"
-            app:layout_constraintRight_toRightOf="@+id/secondary_picture3"
-            app:layout_constraintTop_toBottomOf="@+id/label_name" />
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/secondary_picture3"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:focusableInTouchMode="true"
-            android:src="@drawable/com_facebook_profile_picture_blank_square"
-            app:civ_border_color="#00ffffff"
-            app:civ_border_width="2dp"
-            app:layout_constraintLeft_toLeftOf="@+id/secondary_picture2"
-            app:layout_constraintRight_toRightOf="@+id/secondary_picture4"
-            app:layout_constraintTop_toBottomOf="@+id/label_name" />
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/secondary_picture4"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:focusableInTouchMode="true"
-            android:src="@drawable/com_facebook_profile_picture_blank_square"
-            app:civ_border_color="#00ffffff"
-            app:civ_border_width="2dp"
-            app:layout_constraintLeft_toLeftOf="@+id/secondary_picture3"
-            app:layout_constraintRight_toRightOf="@+id/secondary_picture5"
-            app:layout_constraintTop_toBottomOf="@+id/label_name" />
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/secondary_picture5"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="2dp"
-            android:focusableInTouchMode="true"
-            android:src="@drawable/com_facebook_profile_picture_blank_square"
-            app:civ_border_color="#00ffffff"
-            app:civ_border_width="2dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_name" />
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view_basic_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:elevation="24dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="1dp"
-            app:contentPadding="5dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/secondary_picture">
-
-            <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:id="@+id/label_age"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="..."
-                    android:textColor="#000000"
-                    android:textSize="20sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/label_genre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="16dp"
-                    android:text="..."
-                    android:textColor="#000000"
-                    android:textSize="20sp"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="@+id/label_age"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_age" />
-
-                <TextView
-                    android:id="@+id/label_studies"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="16dp"
-                    android:text="..."
-                    android:textColor="#000000"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="@+id/label_genre"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/label_genre" />
-
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
-
-        <RelativeLayout
-            android:id="@+id/aboutMe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/card_view_basic_info">
-
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_picture"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"
+                app:civ_border_color="#00ffffff"
+                app:civ_border_width="2dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/AboutMeLabel"
-                android:layout_width="match_parent"
+                android:id="@+id/label_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:text="Acerca de mi"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:text="..."
+                android:textSize="30sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/secondary_picture"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"
+                app:civ_border_color="#00ffffff"
+                app:civ_border_width="2dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_name" />
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/secondary_picture2"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"
+                app:civ_border_color="#00ffffff"
+                app:civ_border_width="2dp"
+                app:layout_constraintLeft_toLeftOf="@+id/secondary_picture"
+                app:layout_constraintRight_toRightOf="@+id/secondary_picture3"
+                app:layout_constraintTop_toBottomOf="@+id/label_name" />
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/secondary_picture3"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"
+                app:civ_border_color="#00ffffff"
+                app:civ_border_width="2dp"
+                app:layout_constraintLeft_toLeftOf="@+id/secondary_picture2"
+                app:layout_constraintRight_toRightOf="@+id/secondary_picture4"
+                app:layout_constraintTop_toBottomOf="@+id/label_name" />
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/secondary_picture4"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="2dp"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"
+                app:civ_border_color="#00ffffff"
+                app:civ_border_width="2dp"
+                app:layout_constraintLeft_toLeftOf="@+id/secondary_picture3"
+                app:layout_constraintRight_toRightOf="@+id/secondary_picture5"
+                app:layout_constraintTop_toBottomOf="@+id/label_name" />
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/secondary_picture5"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="2dp"
+                android:focusableInTouchMode="true"
+                android:src="@drawable/com_facebook_profile_picture_blank_square"
+                app:civ_border_color="#00ffffff"
+                app:civ_border_width="2dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_name" />
 
             <android.support.v7.widget.CardView
-                android:id="@+id/card_view_invisible"
-                android:layout_width="match_parent"
+                android:id="@+id/card_view_basic_info"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/AboutMeLabel"
                 android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
                 android:elevation="24dp"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="1dp"
-                app:contentPadding="10dp">
+                app:contentPadding="5dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secondary_picture">
 
-                <EditText
-                    android:id="@+id/txt_description"
+                <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@android:color/transparent"
-                    android:editable="false"
-                    android:ems="10"
-                    android:gravity="top"
-                    android:lines="5"
-                    android:maxLines="10"
-                    android:minLines="1"
-                    android:selectAllOnFocus="false"
-                    android:textIsSelectable="false" />
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/label_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="..."
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/label_genre"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="16dp"
+                        android:text="..."
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="@+id/label_age"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/label_age" />
+
+                    <TextView
+                        android:id="@+id/label_studies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="16dp"
+                        android:text="..."
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintLeft_toLeftOf="@+id/label_genre"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/label_genre" />
+
+                </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/aboutMe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_view_basic_info">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view_interests"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:elevation="24dp"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="1dp"
-            app:contentPadding="5dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/aboutMe">
-
-            <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:paddingBottom="20dp">
 
                 <TextView
-                    android:id="@+id/label_interests"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/AboutMeLabel"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/title_interests"
+                    android:paddingBottom="5dp"
+                    android:text="Acerca de mi"
                     android:textColor="#000000"
-                    android:textSize="24sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textSize="20sp" />
 
-                <fragment
-                    android:id="@+id/fragment_interests"
-                    android:name="com.fiuba.tdp.linkup.components.InterestsFragment"
-                    android:layout_width="314dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@+id/label_interests"
-                    app:layout_constraintTop_toBottomOf="@+id/label_interests"
-                    tools:layout="@layout/fragment_interests_list" />
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view_edit_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:elevation="24dp"
-            app:cardBackgroundColor="@color/colorAccent"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="1dp"
-            app:contentPadding="10dp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/card_view_interests">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/button_edit_info"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card_view_invisible"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/button_edit_info"
-                    android:textColor="#FFFFFF"
-                    android:textColorLink="@color/colorAccent"
-                    android:textSize="25sp" />
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/AboutMeLabel"
+                    android:layout_gravity="center"
+                    android:elevation="24dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="1dp"
+                    app:contentPadding="10dp">
+
+                    <EditText
+                        android:id="@+id/txt_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@android:color/transparent"
+                        android:editable="false"
+                        android:ems="10"
+                        android:gravity="top"
+                        android:lines="5"
+                        android:maxLines="10"
+                        android:minLines="1"
+                        android:selectAllOnFocus="false"
+                        android:textIsSelectable="false" />
+                </android.support.v7.widget.CardView>
+
             </RelativeLayout>
 
-        </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_interests"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:elevation="24dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="1dp"
+                app:contentPadding="5dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/aboutMe">
 
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view_edit_preferences"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:elevation="24dp"
-            app:cardBackgroundColor="@color/colorAccent"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="1dp"
-            app:contentPadding="10dp"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/card_view_edit_info">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/button_preferences"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/button_preferences"
-                    android:textColor="#FFFFFF"
-                    android:textColorLink="@color/colorAccent"
-                    android:textSize="25sp" />
-            </RelativeLayout>
+                    android:layout_height="200dp"
+                    android:paddingBottom="20dp">
 
-        </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/label_interests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/title_interests"
+                        android:textColor="#000000"
+                        android:textSize="24sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+                    <fragment
+                        android:id="@+id/fragment_interests"
+                        android:name="com.fiuba.tdp.linkup.components.InterestsFragment"
+                        android:layout_width="314dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="@+id/label_interests"
+                        app:layout_constraintTop_toBottomOf="@+id/label_interests"
+                        tools:layout="@layout/fragment_interests_list" />
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
 
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_edit_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:elevation="24dp"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="1dp"
+                app:contentPadding="10dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_view_interests">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button_edit_info"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="@string/button_edit_info"
+                        android:textColor="#FFFFFF"
+                        android:textColorLink="@color/colorAccent"
+                        android:textSize="25sp" />
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view_edit_preferences"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:elevation="24dp"
+                app:cardBackgroundColor="@color/colorAccent"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="1dp"
+                app:contentPadding="10dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_view_edit_info">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/button_preferences"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="@string/button_preferences"
+                        android:textColor="#FFFFFF"
+                        android:textColorLink="@color/colorAccent"
+                        android:textSize="25sp" />
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </LinearLayout>
 </ScrollView>

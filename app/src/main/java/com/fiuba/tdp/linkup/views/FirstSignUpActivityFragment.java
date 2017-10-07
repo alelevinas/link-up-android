@@ -5,9 +5,11 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +28,8 @@ import java.util.Objects;
 public class FirstSignUpActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>{
 
     private Profile profile;
+    private ImageView loader;
+    private ConstraintLayout mainLayout;
     private LoaderManager mLoader;
     private TextView nameView;
     private TextView ageView;
@@ -53,6 +57,9 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
         View view = inflater.inflate(R.layout.fragment_first_sign_up, container, false);
 
         startMyAsyncTask();
+
+        mainLayout = (ConstraintLayout) view.findViewById(R.id.main_layout);
+        loader = (ImageView) view.findViewById(R.id.loader);
         startLoader();
 
         nameView = (TextView) view.findViewById(R.id.label_name);
@@ -91,6 +98,9 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     }
 
     private void startLoader() {
+        mainLayout.setVisibility(View.GONE);
+        loader.setVisibility(View.VISIBLE);
+        loader.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_indefinitely) );
     }
 
     @Override
@@ -141,7 +151,6 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
             aboutMeLayout.setVisibility(View.VISIBLE);
             description.setText(myUser.getDescription());
         }
-
     }
 
     public void startMyAsyncTask() {
@@ -160,6 +169,10 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
 
     private void stopLoader() {
         bindUserData(UserManager.getInstance().getMyUser());
+
+        loader.setVisibility(View.GONE);
+        loader.clearAnimation();
+        mainLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
