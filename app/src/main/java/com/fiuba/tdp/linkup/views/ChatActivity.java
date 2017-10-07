@@ -33,10 +33,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 public class ChatActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     public static final String CHATS_CHILD = "chats";
     public static final String MESSAGES_CHILD = "messages";
-    public static final int DEFAULT_MSG_LENGTH_LIMIT = 10;
     private static final String TAG = "ChatActivity";
     private static final String LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif";
     public static String CHAT_WITH_USER_ID = "CHAT_WITH_USER_ID";
@@ -62,6 +63,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseRecyclerAdapter<ChatMessage, ChatViewHolder>
             mFirebaseAdapter;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private String myUserLastChatReference;
+    private String otherUserLastChatReference;
 
 
     @Override
@@ -132,11 +135,30 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onClick(View view) {
 
+                //Conversation data
                 DatabaseReference newChatRef = mFirebaseDatabaseReference.child(firebaseChatLocation).push();
                 String messageId = newChatRef.getKey();
 
                 ChatMessage chatMessage = new ChatMessage(messageId, UserManager.getInstance().getMyUser().getId(), mUsername, mMessageEditText.getText().toString(), false);
                 newChatRef.setValue(chatMessage);
+
+                //my chats and last message data
+                DatabaseReference myLastChatRef = mFirebaseDatabaseReference.child(myUserLastChatReference);
+                HashMap<String, String> lastChat = new HashMap<String, String>();
+                lastChat.put("name", otherUserName);
+                lastChat.put("lastMessage", mMessageEditText.getText().toString());
+                lastChat.put("otherUserId", otherUserId);
+                myLastChatRef.setValue(lastChat);
+
+                //OTHER chats and last message data
+                DatabaseReference otherLastChatRef = mFirebaseDatabaseReference.child(otherUserLastChatReference);
+                HashMap<String, String> otherLastChat = new HashMap<String, String>();
+                otherLastChat.put("name", UserManager.getInstance().getMyUser().getName());
+                otherLastChat.put("lastMessage", mMessageEditText.getText().toString());
+                otherLastChat.put("otherUserId", myUserId);
+                otherLastChatRef.setValue(otherLastChat);
+
+
                 mMessageEditText.setText("");
             }
         });
@@ -158,6 +180,11 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             }
 
             firebaseChatLocation = CHATS_CHILD + "/" + messageId + "/" + MESSAGES_CHILD;
+
+            myUserLastChatReference = "users/" + myUserId + "/conversations/" + messageId;
+            otherUserLastChatReference = "users/" + otherUserId + "/conversations/" + messageId;
+
+
         } else {
             otherUserId = "";
             otherUserName = "Error";

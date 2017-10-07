@@ -3,13 +3,12 @@ package com.fiuba.tdp.linkup.components.chat;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,31 +41,25 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     private final LinearLayout mMessage;
     private final int mGreen300;
     private final int mGray300;
-    public TextView messageTextView;
-    private ConstraintLayout mConstraintLayout;
 
     public ChatViewHolder(View itemView) {
         super(itemView);
-        mConstraintLayout = (ConstraintLayout) itemView.findViewById(R.id.message_row);
+        mLeftStarred = (ImageView) itemView.findViewById(R.id.message_left_starred);
+        mRightStarred = (ImageView) itemView.findViewById(R.id.message_right_starred);
+
         mNameField = (TextView) itemView.findViewById(R.id.name_text);
         mTextField = (TextView) itemView.findViewById(R.id.message_text);
         mLeftArrow = (FrameLayout) itemView.findViewById(R.id.left_arrow);
         mRightArrow = (FrameLayout) itemView.findViewById(R.id.right_arrow);
-        mLeftStarred = (ImageView) itemView.findViewById(R.id.message_left_starred);
-        mRightStarred = (ImageView) itemView.findViewById(R.id.message_right_starred);
         mMessageContainer = (RelativeLayout) itemView.findViewById(R.id.message_container);
         mMessage = (LinearLayout) itemView.findViewById(R.id.message);
         mGreen300 = ContextCompat.getColor(itemView.getContext(), R.color.material_green_300);
         mGray300 = ContextCompat.getColor(itemView.getContext(), R.color.material_gray_300);
-
-        mRightStarred.setVisibility(View.GONE);
-        mLeftStarred.setVisibility(View.GONE);
     }
 
     public void bind(final ChatMessage chat, final DatabaseReference chatRef) {
         setName(chat.getName());
         setText(chat.getMessage());
-//        setStarred(chat.getLiked());
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         setIsSender(currentUser != null && chat.getUid().equals(UserManager.getInstance().getMyUser().getId()), chat);
@@ -85,6 +78,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
+
+
     }
 
     private void setName(String name) {
@@ -107,42 +102,37 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         final int color;
         if (isSender) {
             color = mGreen300;
-            mLeftArrow.setVisibility(View.GONE);
+            mMessage.setBackgroundResource(R.drawable.ic_chat_message_background_owner);
+
+            mLeftArrow.setVisibility(View.INVISIBLE);
             mRightArrow.setVisibility(View.VISIBLE);
             mMessageContainer.setGravity(Gravity.END);
-            mMessage.setGravity(Gravity.END);
             mRightStarred.setVisibility(View.GONE);
             setStarred(mLeftStarred, chat.getLiked());
-            connstraintToRight();
+
+            ViewGroup.MarginLayoutParams parameter = (RelativeLayout.LayoutParams) mMessage.getLayoutParams();
+            parameter.setMargins(140, 0, 0, 0); // left, top, right, bottom
+            mMessage.setLayoutParams(parameter);
+
         } else {
             color = mGray300;
             mLeftArrow.setVisibility(View.VISIBLE);
-            mRightArrow.setVisibility(View.GONE);
+            mRightArrow.setVisibility(View.INVISIBLE);
             mMessageContainer.setGravity(Gravity.START);
             mLeftStarred.setVisibility(View.GONE);
             setStarred(mRightStarred, chat.getLiked());
+
+            ViewGroup.MarginLayoutParams parameter = (RelativeLayout.LayoutParams) mMessage.getLayoutParams();
+            parameter.setMargins(50, 0, 150, 0); // left, top, right, bottom
+            mMessage.setLayoutParams(parameter);
+
         }
 
+//        mMessage.setVisibility(View.GONE);
         ((GradientDrawable) mMessage.getBackground()).setColor(color);
         ((RotateDrawable) mLeftArrow.getBackground()).getDrawable()
                 .setColorFilter(color, PorterDuff.Mode.SRC);
         ((RotateDrawable) mRightArrow.getBackground()).getDrawable()
                 .setColorFilter(color, PorterDuff.Mode.SRC);
-    }
-
-    private void connstraintToRight() {
-        ConstraintSet set = new ConstraintSet();
-
-        // You may want (optional) to start with the existing constraint,
-        // so uncomment this.
-        set.clone(mConstraintLayout);
-
-
-        // pin to the bottom of the container
-        set.connect(R.id.message_container, ConstraintSet.END, R.id.rootLayout, ConstraintSet.END, 8);
-
-        // Apply the changes
-        set.applyTo(mConstraintLayout);
-        // this is my… (ConstraintLayout) findViewById(R.id.rootLayout);
     }
 }
