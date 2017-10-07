@@ -5,7 +5,6 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +15,12 @@ import android.widget.TextView;
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.ProfileFragmentAsyncTaskLoader;
+import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.util.DownloadImage;
+
+import java.util.Objects;
 
 public class FirstSignUpActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>{
 
@@ -30,6 +32,11 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     private TextView description;
     private TextView studiesView;
     private ImageView profile_picture;
+    private ImageView secondary_pictures1;
+    private ImageView secondary_pictures2;
+    private ImageView secondary_pictures3;
+    private ImageView secondary_pictures4;
+    private ImageView secondary_pictures5;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +59,12 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
         description = (TextView) view.findViewById(R.id.txt_description);
         studiesView = (TextView) view.findViewById(R.id.label_studies);
         profile_picture = (ImageView) view.findViewById(R.id.profile_picture);
+
+        secondary_pictures1 = (ImageView) view.findViewById(R.id.secondary_picture);
+        secondary_pictures2 = (ImageView) view.findViewById(R.id.secondary_picture2);
+        secondary_pictures3 = (ImageView) view.findViewById(R.id.secondary_picture3);
+        secondary_pictures4 = (ImageView) view.findViewById(R.id.secondary_picture4);
+        secondary_pictures5 = (ImageView) view.findViewById(R.id.secondary_picture5);
 
         Button buttonEditInfo = (Button) view.findViewById(R.id.button_edit_info);
         buttonEditInfo.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +102,25 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
         new DownloadImage(profile_picture).execute(profile.getProfilePictureUri(700, 700).toString());
 
         nameView.setText(profile.getName());
+
+        ImageView[] secondary_pictures = {secondary_pictures1, secondary_pictures2, secondary_pictures3,
+                                                                secondary_pictures4, secondary_pictures5};
+        int i = 0;
+        for (LinkUpPicture p : UserManager.getInstance().getMyUser().getPictures()) {
+            new DownloadImage(secondary_pictures[i]).execute(p.getUrl());
+            if(!Objects.equals(p.getUrl(), ""))
+                i++;
+        }
+        for(int j=0; j<5; j++){
+            if(i == 0) {
+                secondary_pictures[j].setVisibility(View.GONE);
+            } else {
+                secondary_pictures[j].setVisibility(View.VISIBLE);
+            }
+        }
+        for(; i < 5; i++){
+            secondary_pictures[i].setImageDrawable(null);
+        }
 
         ageView.setText(String.format("%s %s", myUser.getAge(), getString(R.string.years)));
 
