@@ -66,9 +66,9 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         postChanges();
-        super.onStop();
+        super.onPause();
     }
 
     public void postChanges(){
