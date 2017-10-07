@@ -72,8 +72,8 @@ public class ActiveChatsFragment extends Fragment {
         }
 
         // Initialize ProgressBar and RecyclerView.
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mMessageRecyclerView = (RecyclerView) view.findViewById(R.id.messageRecyclerView);
+        //mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mMessageRecyclerView = (RecyclerView) view.findViewById(R.id.previewsRecyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this.getContext());
         mLinearLayoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
@@ -101,7 +101,7 @@ public class ActiveChatsFragment extends Fragment {
             @Override
             protected void populateViewHolder(final ChatPreviewViewHolder viewHolder,
                                               ChatPreview chatMessage, int position) {
-                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 viewHolder.bind(chatMessage, mFirebaseDatabaseReference);
             }
 
