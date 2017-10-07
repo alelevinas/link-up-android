@@ -27,7 +27,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.LoginAsyncTaskLoader;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;

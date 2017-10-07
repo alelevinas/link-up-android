@@ -210,7 +210,6 @@ public class UserService {
         });
     }
 
-
     public void getUserPreferences(String userId, final Callback<ServerResponse<UserPreferences>> callback) {
         if (endItNow) {
             showNoConnectionAlert();
@@ -265,7 +264,6 @@ public class UserService {
             }
         });
     }
-
 
     public void updateUser(String userId, LinkUpUser user, final Callback<ServerResponse<String>> callback) {
         if (endItNow) {

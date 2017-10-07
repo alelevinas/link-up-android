@@ -15,10 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by alejandro on 9/10/17.
- */
-
 public class UserManager {
     public static final int PICTURE_COUNT = 5;
     private static final UserManager ourInstance = new UserManager();
@@ -67,6 +63,5 @@ public class UserManager {
                 Log.d("UPDATE PICTURES", "-----MAL AHI----");
             }
         });
-
     }
 }
