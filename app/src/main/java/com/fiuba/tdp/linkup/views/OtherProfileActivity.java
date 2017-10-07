@@ -30,7 +30,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
     private LoaderManager mLoader;
     private ImageView loader;
-    private AppBarLayout appbar;
     private NestedScrollView nestedScrollView;
     private TextView placeDetail;
     private TextView placeLocation;
@@ -41,7 +40,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.other_profile_detail);
-        //setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         CollapsingToolbarLayout collapsingToolbar =
@@ -56,7 +55,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         }
 
         startMyAsyncTask();
-        appbar = (AppBarLayout) findViewById(R.id.app_bar);
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
         startLoader();
@@ -76,7 +74,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     }
 
     private void startLoader() {
-        //appbar.setVisibility(View.GONE);
+        findViewById(R.id.appbar).setVisibility(View.GONE);
         nestedScrollView.setVisibility(View.GONE);
 
         loader.setVisibility(View.VISIBLE);
@@ -103,7 +101,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         loader.setVisibility(View.GONE);
         loader.clearAnimation();
 
-        //appbar.setVisibility(View.VISIBLE);
+        findViewById(R.id.appbar).setVisibility(View.VISIBLE);
         nestedScrollView.setVisibility(View.VISIBLE);
     }
 
