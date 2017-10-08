@@ -9,9 +9,16 @@ import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.ChatPreview;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 import com.fiuba.tdp.linkup.views.ChatActivity;
 import com.google.firebase.database.DatabaseReference;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by alejandro on 10/7/17.
@@ -31,17 +38,27 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(final ChatPreview chat, final DatabaseReference chatRef) {
-        setName(chat.getmName());
-        setPreview(chat.getmLastMessage());
-        setProfilePicture("");
+        setName(chat.getName());
+        setPreview(chat.getLastMessage());
+        new UserService(itemView.getContext()).getUser(chat.getOtherUserId(), new Callback<ServerResponse<LinkUpUser>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                setProfilePicture(response.body().data.getPicture());
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+
+            }
+        });
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentBundle = new Intent(itemView.getContext(), ChatActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(ChatActivity.CHAT_WITH_USER_ID, chat.getmOtherUserId());
-                bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, chat.getmName());
+                bundle.putString(ChatActivity.CHAT_WITH_USER_ID, chat.getOtherUserId());
+                bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, chat.getName());
                 intentBundle.putExtras(bundle);
                 itemView.getContext().startActivity(intentBundle);
             }

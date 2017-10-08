@@ -148,6 +148,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
                 lastChat.put("name", otherUserName);
                 lastChat.put("lastMessage", mMessageEditText.getText().toString());
                 lastChat.put("otherUserId", otherUserId);
+                lastChat.put("messageId", messageId);
+
                 myLastChatRef.setValue(lastChat);
 
                 //OTHER chats and last message data
@@ -156,6 +158,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
                 otherLastChat.put("name", UserManager.getInstance().getMyUser().getName());
                 otherLastChat.put("lastMessage", mMessageEditText.getText().toString());
                 otherLastChat.put("otherUserId", myUserId);
+                otherLastChat.put("messageId", messageId);
+
                 otherLastChatRef.setValue(otherLastChat);
 
 

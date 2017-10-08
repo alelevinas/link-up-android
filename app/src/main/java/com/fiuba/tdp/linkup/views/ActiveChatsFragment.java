@@ -20,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,7 +52,7 @@ public class ActiveChatsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)  {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_active_chats, container, false);
 
@@ -73,9 +72,8 @@ public class ActiveChatsFragment extends Fragment {
 
         // Initialize ProgressBar and RecyclerView.
         //mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mMessageRecyclerView = (RecyclerView) view.findViewById(R.id.previewsRecyclerView);
+        mMessageRecyclerView = (RecyclerView) view;
         mLinearLayoutManager = new LinearLayoutManager(this.getContext());
-        mLinearLayoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // New message child entries
@@ -86,23 +84,22 @@ public class ActiveChatsFragment extends Fragment {
 
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
-        return view;
+        return mMessageRecyclerView;
     }
 
     private FirebaseRecyclerAdapter<ChatPreview, ChatPreviewViewHolder> getFirebaseAdapter() {
-        Query lastFifty = mFirebaseDatabaseReference.child("users/" + mUserId + "/conversations");
         return new FirebaseRecyclerAdapter<ChatPreview,
                 ChatPreviewViewHolder>(
                 ChatPreview.class,
                 R.layout.item_chat_preview,
                 ChatPreviewViewHolder.class,
-                lastFifty) {
+                mFirebaseDatabaseReference.child("users/" + mUserId + "/conversations")) {
 
             @Override
             protected void populateViewHolder(final ChatPreviewViewHolder viewHolder,
-                                              ChatPreview chatMessage, int position) {
+                                              ChatPreview chatPreview, int position) {
                 //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                viewHolder.bind(chatMessage, mFirebaseDatabaseReference);
+                viewHolder.bind(chatPreview, mFirebaseDatabaseReference);
             }
 
             @Override
@@ -117,23 +114,23 @@ public class ActiveChatsFragment extends Fragment {
 
         mFirebaseAdapter = getFirebaseAdapter();
 
-        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                super.onItemRangeInserted(positionStart, itemCount);
-                int friendlyMessageCount = mFirebaseAdapter.getItemCount();
-                int lastVisiblePosition =
-                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-                // If the recycler view is initially being loaded or the
-                // user is at the bottom of the list, scroll to the bottom
-                // of the list to show the newly added message.
-                if (lastVisiblePosition == -1 ||
-                        (positionStart >= (friendlyMessageCount - 1) &&
-                                lastVisiblePosition == (positionStart - 1))) {
-                    mMessageRecyclerView.scrollToPosition(positionStart);
-                }
-            }
-        });
+//        mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+//            @Override
+//            public void onItemRangeInserted(int positionStart, int itemCount) {
+//                super.onItemRangeInserted(positionStart, itemCount);
+//                int friendlyMessageCount = mFirebaseAdapter.getItemCount();
+//                int lastVisiblePosition =
+//                        mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+//                // If the recycler view is initially being loaded or the
+//                // user is at the bottom of the list, scroll to the bottom
+//                // of the list to show the newly added message.
+//                if (lastVisiblePosition == -1 ||
+//                        (positionStart >= (friendlyMessageCount - 1) &&
+//                                lastVisiblePosition == (positionStart - 1))) {
+//                    mMessageRecyclerView.scrollToPosition(positionStart);
+//                }
+//            }
+//        });
     }
 
     @Override

@@ -24,8 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.HashMap;
-
 public class MainLinkUpActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener,
         InterestsFragment.OnListFragmentInteractionListener, NewMatchFragment.OnNewMatchListFragmentInteractionListener {
 
@@ -156,11 +154,12 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 
         DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        HashMap<String, String> tokenObject = new HashMap<>();
-        tokenObject.put("token", token);
-        tokenObject.put("name", UserManager.getInstance().getMyUser().getName());
+//        HashMap<String, String> tokenObject = new HashMap<>();
+//        tokenObject.put("token", token);
+//        tokenObject.put("name", UserManager.getInstance().getMyUser().getName());
 
-        mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId()).setValue(tokenObject);
+        mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId() + "/token").setValue(token);
+        mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId() + "/name").setValue(UserManager.getInstance().getMyUser().getName());
     }
 
 }

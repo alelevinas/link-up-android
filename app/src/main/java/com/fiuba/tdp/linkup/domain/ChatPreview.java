@@ -8,74 +8,64 @@ public class ChatPreview {
     private String mName;
     private String mLastMessage;
     private String mOtherUserId;
-    private String mMessageId;
-    private String mPhotoUrl;
-    private Boolean mIsRead;
+//    private String mMessageId;
+//    private Boolean mIsRead;
 
     public ChatPreview() {
         // Needed for Firebase
     }
 
-    public ChatPreview(String mName, String mLastMessage, String mOtherUserId) {
-        this.mName = mName;
-        this.mLastMessage = mLastMessage;
-        this.mOtherUserId = mOtherUserId;
+    public ChatPreview(String name, String lastMessage, String otherUserId) {
+        this.mName = name;
+        this.mLastMessage = lastMessage;
+        this.mOtherUserId = otherUserId;
     }
 
-    public ChatPreview(String uid, String name, String message, Boolean liked, String photoUrl) {
-        mName = name;
-        mLastMessage = message;
-        mOtherUserId = "";
-        mIsRead = liked;
-        mPhotoUrl = photoUrl;
-    }
-
-    public ChatPreview(String messageId, String uid, String name, String message, Boolean liked, String photoUrl) {
-        mName = name;
-        mLastMessage = message;
-        mOtherUserId = uid;
-        mIsRead = liked;
-        mMessageId = messageId;
-        mPhotoUrl = photoUrl;
-    }
-
-    public String getmName() {
+    public String getName() {
         return mName;
     }
 
-    public void setmName(String mName) {
-        this.mName = mName;
+    public void setName(String name) {
+        this.mName = name;
     }
 
-    public String getmLastMessage() {
+    public String getLastMessage() {
         return mLastMessage;
     }
 
-    public void setmLastMessage(String mLastMessage) {
-        this.mLastMessage = mLastMessage;
+    public void setLastMessage(String lastMessage) {
+        this.mLastMessage = lastMessage;
     }
 
-    public String getmOtherUserId() {
+    public String getOtherUserId() {
         return mOtherUserId;
     }
 
-    public void setmOtherUserId(String mOtherUserId) {
-        this.mOtherUserId = mOtherUserId;
+    public void setOtherUserId(String otherUserId) {
+        this.mOtherUserId = otherUserId;
     }
 
-    public String getmMessageId() {
-        return mMessageId;
-    }
-
-    public void setmMessageId(String mMessageId) {
-        this.mMessageId = mMessageId;
-    }
-
-    public Boolean getmIsRead() {
-        return mIsRead;
-    }
-
-    public void setmIsRead(Boolean mIsRead) {
-        this.mIsRead = mIsRead;
-    }
+//    public String getmMessageId() {
+//        return mMessageId;
+//    }
+//
+//    public void setmMessageId(String mMessageId) {
+//        this.mMessageId = mMessageId;
+//    }
+//
+//    public Boolean getmIsRead() {
+//        return mIsRead;
+//    }
+//
+//    public void setmIsRead(Boolean mIsRead) {
+//        this.mIsRead = mIsRead;
+//    }
+//
+//    public String getmPhotoUrl() {
+//        return mPhotoUrl;
+//    }
+//
+//    public void setmPhotoUrl(String mPhotoUrl) {
+//        this.mPhotoUrl = mPhotoUrl;
+//    }
 }
