@@ -31,10 +31,7 @@ public class SliderPagerAdapter extends PagerAdapter {
         ImageView im_slider = (ImageView) view.findViewById(R.id.im_slider);
         Picasso.with(activity.getApplicationContext())
                 .load(image_arraylist.get(position))
-                .placeholder(R.mipmap.ic_launcher) // optional
-                .error(R.mipmap.ic_launcher)         // optional
                 .into(im_slider);
-
 
         container.addView(view);
 
@@ -51,7 +48,6 @@ public class SliderPagerAdapter extends PagerAdapter {
     public boolean isViewFromObject(View view, Object obj) {
         return view == obj;
     }
-
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {

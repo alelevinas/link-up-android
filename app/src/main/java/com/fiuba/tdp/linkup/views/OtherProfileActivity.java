@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
@@ -14,6 +15,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -50,10 +52,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private TextView userInterestsLabel;
     private TextView userInterests;
 
+    private ImageView vp_image;
     private ViewPager vp_slider;
     private LinearLayout ll_dots;
-    SliderPagerAdapter sliderPagerAdapter;
-    ArrayList<String> slider_image_list;
+    private SliderPagerAdapter sliderPagerAdapter;
+    private ArrayList<String> slider_image_list;
     private TextView[] dots;
     int page_position = 0;
 
@@ -76,23 +79,29 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             mLoader.initLoader(0, null, this);// deliver the result after the screen rotation
         }
 
+        vp_image = (ImageView) findViewById(R.id.vp_image);
+        vp_slider = (ViewPager) findViewById(R.id.vp_slider);
+        ll_dots = (LinearLayout) findViewById(R.id.ll_dots);
+
         distanceLabel = (TextView) findViewById(R.id.distanceLabel);
         studiesLabel = (TextView) findViewById(R.id.studiesLabel);
+
         aboutMeLabel = (TextView) findViewById(R.id.aboutMeLabel);
         userDescription = (TextView) findViewById(R.id.aboutMe);
+
         userInterestsLabel = (TextView) findViewById(R.id.interestsLabel);
         userInterests =  (TextView) findViewById(R.id.interests);
 
-        startMyAsyncTask();
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
         startLoader();
+        startMyAsyncTask();
 
         toolbarUsername.setTitle("");
     }
 
     private void addBottomDots(int currentPage) {
-        dots = new TextView[slider_image_list.size()];
+        dots = slider_image_list != null ? new TextView[slider_image_list.size()] : new TextView[1];
 
         ll_dots.removeAllViews();
         for (int i = 0; i < dots.length; i++) {
@@ -108,56 +117,75 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     }
 
     private void bindUserData(LinkUpUser otherUser) {
-        vp_slider = (ViewPager) findViewById(R.id.vp_slider);
-        ll_dots = (LinearLayout) findViewById(R.id.ll_dots);
-
-        slider_image_list = new ArrayList<>();
-
-        slider_image_list.add(otherUser.getPicture());
-        for(LinkUpPicture image : otherUser.getPictures()) {
-            if(!image.getUrl().equals(""))
-                slider_image_list.add(image.getUrl());
+        int nPictures = 0;
+        for(LinkUpPicture picture : otherUser.getPictures()){
+            if(!picture.getUrl().equals(""))
+                nPictures++;
         }
+        if(nPictures>0) {
+            vp_image.setVisibility(View.GONE);
+            vp_slider.setVisibility(View.VISIBLE);
 
-        sliderPagerAdapter = new SliderPagerAdapter(OtherProfileActivity.this, slider_image_list);
-        vp_slider.setAdapter(sliderPagerAdapter);
+            slider_image_list = new ArrayList<>();
 
-        vp_slider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            slider_image_list.add(otherUser.getPicture());
+            for (LinkUpPicture image : otherUser.getPictures()) {
+                if (!image.getUrl().equals(""))
+                    slider_image_list.add(image.getUrl());
             }
 
-            @Override
-            public void onPageSelected(int position) {
-                addBottomDots(position);
-            }
+            sliderPagerAdapter = new SliderPagerAdapter(OtherProfileActivity.this, slider_image_list);
+            vp_slider.setAdapter(sliderPagerAdapter);
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
-        addBottomDots(0);
-        final Handler handler = new Handler();
-
-        final Runnable update = new Runnable() {
-            public void run() {
-                if (page_position == slider_image_list.size()) {
-                    page_position = 0;
-                } else {
-                    page_position = page_position + 1;
+            vp_slider.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 }
-                vp_slider.setCurrentItem(page_position, true);
-            }
-        };
 
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(update);
-            }
-        }, 5000, 5000);
-        vp_slider.setCurrentItem(0, true);
+                @Override
+                public void onPageSelected(int position) {
+                    addBottomDots(position);
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                }
+            });
+            final Handler handler = new Handler();
+
+            final Runnable update = new Runnable() {
+                public void run() {
+                    if (page_position == slider_image_list.size()) {
+                        page_position = 0;
+                    } else {
+                        page_position = page_position + 1;
+                    }
+                    vp_slider.setCurrentItem(page_position, true);
+                }
+            };
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(update);
+                }
+            }, 5000, 5000);
+
+            // HACK to fix viewpager bug -> https://stackoverflow.com/questions/32323570/viewpager-title-doesnt-appear-until-i-swipe-it
+            vp_slider.post(new Runnable() {
+                @Override
+                public void run() {
+                    vp_slider.setCurrentItem(1);
+                    vp_slider.setCurrentItem(0);
+                }
+            });
+        } else {
+            vp_slider.setVisibility(View.GONE);
+            vp_image.setVisibility(View.VISIBLE);
+
+            new DownloadImage(vp_image).execute(otherUser.getPicture());
+        }
+        addBottomDots(0);
 
         toolbarUsername.setTitle(getFirstWord(otherUser.getName()) + ", " + otherUser.getAge());
 
@@ -224,8 +252,8 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private void stopLoader() {
         bindUserData(UserManager.getInstance().getUserSelected());
 
-        loader.setVisibility(View.GONE);
         loader.clearAnimation();
+        loader.setVisibility(View.GONE);
 
         findViewById(R.id.appbar).setVisibility(View.VISIBLE);
         nestedScrollView.setVisibility(View.VISIBLE);
