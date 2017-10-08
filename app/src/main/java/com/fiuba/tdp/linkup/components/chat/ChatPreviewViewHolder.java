@@ -7,12 +7,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.ChatPreview;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserService;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 import com.fiuba.tdp.linkup.views.ChatActivity;
 import com.google.firebase.database.DatabaseReference;
 
@@ -40,6 +40,7 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
     public void bind(final ChatPreview chat, final DatabaseReference chatRef) {
         setName(chat.getName());
         setPreview(chat.getLastMessage());
+
         new UserService(itemView.getContext()).getUser(chat.getOtherUserId(), new Callback<ServerResponse<LinkUpUser>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
@@ -66,7 +67,10 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void setProfilePicture(String s) {
-        new DownloadImage(mProfilePicture).execute(s);
+        //new DownloadImage(mProfilePicture).execute(s);
+        Glide.with(itemView.getContext())
+                .load(s)
+                .into(mProfilePicture);
     }
 
     private void setName(String name) {

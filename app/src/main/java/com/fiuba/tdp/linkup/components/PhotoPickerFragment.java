@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.bumptech.glide.Glide;
 import com.fiuba.tdp.linkup.R;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -100,7 +100,13 @@ public class PhotoPickerFragment extends Fragment {
     }
 
     public void setImage(String photoUrl) {
-        new DownloadImage(mAddImageButton).execute(photoUrl);
+//        new DownloadImage(mAddImageButton).execute(photoUrl);
+
+        Glide.with(this)
+                .load(photoUrl)
+                .into(mAddImageButton);
+
+
         this.photoUrl = photoUrl;
     }
 
@@ -145,8 +151,12 @@ public class PhotoPickerFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             String photoURL = data.getStringExtra(FacebookPhotoGridActivity.ARG_PHOTO_URL);
-            new DownloadImage(mAddImageButton).execute(photoURL);
-            // TODO: actualizar en el modelo de usuario y mandar al server
+//            new DownloadImage(mAddImageButton).execute(photoURL);
+
+            Glide.with(this)
+                    .load(photoURL)
+                    .into(mAddImageButton);
+
             onImageChanged(photoURL);
         }
     }

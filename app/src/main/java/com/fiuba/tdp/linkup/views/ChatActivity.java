@@ -17,14 +17,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.chat.ChatViewHolder;
 import com.fiuba.tdp.linkup.domain.ChatMessage;
+import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
+import com.fiuba.tdp.linkup.services.UserService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -34,6 +40,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     public static final String CHATS_CHILD = "chats";
@@ -65,21 +75,20 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private FirebaseAnalytics mFirebaseAnalytics;
     private String myUserLastChatReference;
     private String otherUserLastChatReference;
+    private Toolbar toolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         getOtherUserId();
-
-        toolbar.setTitle(otherUserName);
-
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -176,6 +185,9 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             otherUserName = extrasBundle.getString(CHAT_WITH_USER_NAME);
             myUserId = UserManager.getInstance().getMyUser().getId();
 
+            setUpToolbarTitle();
+
+
 
             if (otherUserId.compareTo(myUserId) < 0) {
                 messageId = otherUserId + "_" + myUserId;
@@ -196,6 +208,36 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             finish();
             // hubo un error, ir para atras
         }
+    }
+
+    private void setUpToolbarTitle() {
+        ((TextView) toolbar.findViewById(R.id.other_title_name)).setText(otherUserName);
+
+        final ImageView profileImage = (ImageView) toolbar.findViewById(R.id.other_profile_picture);
+
+        new UserService(this).getUser(otherUserId, new Callback<ServerResponse<LinkUpUser>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
+                Glide.with(getBaseContext())
+                        .load(response.body().data.getPicture())
+                        .into(profileImage);
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
+
+            }
+        });
+
+        LinearLayout linearLayout = (LinearLayout) toolbar.findViewById(R.id.toolbar_action);
+
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e(TAG, "HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            }
+        });
+
     }
 
     private FirebaseRecyclerAdapter<ChatMessage, ChatViewHolder> getFirebaseAdapter() {
@@ -248,7 +290,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.bottom_navigation, menu);
+        inflater.inflate(R.menu.chat_menu, menu);
         return true;
     }
 

@@ -10,11 +10,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -56,7 +56,11 @@ public class FirstSignUpActivityFragment extends Fragment {
     }
 
     private void bindUserData(View view, LinkUpUser myUser) {
-        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(700, 700).toString());
+//        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(700, 700).toString());
+
+        Glide.with(this)
+                .load(profile.getProfilePictureUri(700, 700).toString())
+                .into((ImageView) view.findViewById(R.id.profile_picture));
 
         TextView nameView = (TextView) view.findViewById(R.id.label_name);
         nameView.setText(profile.getName());

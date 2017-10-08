@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.ExploreUserViewHolder;
@@ -17,7 +18,6 @@ import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.services.UserService;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 import java.util.ArrayList;
 
@@ -97,7 +97,13 @@ public class ExploreFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ExploreUserViewHolder holder, int position) {
-            new DownloadImage(holder.picture).execute(usersAround.getPictures().get(position));
+//            new DownloadImage(holder.picture).execute(usersAround.getPictures().get(position));
+
+            Glide.with(holder.itemView.getContext())
+                    .load(usersAround.getPictures().get(position))
+                    .into(holder.picture);
+
+
             holder.name.setText(usersAround.getNames().get(position));
             holder.description.setText(usersAround.getDescriptions().get(position));
             holder.userId = usersAround.getIds().get(position);

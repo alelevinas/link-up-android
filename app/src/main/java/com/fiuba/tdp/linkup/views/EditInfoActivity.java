@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.PhotoPickerFragment;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
@@ -15,7 +16,6 @@ import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 import java.util.Objects;
 
@@ -36,7 +36,11 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         ImageButton profileImage = (ImageButton) findViewById(R.id.photo_profile);
-        new DownloadImage(profileImage).execute(UserManager.getInstance().getMyUser().getPicture());
+//        new DownloadImage(profileImage).execute(UserManager.getInstance().getMyUser().getPicture());
+
+        Glide.with(this)
+                .load(UserManager.getInstance().getMyUser().getPicture())
+                .into(profileImage);
 
         labelAboutMe = (TextView) findViewById(R.id.AboutMeLabel);
         labelAboutMe.setText("Acerca de " + UserManager.getInstance().getMyUser().getName());
@@ -71,7 +75,7 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
         super.onStop();
     }
 
-    public void postChanges(){
+    public void postChanges() {
         LinkUpUser user = UserManager.getInstance().getMyUser();
         user.setDescription(textDescription.getText().toString());
 
@@ -88,10 +92,10 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
         });
     }
 
-        @Override
+    @Override
     public void onImageChanged(int number, String photoUrl) {
         Log.e("IMAGE CHANGED", photoUrl);
-            UserManager.getInstance().updatePicture(number, photoUrl, getBaseContext());
+        UserManager.getInstance().updatePicture(number, photoUrl, getBaseContext());
     }
 
     @Override
@@ -105,7 +109,7 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                 if (response.isSuccessful()) {
-                    if(!Objects.equals(response.body().data.getDescription(), ""))
+                    if (!Objects.equals(response.body().data.getDescription(), ""))
                         textDescription.setText(response.body().data.getDescription());
                 } else {
                     Log.e("EDIT INFO ACTIVITY", "ERROR UPDATING DESCRIPTION, SV RESPONSE");

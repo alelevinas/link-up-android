@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.facebook.FacebookUserItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,7 +83,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void getFacebookData(final View view) {
-        new DownloadImage((ImageView) view.findViewById(R.id.profileImage)).execute(profile.getProfilePictureUri(200, 200).toString());
+//        new DownloadImage((ImageView) view.findViewById(R.id.profileImage)).execute(profile.getProfilePictureUri(200, 200).toString());
+
+        Glide.with(this)
+                .load(profile.getProfilePictureUri(200, 200).toString())
+                .into((ImageView) view.findViewById(R.id.profileImage));
 
         new FacebookService(view.getContext()).getUserData(new Callback<FacebookUserItem>() {
             @Override
