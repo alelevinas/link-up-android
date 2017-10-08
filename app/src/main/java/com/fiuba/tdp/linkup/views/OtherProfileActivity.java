@@ -3,16 +3,21 @@ package com.fiuba.tdp.linkup.views;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fiuba.tdp.linkup.R;
@@ -21,6 +26,11 @@ import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.ProfileFragmentAsyncTask
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.util.DownloadImage;
+import com.fiuba.tdp.linkup.util.SliderPagerAdapter;
+
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.fiuba.tdp.linkup.util.MySuperAppApplication.getContext;
 
@@ -38,7 +48,14 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private TextView userDescription;
     private TextView userInterestsLabel;
     private TextView userInterests;
-    private ImageView userPicture;
+
+    private ViewPager vp_slider;
+    private LinearLayout ll_dots;
+    SliderPagerAdapter sliderPagerAdapter;
+    ArrayList<String> slider_image_list;
+    private TextView[] dots;
+    int page_position = 0;
+
     private long idUser;
 
     @Override
@@ -64,7 +81,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         userDescription = (TextView) findViewById(R.id.aboutMe);
         userInterestsLabel = (TextView) findViewById(R.id.interestsLabel);
         userInterests =  (TextView) findViewById(R.id.interests);
-        userPicture = (ImageView) findViewById(R.id.image);
 
         startMyAsyncTask();
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
@@ -74,7 +90,74 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         toolbarUsername.setTitle("");
     }
 
+    private void addBottomDots(int currentPage) {
+        dots = new TextView[slider_image_list.size()];
+
+        ll_dots.removeAllViews();
+        for (int i = 0; i < dots.length; i++) {
+            dots[i] = new TextView(this);
+            dots[i].setText(Html.fromHtml("&#8226;"));
+            dots[i].setTextSize(35);
+            dots[i].setTextColor(Color.parseColor("#000000"));
+            ll_dots.addView(dots[i]);
+        }
+
+        if (dots.length > 0)
+            dots[currentPage].setTextColor(Color.parseColor("#FFFFFF"));
+    }
+
     private void bindUserData(LinkUpUser otherUser) {
+        vp_slider = (ViewPager) findViewById(R.id.vp_slider);
+        ll_dots = (LinearLayout) findViewById(R.id.ll_dots);
+
+        slider_image_list = new ArrayList<>();
+
+        slider_image_list.add(otherUser.getPicture());
+        slider_image_list.add("http://images.all-free-download.com/images/graphiclarge/bird_mountain_bird_animal_226401.jpg");
+        slider_image_list.add("http://images.all-free-download.com/images/graphiclarge/mountain_bongo_animal_mammal_220289.jpg");
+        slider_image_list.add("http://images.all-free-download.com/images/graphiclarge/bird_mountain_bird_animal_226401.jpg");
+
+
+        sliderPagerAdapter = new SliderPagerAdapter(OtherProfileActivity.this, slider_image_list);
+        vp_slider.setAdapter(sliderPagerAdapter);
+
+        vp_slider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                addBottomDots(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
+        addBottomDots(0);
+        final Handler handler = new Handler();
+
+        final Runnable update = new Runnable() {
+            public void run() {
+                if (page_position == slider_image_list.size()) {
+                    page_position = 0;
+                } else {
+                    page_position = page_position + 1;
+                }
+                vp_slider.setCurrentItem(page_position, true);
+            }
+        };
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(update);
+            }
+        }, 5000, 5000);
+        vp_slider.setCurrentItem(0, true);
+
         toolbarUsername.setTitle(getFirstWord(otherUser.getName()) + ", " + otherUser.getAge());
 
         distanceLabel.setText("A 25km de distancia");
@@ -105,8 +188,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             userInterestsLabel.setVisibility(View.VISIBLE);
             userInterests.setVisibility(View.VISIBLE);
         }
-
-        new DownloadImage(userPicture).execute(otherUser.getPicture());
     }
 
     private String getFirstWord(String text) {
