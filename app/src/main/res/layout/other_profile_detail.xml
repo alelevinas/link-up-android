@@ -67,30 +67,45 @@ android:fitsSystemWindows="true">
             android:paddingTop="@dimen/md_keylines">
 
             <TextView
+                android:id="@+id/distanceLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/md_keylines"
-                android:text="Description"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
-                android:id="@+id/place_detail"
+                android:id="@+id/studiesLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/md_keylines"
+                android:textColor="?attr/colorAccent" />
+
+            <TextView
+                android:id="@+id/aboutMeLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/md_keylines"
+                android:text="Acerca de "
+                android:textColor="?attr/colorAccent" />
+
+            <TextView
+                android:id="@+id/aboutMe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="holo5" />
 
             <TextView
+                android:id="@+id/interestsLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/md_keylines"
                 android:layout_marginTop="@dimen/md_keylines"
-                android:text="Location"
+                android:text="Intereses"
                 android:textColor="?attr/colorAccent" />
 
             <TextView
-                android:id="@+id/place_location"
+                android:id="@+id/interests"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/md_keylines"
                 tools:text="holo6" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

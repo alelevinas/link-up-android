@@ -31,9 +31,14 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private LoaderManager mLoader;
     private ImageView loader;
     private NestedScrollView nestedScrollView;
-    private TextView placeDetail;
-    private TextView placeLocation;
-    private ImageView placePicture;
+    private CollapsingToolbarLayout toolbarUsername;
+    private TextView distanceLabel;
+    private TextView studiesLabel;
+    private TextView aboutMeLabel;
+    private TextView userDescription;
+    private TextView userInterestsLabel;
+    private TextView userInterests;
+    private ImageView userPicture;
     private long idUser;
 
     @Override
@@ -43,8 +48,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        toolbarUsername = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // collapsingToolbar.setTitle(getString(R.string.item_title));
 
         idUser = getIntent().getLongExtra(ID_USER, 0);
@@ -54,23 +58,63 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             mLoader.initLoader(0, null, this);// deliver the result after the screen rotation
         }
 
+        distanceLabel = (TextView) findViewById(R.id.distanceLabel);
+        studiesLabel = (TextView) findViewById(R.id.studiesLabel);
+        aboutMeLabel = (TextView) findViewById(R.id.aboutMeLabel);
+        userDescription = (TextView) findViewById(R.id.aboutMe);
+        userInterestsLabel = (TextView) findViewById(R.id.interestsLabel);
+        userInterests =  (TextView) findViewById(R.id.interests);
+        userPicture = (ImageView) findViewById(R.id.image);
+
         startMyAsyncTask();
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
         startLoader();
 
-        collapsingToolbar.setTitle("title");
+        toolbarUsername.setTitle("");
     }
 
     private void bindUserData(LinkUpUser otherUser) {
-        placeDetail = (TextView) findViewById(R.id.place_detail);
-        placeDetail.setText(otherUser.getName());
+        toolbarUsername.setTitle(getFirstWord(otherUser.getName()) + ", " + otherUser.getAge());
 
-        placeLocation =  (TextView) findViewById(R.id.place_location);
-        placeLocation.setText(otherUser.getDescription());
+        distanceLabel.setText("A 25km de distancia");
+        studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());
 
-        placePicture = (ImageView) findViewById(R.id.image);
-        new DownloadImage(placePicture).execute(otherUser.getPicture());
+        if(otherUser.getDescription().equals("")) {
+            aboutMeLabel.setVisibility(View.GONE);
+            userDescription.setVisibility(View.GONE);
+        } else {
+            aboutMeLabel.setText("Acerca de " + getFirstWord(otherUser.getName()));
+            userDescription.setText(otherUser.getDescription());
+            aboutMeLabel.setVisibility(View.VISIBLE);
+            userDescription.setVisibility(View.VISIBLE);
+        }
+
+        if(otherUser.getLikes().length == 0){
+            userInterestsLabel.setVisibility(View.GONE);
+            userInterests.setVisibility(View.GONE);
+        } else {
+            String likesUser = "";
+            for(LinkUpUser.LinkUpLike like : otherUser.getLikes()) {
+                if(likesUser.equals(""))
+                    likesUser = like.getName();
+                else
+                    likesUser = likesUser + "\n " + like.getName();
+            }
+            userInterests.setText(likesUser);
+            userInterestsLabel.setVisibility(View.VISIBLE);
+            userInterests.setVisibility(View.VISIBLE);
+        }
+
+        new DownloadImage(userPicture).execute(otherUser.getPicture());
+    }
+
+    private String getFirstWord(String text) {
+        if (text.indexOf(' ') > -1) { // Check if there is more than one word.
+            return text.substring(0, text.indexOf(' ')); // Extract first word.
+        } else {
+            return text; // Text is the first word itself.
+        }
     }
 
     private void startLoader() {
