@@ -1,6 +1,7 @@
 package com.fiuba.tdp.linkup.components;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +20,7 @@ import com.fiuba.tdp.linkup.domain.Match;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.views.OtherProfileActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,10 +28,6 @@ import retrofit2.Response;
 
 import static android.R.color.holo_orange_light;
 import static android.R.color.holo_red_light;
-
-/**
- * Created by alejandro on 9/16/17.
- */
 
 public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
@@ -45,7 +43,6 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
 
-
     public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent) {
         super(inflater.inflate(R.layout.fragment_explore_item_card, parent, false));
 
@@ -60,7 +57,10 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(final View v) {
                 Snackbar.make(v, "Ver Perfil de " + name.getText().toString(),
-                        Snackbar.LENGTH_LONG).show();
+                        Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), OtherProfileActivity.class);
+                intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(userId));
+                v.getContext().startActivity(intent);
             }
         });
 

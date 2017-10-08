@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +22,7 @@ import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.services.UserService;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,35 +31,46 @@ import retrofit2.Response;
 
 public class ExploreFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    TextView emptyView;
-
+    private RecyclerView recyclerView;
+    private TextView emptyView;
+    private ImageView loader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-//                R.layout.fragment_explore_list, container, false);
         View view = inflater.inflate(R.layout.fragment_explore_list, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.explore_list);
         emptyView = (TextView) view.findViewById(R.id.empty_view);
+        loader = (ImageView) view.findViewById(R.id.loader);
 
         ExploreUserContentAdapter adapter = new ExploreUserContentAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        loader.setVisibility(View.GONE);
 
         return view;
     }
 
     private void setEmptyView() {
+        loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
     }
 
     private void hideEmptyView() {
+        loader.setVisibility(View.GONE);
+        loader.clearAnimation();
         recyclerView.setVisibility(View.VISIBLE);
+        emptyView.setVisibility(View.GONE);
+    }
+
+    private void startLoader() {
+        loader.setVisibility(View.VISIBLE);
+        loader.startAnimation(AnimationUtils.loadAnimation(this.getContext(), R.anim.rotate_indefinitely) );
+        recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
     }
 
@@ -66,6 +80,7 @@ public class ExploreFragment extends Fragment {
         private UserService userService;
 
         public ExploreUserContentAdapter(final ExploreFragment exploreFragment) {
+            exploreFragment.startLoader();
             userService = new UserService(exploreFragment.getContext());
 
             userService.getUsersCompatible(Profile.getCurrentProfile().getId(), new Callback<ServerResponse<ArrayList<UserAround>>>() {
@@ -105,7 +120,12 @@ public class ExploreFragment extends Fragment {
 
 
             holder.name.setText(usersAround.getNames().get(position));
-            holder.description.setText(usersAround.getDescriptions().get(position));
+            if(Objects.equals(usersAround.getDescriptions().get(position), "")) {
+                holder.description.setVisibility(View.GONE);
+            } else {
+                holder.description.setVisibility(View.VISIBLE);
+                holder.description.setText(usersAround.getDescriptions().get(position));
+            }
             holder.userId = usersAround.getIds().get(position);
             holder.favoriteImageButtonChecked = usersAround.getUser(position).getLike().compareTo("true") == 0;
             holder.updateLikeStatus();

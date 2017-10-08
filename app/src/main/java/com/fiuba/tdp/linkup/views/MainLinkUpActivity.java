@@ -119,7 +119,6 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         startActivity(intentBundle);
     }
 
-
     private void showAlert(String title, String message) {
         // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -140,7 +139,6 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         AlertDialog dialog = builder.create();
 
         dialog.show();
-
     }
 
     private void saveFireBaseToken() {

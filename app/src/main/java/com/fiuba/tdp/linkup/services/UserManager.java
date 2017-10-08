@@ -15,14 +15,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by alejandro on 9/10/17.
- */
-
 public class UserManager {
     public static final int PICTURE_COUNT = 5;
     private static final UserManager ourInstance = new UserManager();
-    private LinkUpUser myUser;
+    private LinkUpUser myUser, userSelected;
 
     private UserManager() {
     }
@@ -35,8 +31,16 @@ public class UserManager {
         return myUser;
     }
 
+    public final LinkUpUser getUserSelected() {
+        return userSelected;
+    }
+
     public void setMyUser(LinkUpUser myUser) {
         this.myUser = myUser;
+    }
+
+    public void setUserSelected(LinkUpUser otherUser) {
+        this.userSelected = otherUser;
     }
 
     public void updatePicture(int i, String url, Context context) {
@@ -67,6 +71,5 @@ public class UserManager {
                 Log.d("UPDATE PICTURES", "-----MAL AHI----");
             }
         });
-
     }
 }
