@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.ProfileFragmentAsyncTaskLoader;
+import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.util.DownloadImage;
@@ -113,10 +114,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         slider_image_list = new ArrayList<>();
 
         slider_image_list.add(otherUser.getPicture());
-        slider_image_list.add("http://images.all-free-download.com/images/graphiclarge/bird_mountain_bird_animal_226401.jpg");
-        slider_image_list.add("http://images.all-free-download.com/images/graphiclarge/mountain_bongo_animal_mammal_220289.jpg");
-        slider_image_list.add("http://images.all-free-download.com/images/graphiclarge/bird_mountain_bird_animal_226401.jpg");
-
+        for(LinkUpPicture image : otherUser.getPictures()) {
+            if(!image.getUrl().equals(""))
+                slider_image_list.add(image.getUrl());
+        }
 
         sliderPagerAdapter = new SliderPagerAdapter(OtherProfileActivity.this, slider_image_list);
         vp_slider.setAdapter(sliderPagerAdapter);
