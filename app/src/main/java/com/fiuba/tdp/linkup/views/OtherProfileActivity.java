@@ -6,16 +6,26 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
@@ -32,6 +42,7 @@ import java.util.TimerTask;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
+import static android.support.v7.appcompat.R.styleable.MenuItem;
 import static com.fiuba.tdp.linkup.util.MySuperAppApplication.getContext;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
@@ -55,7 +66,14 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private SliderPagerAdapter sliderPagerAdapter;
     private ArrayList<String> slider_image_list;
     private TextView[] dots;
-    int page_position = 0;
+    private int page_position = 0;
+
+    private ImageButton buttonMessage;
+    private ImageButton buttonShare;
+    private ImageButton buttonMenu;
+    private FloatingActionButton buttonNotLike;
+    private FloatingActionButton buttonSuperLike;
+    private FloatingActionButton buttonLike;
 
     private long idUser;
 
@@ -91,6 +109,14 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
+
+        buttonMessage = (ImageButton) findViewById(R.id.buttonMessage);
+        buttonShare = (ImageButton) findViewById(R.id.buttonShare);
+        buttonMenu = (ImageButton) findViewById(R.id.buttonMenu);
+        buttonNotLike = (FloatingActionButton) findViewById(R.id.notLikeButton);
+        buttonSuperLike = (FloatingActionButton) findViewById(R.id.superlikeButton);
+        buttonLike = (FloatingActionButton) findViewById(R.id.likeButton);
+
         startLoader();
         startMyAsyncTask();
 
@@ -113,7 +139,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             dots[currentPage].setTextColor(Color.parseColor("#FFFFFF"));
     }
 
-    private void bindUserData(LinkUpUser otherUser) {
+    private void bindUserData(final LinkUpUser otherUser) {
         int nPictures = 0;
         for(LinkUpPicture picture : otherUser.getPictures()){
             if(!picture.getUrl().equals(""))
@@ -191,7 +217,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         addBottomDots(0);
 
         toolbarUsername.setTitle(getFirstWord(otherUser.getName()) + ", " + otherUser.getAge());
-        toolbarUsername.setBackgroundColor(Color.parseColor("#3f000000"));
+        //toolbarUsername.setBackgroundColor(Color.parseColor("#3f000000"));
 
         distanceLabel.setText("A 25km de distancia");
         studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());
@@ -221,6 +247,72 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             userInterestsLabel.setVisibility(View.VISIBLE);
             userInterests.setVisibility(View.VISIBLE);
         }
+
+        buttonNotLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Eliminaste de tu listado a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonSuperLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Has dado SuperLike a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Diste Like a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "No puedes enviar mensaje a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Todavia no puedes compartir a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu pm = new PopupMenu(OtherProfileActivity.this, v);
+                pm.getMenuInflater().inflate(R.menu.button_menu_profile, pm.getMenu());
+                pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.block:
+                                Toast.makeText(getApplicationContext(), "Bloquear a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.report:
+                                Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+                                break;
+
+                            default:
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                pm.show();
+            }
+        });
     }
 
     private String getFirstWord(String text) {
@@ -234,6 +326,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private void startLoader() {
         findViewById(R.id.appbar).setVisibility(View.GONE);
         nestedScrollView.setVisibility(View.GONE);
+
+        buttonNotLike.setVisibility(View.GONE);
+        buttonSuperLike.setVisibility(View.GONE);
+        buttonLike.setVisibility(View.GONE);
 
         loader.setVisibility(View.VISIBLE);
         loader.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_indefinitely) );
@@ -258,6 +354,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         loader.clearAnimation();
         loader.setVisibility(View.GONE);
+
+        buttonNotLike.setVisibility(View.VISIBLE);
+        buttonSuperLike.setVisibility(View.VISIBLE);
+        buttonLike.setVisibility(View.VISIBLE);
 
         findViewById(R.id.appbar).setVisibility(View.VISIBLE);
         nestedScrollView.setVisibility(View.VISIBLE);
