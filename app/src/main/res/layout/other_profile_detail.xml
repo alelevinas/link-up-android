@@ -53,6 +53,19 @@ android:fitsSystemWindows="true">
                 android:gravity="center"
                 android:orientation="horizontal" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:background="@drawable/scrim_top"
+                app:layout_collapseMode="pin"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:layout_gravity="bottom"
+                android:layout_alignBottom="@+id/image"
+                android:background="@drawable/scrim_bottom"/>
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"

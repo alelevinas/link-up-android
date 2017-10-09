@@ -15,10 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.facebook.FacebookPhotoItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
+import com.fiuba.tdp.linkup.util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,8 +112,9 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
             holder.mItem = mValues.get(position);
 //            new DownloadImage(holder.mPhoto).execute(mValues.get(position).getPicture());
 
-            Glide.with(holder.itemView.getContext())
+            GlideApp.with(holder.itemView.getContext())
                     .load(mValues.get(position).getPicture())
+                    .placeholder(R.drawable.ezgif_com_gif_maker)
                     .into(holder.mPhoto);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

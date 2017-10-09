@@ -15,15 +15,19 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.ProfileFragmentAsyncTaskLoader;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
+import com.fiuba.tdp.linkup.util.DownloadImage;
+import com.fiuba.tdp.linkup.util.GlideApp;
 
 import java.util.Objects;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class FirstSignUpActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>{
 
@@ -44,6 +48,8 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     private ImageView secondary_pictures4;
     private ImageView secondary_pictures5;
 
+    private View mainView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -54,29 +60,29 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
             mLoader.initLoader(0, null, this);// deliver the result after the screen rotation
         }
 
-        View view = inflater.inflate(R.layout.fragment_first_sign_up, container, false);
+        mainView = inflater.inflate(R.layout.fragment_first_sign_up, container, false);
 
         startMyAsyncTask();
 
-        mainLayout = (ConstraintLayout) view.findViewById(R.id.main_layout);
-        loader = (ImageView) view.findViewById(R.id.loader);
+        mainLayout = (ConstraintLayout) mainView.findViewById(R.id.main_layout);
+        loader = (ImageView) mainView.findViewById(R.id.loader);
         startLoader();
 
-        nameView = (TextView) view.findViewById(R.id.label_name);
-        ageView = (TextView) view.findViewById(R.id.label_age);
-        genreView = (TextView) view.findViewById(R.id.label_genre);
-        aboutMeLayout = (RelativeLayout) view.findViewById(R.id.aboutMe);
-        description = (TextView) view.findViewById(R.id.txt_description);
-        studiesView = (TextView) view.findViewById(R.id.label_studies);
-        profile_picture = (ImageView) view.findViewById(R.id.profile_picture);
+        nameView = (TextView) mainView.findViewById(R.id.label_name);
+        ageView = (TextView) mainView.findViewById(R.id.label_age);
+        genreView = (TextView) mainView.findViewById(R.id.label_genre);
+        aboutMeLayout = (RelativeLayout) mainView.findViewById(R.id.aboutMe);
+        description = (TextView) mainView.findViewById(R.id.txt_description);
+        studiesView = (TextView) mainView.findViewById(R.id.label_studies);
+        profile_picture = (ImageView) mainView.findViewById(R.id.profile_picture);
 
-        secondary_pictures1 = (ImageView) view.findViewById(R.id.secondary_picture);
-        secondary_pictures2 = (ImageView) view.findViewById(R.id.secondary_picture2);
-        secondary_pictures3 = (ImageView) view.findViewById(R.id.secondary_picture3);
-        secondary_pictures4 = (ImageView) view.findViewById(R.id.secondary_picture4);
-        secondary_pictures5 = (ImageView) view.findViewById(R.id.secondary_picture5);
+        secondary_pictures1 = (ImageView) mainView.findViewById(R.id.secondary_picture);
+        secondary_pictures2 = (ImageView) mainView.findViewById(R.id.secondary_picture2);
+        secondary_pictures3 = (ImageView) mainView.findViewById(R.id.secondary_picture3);
+        secondary_pictures4 = (ImageView) mainView.findViewById(R.id.secondary_picture4);
+        secondary_pictures5 = (ImageView) mainView.findViewById(R.id.secondary_picture5);
 
-        Button buttonEditInfo = (Button) view.findViewById(R.id.button_edit_info);
+        Button buttonEditInfo = (Button) mainView.findViewById(R.id.button_edit_info);
         buttonEditInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +91,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
             }
         });
 
-        Button btnPreferences = (Button) view.findViewById(R.id.button_preferences);
+        Button btnPreferences = (Button) mainView.findViewById(R.id.button_preferences);
         btnPreferences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +100,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
             }
         });
 
-        return view;
+        return mainView;
     }
 
 
@@ -118,8 +124,10 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     private void bindUserData(View view, LinkUpUser myUser) {
 //        new DownloadImage((ImageView) view.findViewById(R.id.profile_picture)).execute(profile.getProfilePictureUri(700, 700).toString());
 
-        Glide.with(this)
+        GlideApp.with(this)
                 .load(profile.getProfilePictureUri(700, 700).toString())
+                .apply(bitmapTransform(new CircleCrop()))
+                .placeholder(R.drawable.ezgif_com_gif_maker)
                 .into((ImageView) view.findViewById(R.id.profile_picture));
 
         TextView nameView = (TextView) view.findViewById(R.id.label_name);
@@ -177,7 +185,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     }
 
     private void stopLoader() {
-        bindUserData(UserManager.getInstance().getMyUser());
+        bindUserData(mainView, UserManager.getInstance().getMyUser());
 
         loader.setVisibility(View.GONE);
         loader.clearAnimation();
