@@ -51,4 +51,7 @@ public interface UserAPIService {
 
     @GET("/api/linkup/users/{myUserId}/links")
     Call<ServerResponse<LinkUpMatch[]>> getMatchesWithoutChat(@Path("myUserId") String myUserId);
+
+    @POST("/api/linkup/users/{myUserId}/report")
+    Call<ServerResponse<String>> postReportUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> reportData);
 }
