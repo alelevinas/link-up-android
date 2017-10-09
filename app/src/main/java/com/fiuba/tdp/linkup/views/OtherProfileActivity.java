@@ -15,14 +15,20 @@ import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
@@ -37,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.support.v7.appcompat.R.styleable.MenuItem;
 import static com.fiuba.tdp.linkup.util.MySuperAppApplication.getContext;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
@@ -62,6 +69,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private TextView[] dots;
     private int page_position = 0;
 
+    private ImageButton buttonMessage;
+    private ImageButton buttonShare;
+    private ImageButton buttonMenu;
     private FloatingActionButton buttonNotLike;
     private FloatingActionButton buttonSuperLike;
     private FloatingActionButton buttonLike;
@@ -101,8 +111,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
 
+        buttonMessage = (ImageButton) findViewById(R.id.buttonMessage);
+        buttonShare = (ImageButton) findViewById(R.id.buttonShare);
+        buttonMenu = (ImageButton) findViewById(R.id.buttonMenu);
         buttonNotLike = (FloatingActionButton) findViewById(R.id.notLikeButton);
-
         buttonSuperLike = (FloatingActionButton) findViewById(R.id.superlikeButton);
         buttonLike = (FloatingActionButton) findViewById(R.id.likeButton);
 
@@ -251,6 +263,48 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             public void onClick(View v) {
                 Snackbar.make(v, "Diste Like a " + otherUser.getName(),
                         Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "No puedes enviar mensaje a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Todavia no puedes compartir a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu pm = new PopupMenu(OtherProfileActivity.this, v);
+                pm.getMenuInflater().inflate(R.menu.button_menu_profile, pm.getMenu());
+                pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.block:
+                                Toast.makeText(getApplicationContext(), "Bloquear a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.report:
+                                Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+                                break;
+
+                            default:
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                pm.show();
             }
         });
     }
