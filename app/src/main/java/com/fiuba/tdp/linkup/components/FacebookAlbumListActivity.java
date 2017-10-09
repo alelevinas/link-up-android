@@ -139,7 +139,7 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
 
             GlideApp.with(holder.itemView.getContext())
                     .load(mValues.get(position).getCoverPhoto().getPicture())
-                    .placeholder(R.drawable.ezgif_com_gif_maker)
+//                    .placeholder(R.drawable.ezgif_com_gif_maker)
                     .into(holder.mAlbumCover);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {

@@ -8,16 +8,12 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -42,7 +38,6 @@ import java.util.TimerTask;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
-import static android.support.v7.appcompat.R.styleable.MenuItem;
 import static com.fiuba.tdp.linkup.util.MySuperAppApplication.getContext;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
@@ -209,7 +204,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             GlideApp.with(this)
                     .load(otherUser.getPicture())
                     .apply(bitmapTransform(new RoundedCornersTransformation(20, 5)))
-                    .placeholder(R.drawable.ezgif_com_gif_maker)
+//                    .placeholder(R.drawable.ezgif_com_gif_maker)
                     .into(vp_image);
 
 //            new DownloadImage(vp_image).execute(otherUser.getPicture());

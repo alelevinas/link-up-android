@@ -127,7 +127,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
         GlideApp.with(this)
                 .load(profile.getProfilePictureUri(700, 700).toString())
                 .apply(bitmapTransform(new CircleCrop()))
-                .placeholder(R.drawable.ezgif_com_gif_maker)
+//                .placeholder(R.drawable.ezgif_com_gif_maker)
                 .into((ImageView) view.findViewById(R.id.profile_picture));
 
         TextView nameView = (TextView) view.findViewById(R.id.label_name);

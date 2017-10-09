@@ -114,7 +114,7 @@ public class FacebookPhotoGridActivity extends AppCompatActivity {
 
             GlideApp.with(holder.itemView.getContext())
                     .load(mValues.get(position).getPicture())
-                    .placeholder(R.drawable.ezgif_com_gif_maker)
+//                    .placeholder(R.drawable.ezgif_com_gif_maker)
                     .into(holder.mPhoto);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
