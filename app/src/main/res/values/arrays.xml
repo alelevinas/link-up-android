@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="report_options">
+        <item>Mensajes inapropiados</item>
+        <item>Comportamiento extraño</item>
+        <item>Spam</item>
+        <item>Otro</item>
+    </string-array>
+</resources>

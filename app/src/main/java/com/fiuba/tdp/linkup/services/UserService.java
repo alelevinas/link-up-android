@@ -304,6 +304,18 @@ public class UserService {
         api.getMatchesWithoutChat(myUserId).enqueue(callback);
     }
 
+    public void postReportUser(String userIdReported, String reportReason, final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        HashMap<String, String> reasons = new HashMap<>();
+        reasons.put("userId", userIdReported);
+        reasons.put("reason", reportReason);
+        api.postReportUser(UserManager.getInstance().getMyUser().getId(), reasons).enqueue(callback);
+    }
+
     public boolean isNetworkAvailable() {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();

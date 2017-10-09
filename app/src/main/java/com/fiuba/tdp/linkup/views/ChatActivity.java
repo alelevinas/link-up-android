@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.components.chat.ChatViewHolder;
 import com.fiuba.tdp.linkup.domain.ChatMessage;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
@@ -300,6 +301,16 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
+            case R.id.view_profile:
+                return true;
+
+            case R.id.block:
+                return true;
+
+            case R.id.report:
+                new ReportDialog().setOtherUserId(otherUserId).show(getFragmentManager().beginTransaction(), "denunciar");
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

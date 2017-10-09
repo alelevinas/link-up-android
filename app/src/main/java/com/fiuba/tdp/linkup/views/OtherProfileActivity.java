@@ -1,6 +1,7 @@
 package com.fiuba.tdp.linkup.views;
 
 import android.app.LoaderManager;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
+import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
@@ -38,7 +41,6 @@ import java.util.TimerTask;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
-import static com.fiuba.tdp.linkup.util.MySuperAppApplication.getContext;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
 
@@ -297,6 +299,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                                 break;
                             case R.id.report:
                                 Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+                                new ReportDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "denunciar");
                                 break;
 
                             default:
@@ -327,7 +330,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         buttonLike.setVisibility(View.GONE);
 
         loader.setVisibility(View.VISIBLE);
-        loader.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_indefinitely) );
+        loader.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_indefinitely) );
     }
 
     public void startMyAsyncTask() {
@@ -336,7 +339,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public Loader<String> onCreateLoader(int id, Bundle args) {
-        return new OtherProfileActivityAsyncTaskLoader(getContext(), idUser);
+        return new OtherProfileActivityAsyncTaskLoader(getApplicationContext(), idUser);
     }
 
     @Override
@@ -360,6 +363,30 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
+    }
+
+
+    private void showAlert(String s) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(s)
+                .setTitle("Atención");
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
     }
 
 }

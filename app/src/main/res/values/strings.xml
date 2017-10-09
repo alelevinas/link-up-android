@@ -46,4 +46,7 @@
     <string name="title_view_profile">Ver perfil</string>
     <string name="title_block">Bloquear</string>
     <string name="title_report">Denunciar</string>
+    <string name="dialog_hint">Insulta</string>
+    <string name="dialog_input_title">Describa la razón de la denuncia</string>
+    <string name="send">Enviar</string>
 </resources>
