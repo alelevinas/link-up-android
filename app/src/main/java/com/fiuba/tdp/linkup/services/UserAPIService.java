@@ -57,4 +57,8 @@ public interface UserAPIService {
 
     @DELETE("/api/linkup/users/{myUserId}/around/{otherUserIdToRemove}")
     Call<ServerResponse<String>> deleteUserFromAround(@Path("myUserId") String myUserId, @Path("otherUserIdToRemove") String otherUserIdToRemove);
+
+    @POST("/api/linkup/users/{myUserId}/block")
+    Call<ServerResponse<String>> postBlockUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
+
 }

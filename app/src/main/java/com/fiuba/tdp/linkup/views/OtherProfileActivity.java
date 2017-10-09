@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
+import com.fiuba.tdp.linkup.components.BlockDialog;
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
@@ -224,7 +225,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         //toolbarUsername.setBackgroundColor(Color.parseColor("#3f000000"));
 
         distanceLabel.setText("A 25km de distancia");
-        studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());
+        if (otherUser.getEducation().length != 0 ) {
+            studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());
+        } else {
+            studiesLabel.setText("");
+        }
 
         if(otherUser.getDescription().equals("")) {
             aboutMeLabel.setVisibility(View.GONE);
@@ -304,6 +309,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                         switch (item.getItemId()) {
                             case R.id.block:
                                 Toast.makeText(getApplicationContext(), "Bloquear a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+                                new BlockDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "bloquear");
                                 break;
                             case R.id.report:
                                 Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();

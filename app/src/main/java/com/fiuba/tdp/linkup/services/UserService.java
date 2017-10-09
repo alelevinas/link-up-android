@@ -325,6 +325,17 @@ public class UserService {
         api.deleteUserFromAround(myUserId, otherUserIdToRemove).enqueue(callback);
     }
 
+    public void postBlockUser(String myUserId, String otherUserIdToBlock, final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        HashMap<String, String> userToBlock = new HashMap<>();
+        userToBlock.put("userId", otherUserIdToBlock);
+        api.postBlockUser(myUserId, userToBlock).enqueue(callback);
+    }
+
     public boolean isNetworkAvailable() {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();

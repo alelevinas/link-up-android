@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.components.BlockDialog;
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.components.chat.ChatViewHolder;
 import com.fiuba.tdp.linkup.domain.ChatMessage;
@@ -66,6 +67,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private ProgressBar mProgressBar;
     private EditText mMessageEditText;
     private ImageView mAddMessageImageView;
+
+    private LinearLayout mEmptyListMessage;
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
@@ -111,6 +114,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
+
+        mEmptyListMessage = (LinearLayout) findViewById(R.id.emptyChat);
 
         // New message child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -189,7 +194,6 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             setUpToolbarTitle();
 
 
-
             if (otherUserId.compareTo(myUserId) < 0) {
                 messageId = otherUserId + "_" + myUserId;
             } else {
@@ -219,9 +223,11 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         new UserService(this).getUser(otherUserId, new Callback<ServerResponse<LinkUpUser>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
-                Glide.with(getBaseContext())
-                        .load(response.body().data.getPicture())
-                        .into(profileImage);
+                if (response.isSuccessful() && response.body() != null) {
+                    Glide.with(getBaseContext())
+                            .load(response.body().data.getPicture())
+                            .into(profileImage);
+                }
             }
 
             @Override
@@ -262,7 +268,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onDataChanged() {
                 // If there are no chat messages, show a view that invites the user to add a message.
-//                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
     }
@@ -306,6 +313,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
                 return true;
 
             case R.id.block:
+                new BlockDialog().setOtherUserId(otherUserId).show(getFragmentManager().beginTransaction(), "bloquear");
                 return true;
 
             case R.id.report:

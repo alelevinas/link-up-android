@@ -49,4 +49,6 @@
     <string name="dialog_hint">Insulta</string>
     <string name="dialog_input_title">Describa la razón de la denuncia</string>
     <string name="send">Enviar</string>
+    <string name="yes">Si</string>
+    <string name="cancel">cancelar</string>
 </resources>

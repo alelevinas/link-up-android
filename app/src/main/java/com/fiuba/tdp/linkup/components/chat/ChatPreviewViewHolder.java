@@ -44,7 +44,9 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
         new UserService(itemView.getContext()).getUser(chat.getOtherUserId(), new Callback<ServerResponse<LinkUpUser>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
-                setProfilePicture(response.body().data.getPicture());
+                if (response.isSuccessful() && response.body() != null) {
+                    setProfilePicture(response.body().data.getPicture());
+                }
             }
 
             @Override

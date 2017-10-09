@@ -28,15 +28,18 @@ public class UserManager {
     }
 
     public final LinkUpUser getMyUser() {
+//        if (myUser != null) {
+//            new UserService()
+//        }
         return myUser;
-    }
-
-    public final LinkUpUser getUserSelected() {
-        return userSelected;
     }
 
     public void setMyUser(LinkUpUser myUser) {
         this.myUser = myUser;
+    }
+
+    public final LinkUpUser getUserSelected() {
+        return userSelected;
     }
 
     public void setUserSelected(LinkUpUser otherUser) {
