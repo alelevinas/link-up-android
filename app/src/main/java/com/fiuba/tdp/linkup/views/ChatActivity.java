@@ -235,6 +235,9 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onClick(View view) {
                 Log.e(TAG, "HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                Intent intent = new Intent(view.getContext(), OtherProfileActivity.class);
+                intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(otherUserId));
+                view.getContext().startActivity(intent);
             }
         });
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ActiveChatsFragment extends Fragment {
 
     private static final String TAG = "ActiveChatsFragment";
-    //    private OnFragmentInteractionListener mListener;
     private RecyclerView mMessageRecyclerView;
     private LinearLayoutManager mLinearLayoutManager;
     private ProgressBar mProgressBar;
@@ -65,7 +65,6 @@ public class ActiveChatsFragment extends Fragment {
             // TODO: avisar que hubo un error, que se loguee devuelta
             return view;
         } else {
-//            mUsername = mFirebaseUser.getDisplayName();
             mUsername = UserManager.getInstance().getMyUser().getName();
             mUserId = UserManager.getInstance().getMyUser().getId();
         }
@@ -100,6 +99,12 @@ public class ActiveChatsFragment extends Fragment {
                                               ChatPreview chatPreview, int position) {
                 //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 viewHolder.bind(chatPreview, mFirebaseDatabaseReference);
+                Log.e(TAG, String.format("position: %d, Item count: %d", position, getItemCount()));
+                if (getItemCount() - 1 == position) {
+                    viewHolder.hideDelimiter();
+                } else {
+                    viewHolder.showDelimiter();
+                }
             }
 
             @Override

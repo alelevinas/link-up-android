@@ -80,4 +80,12 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
     private void setPreview(String text) {
         mPreviewField.setText(text);
     }
+
+    public void hideDelimiter() {
+        itemView.findViewById(R.id.chat_preview_delimiter).setVisibility(View.GONE);
+    }
+
+    public void showDelimiter() {
+        itemView.findViewById(R.id.chat_preview_delimiter).setVisibility(View.VISIBLE);
+    }
 }
