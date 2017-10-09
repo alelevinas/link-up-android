@@ -120,4 +120,46 @@ android:fitsSystemWindows="true">
                 tools:text="holo6" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/notLikeButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:clickable="true"
+        app:backgroundTint="@color/cardview_light_background"
+        app:fabSize="normal"
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="bottom|left|center_vertical"
+        app:srcCompat="@drawable/ic_not_like" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/superlikeButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        app:backgroundTint="@color/cardview_light_background"
+        app:fabSize="normal"
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="bottom|center_vertical|center_horizontal"
+        app:srcCompat="@drawable/super_like" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/likeButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="20dp"
+        android:clickable="true"
+        android:tint="@android:color/holo_green_light"
+        app:backgroundTint="@color/cardview_light_background"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/nestedScrollView"
+        app:layout_anchorGravity="bottom|right|center_vertical"
+        app:srcCompat="@drawable/tinder_like" />
 </android.support.design.widget.CoordinatorLayout>

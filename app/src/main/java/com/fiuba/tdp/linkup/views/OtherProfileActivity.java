@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
@@ -58,7 +60,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private SliderPagerAdapter sliderPagerAdapter;
     private ArrayList<String> slider_image_list;
     private TextView[] dots;
-    int page_position = 0;
+    private int page_position = 0;
+
+    private FloatingActionButton buttonNotLike;
+    private FloatingActionButton buttonSuperLike;
+    private FloatingActionButton buttonLike;
 
     private long idUser;
 
@@ -94,6 +100,12 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
+
+        buttonNotLike = (FloatingActionButton) findViewById(R.id.notLikeButton);
+
+        buttonSuperLike = (FloatingActionButton) findViewById(R.id.superlikeButton);
+        buttonLike = (FloatingActionButton) findViewById(R.id.likeButton);
+
         startLoader();
         startMyAsyncTask();
 
@@ -116,7 +128,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             dots[currentPage].setTextColor(Color.parseColor("#FFFFFF"));
     }
 
-    private void bindUserData(LinkUpUser otherUser) {
+    private void bindUserData(final LinkUpUser otherUser) {
         int nPictures = 0;
         for(LinkUpPicture picture : otherUser.getPictures()){
             if(!picture.getUrl().equals(""))
@@ -217,6 +229,30 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             userInterestsLabel.setVisibility(View.VISIBLE);
             userInterests.setVisibility(View.VISIBLE);
         }
+
+        buttonNotLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Eliminaste de tu listado a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonSuperLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Has dado SuperLike a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        buttonLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Diste Like a " + otherUser.getName(),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     private String getFirstWord(String text) {
@@ -230,6 +266,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private void startLoader() {
         findViewById(R.id.appbar).setVisibility(View.GONE);
         nestedScrollView.setVisibility(View.GONE);
+
+        buttonNotLike.setVisibility(View.GONE);
+        buttonSuperLike.setVisibility(View.GONE);
+        buttonLike.setVisibility(View.GONE);
 
         loader.setVisibility(View.VISIBLE);
         loader.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_indefinitely) );
@@ -254,6 +294,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         loader.clearAnimation();
         loader.setVisibility(View.GONE);
+
+        buttonNotLike.setVisibility(View.VISIBLE);
+        buttonSuperLike.setVisibility(View.VISIBLE);
+        buttonLike.setVisibility(View.VISIBLE);
 
         findViewById(R.id.appbar).setVisibility(View.VISIBLE);
         nestedScrollView.setVisibility(View.VISIBLE);
