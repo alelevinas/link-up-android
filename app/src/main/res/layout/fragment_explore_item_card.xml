@@ -38,12 +38,20 @@
             android:scaleType="fitXY"
             tools:src="@drawable/a" />
 
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="88dp"
+            android:layout_alignBottom="@+id/card_image"
+            android:layout_alignTop="@+id/card_title"
+            android:layout_gravity="bottom"
+            android:background="@drawable/scrim_bottom" />
+
         <TextView
             android:id="@+id/card_title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_title_height"
             android:layout_alignBottom="@+id/card_image"
-            android:background="#3f000000"
             android:gravity="center_vertical"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"

@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.NewMatchFragment.OnNewMatchListFragmentInteractionListener;
 import com.fiuba.tdp.linkup.domain.LinkUpMatch;
-import com.fiuba.tdp.linkup.util.DownloadImage;
 
 import java.util.List;
 
@@ -40,7 +40,11 @@ public class MyNewMatchRecyclerViewAdapter extends RecyclerView.Adapter<MyNewMat
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
 
-        new DownloadImage(holder.mImageView).execute(holder.mItem.getPicture());
+//        new DownloadImage(holder.mImageView).execute(holder.mItem.getPicture());
+
+        Glide.with(holder.itemView.getContext())
+                .load(holder.mItem.getPicture())
+                .into(holder.mImageView);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

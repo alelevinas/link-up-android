@@ -2,25 +2,18 @@ package com.fiuba.tdp.linkup.views;
 
 import android.app.LoaderManager;
 import android.content.Loader;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -32,18 +25,19 @@ import android.widget.Toast;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
-import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.ProfileFragmentAsyncTaskLoader;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
-import com.fiuba.tdp.linkup.util.DownloadImage;
+import com.fiuba.tdp.linkup.util.GlideApp;
 import com.fiuba.tdp.linkup.util.SliderPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.support.v7.appcompat.R.styleable.MenuItem;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 import static com.fiuba.tdp.linkup.util.MySuperAppApplication.getContext;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
@@ -207,11 +201,18 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             vp_slider.setVisibility(View.GONE);
             vp_image.setVisibility(View.VISIBLE);
 
-            new DownloadImage(vp_image).execute(otherUser.getPicture());
+            GlideApp.with(this)
+                    .load(otherUser.getPicture())
+                    .apply(bitmapTransform(new RoundedCornersTransformation(20, 5)))
+//                    .placeholder(R.drawable.ezgif_com_gif_maker)
+                    .into(vp_image);
+
+//            new DownloadImage(vp_image).execute(otherUser.getPicture());
         }
         addBottomDots(0);
 
         toolbarUsername.setTitle(getFirstWord(otherUser.getName()) + ", " + otherUser.getAge());
+        //toolbarUsername.setBackgroundColor(Color.parseColor("#3f000000"));
 
         distanceLabel.setText("A 25km de distancia");
         studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());

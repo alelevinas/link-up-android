@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.facebook.FacebookAlbumItem;
 import com.fiuba.tdp.linkup.services.FacebookService;
-import com.fiuba.tdp.linkup.util.DownloadImage;
+import com.fiuba.tdp.linkup.util.GlideApp;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -135,7 +135,12 @@ public class FacebookAlbumListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
             holder.mAlbumName.setText(mValues.get(position).getName());
-            new DownloadImage(holder.mAlbumCover).execute(mValues.get(position).getCoverPhoto().getPicture());
+//            new DownloadImage(holder.mAlbumCover).execute(mValues.get(position).getCoverPhoto().getPicture());
+
+            GlideApp.with(holder.itemView.getContext())
+                    .load(mValues.get(position).getCoverPhoto().getPicture())
+//                    .placeholder(R.drawable.ezgif_com_gif_maker)
+                    .into(holder.mAlbumCover);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override

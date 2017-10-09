@@ -10,4 +10,5 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.fiuba.tdp.linkup.components.NewMatchFragment"
-    tools:listitem="@layout/fragment_newmatch_item" />
+    tools:listitem="@layout/fragment_newmatch_item"
+    android:orientation="horizontal"/>

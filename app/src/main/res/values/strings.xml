@@ -37,10 +37,13 @@
     <string name="title_edit_info">Edita tu perfil</string>
 
     <string name="title_activity_splash">SplashActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="fragment_newmatch_title_matches">Conexiones</string>
     <string name="fragment_newmatch_title_chats">Chats</string>
     <string name="fragment_newmatch_no_chats">Todavía no hay chats!</string>
     <string name="fragment_explore_empty">No hay nadie cerca que matchee con tus preferencias</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="default_notification_channel_id">fcm_default_channel</string>
+    <string name="title_view_profile">Ver perfil</string>
+    <string name="title_block">Bloquear</string>
+    <string name="title_report">Denunciar</string>
 </resources>
