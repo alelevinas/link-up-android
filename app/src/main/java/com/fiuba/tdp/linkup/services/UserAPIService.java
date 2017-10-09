@@ -54,4 +54,7 @@ public interface UserAPIService {
 
     @POST("/api/linkup/users/{myUserId}/report")
     Call<ServerResponse<String>> postReportUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> reportData);
+
+    @DELETE("/api/linkup/users/{myUserId}/around/{otherUserIdToRemove}")
+    Call<ServerResponse<String>> deleteUserFromAround(@Path("myUserId") String myUserId, @Path("otherUserIdToRemove") String otherUserIdToRemove);
 }

@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -30,7 +31,9 @@ import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyn
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
+import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.GlideApp;
 import com.fiuba.tdp.linkup.util.SliderPagerAdapter;
 
@@ -39,12 +42,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
 
     public static final String ID_USER = "position";
+    private static final String TAG = "OTHER PROFILE";
 
     private LoaderManager mLoader;
     private ImageView loader;
@@ -250,6 +257,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             public void onClick(View v) {
                 Snackbar.make(v, "Eliminaste de tu listado a " + otherUser.getName(),
                         Snackbar.LENGTH_LONG).show();
+                deleteFromAround(otherUser.getId());
             }
         });
 
@@ -364,6 +372,23 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     @Override
     public void onLoaderReset(Loader<String> loader) {
     }
+
+    private void deleteFromAround(String userId) {
+        new UserService(getBaseContext()).deleteUserFromAround(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.e(TAG, "Deleted from arround");
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                Snackbar.make(getCurrentFocus(), "Hubo un error al contactar al servidor. Por favor intenta más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
 
     private void showAlert(String s) {

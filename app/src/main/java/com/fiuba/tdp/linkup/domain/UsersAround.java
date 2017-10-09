@@ -9,13 +9,13 @@ public class UsersAround {
         this.usersAround = usersAround;
     }
 
-    public int getSize(){
+    public int getSize() {
         return this.usersAround.size();
     }
 
     public ArrayList<String> getIds() {
         ArrayList<String> ids = new ArrayList<>(this.usersAround.size());
-        for(int i = 0; i < this.usersAround.size(); i++) {
+        for (int i = 0; i < this.usersAround.size(); i++) {
             ids.add(this.usersAround.get(i).getId());
         }
         return ids;
@@ -23,7 +23,7 @@ public class UsersAround {
 
     public ArrayList<String> getPictures() {
         ArrayList<String> ids = new ArrayList<>(this.usersAround.size());
-        for(int i = 0; i < this.usersAround.size(); i++) {
+        for (int i = 0; i < this.usersAround.size(); i++) {
             ids.add(this.usersAround.get(i).getPicture());
         }
         return ids;
@@ -31,7 +31,7 @@ public class UsersAround {
 
     public ArrayList<String> getDescriptions() {
         ArrayList<String> ids = new ArrayList<>(this.usersAround.size());
-        for(int i = 0; i < this.usersAround.size(); i++) {
+        for (int i = 0; i < this.usersAround.size(); i++) {
             ids.add(this.usersAround.get(i).getDescription());
         }
         return ids;
@@ -39,7 +39,7 @@ public class UsersAround {
 
     public ArrayList<String> getNames() {
         ArrayList<String> ids = new ArrayList<>(this.usersAround.size());
-        for(int i = 0; i < this.usersAround.size(); i++) {
+        for (int i = 0; i < this.usersAround.size(); i++) {
             ids.add(this.usersAround.get(i).getUserName());
         }
         return ids;
@@ -47,6 +47,10 @@ public class UsersAround {
 
     public UserAround getUser(int i) {
         return usersAround.get(i);
+    }
+
+    public void deleteUser(int i) {
+        usersAround.remove(i);
     }
 
 }
