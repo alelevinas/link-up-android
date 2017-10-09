@@ -44,13 +44,24 @@ public class ExploreFragment extends Fragment {
         emptyView = (TextView) view.findViewById(R.id.empty_view);
         loader = (ImageView) view.findViewById(R.id.loader);
 
+//        ExploreUserContentAdapter adapter = new ExploreUserContentAdapter(this);
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        loader.setVisibility(View.GONE);
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loader.setVisibility(View.VISIBLE);
         ExploreUserContentAdapter adapter = new ExploreUserContentAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         loader.setVisibility(View.GONE);
-
-        return view;
     }
 
     private void setEmptyView() {
@@ -107,7 +118,7 @@ public class ExploreFragment extends Fragment {
 
         @Override
         public ExploreUserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ExploreUserViewHolder(LayoutInflater.from(parent.getContext()), parent);
+            return new ExploreUserViewHolder(LayoutInflater.from(parent.getContext()), parent, this);
         }
 
         @Override
@@ -134,6 +145,13 @@ public class ExploreFragment extends Fragment {
         @Override
         public int getItemCount() {
             return LENGTH;
+        }
+
+
+        public void deleteItem(int adapterPosition) {
+            usersAround.deleteUser(adapterPosition);
+            LENGTH = usersAround.getSize();
+            notifyItemRemoved(adapterPosition);
         }
     }
 

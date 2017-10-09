@@ -20,6 +20,7 @@ import com.fiuba.tdp.linkup.domain.Match;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.views.ExploreFragment;
 import com.fiuba.tdp.linkup.views.OtherProfileActivity;
 
 import retrofit2.Call;
@@ -31,10 +32,12 @@ import static android.R.color.holo_red_light;
 
 public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
+    private static final String TAG = "USER CARD";
     private final Button sendMessageButton;
     private final ImageButton closeImageButton;
     private final ImageButton favoriteImageButton;
     private final ImageButton superLikeImageButton;
+    private final ExploreFragment.ExploreUserContentAdapter adapter;
     public String userId;
     public ImageView picture;
     public TextView name;
@@ -43,10 +46,11 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
 
-    public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent) {
+    public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent, ExploreFragment.ExploreUserContentAdapter exploreUserContentAdapter) {
         super(inflater.inflate(R.layout.fragment_explore_item_card, parent, false));
 
         this.parent = parent;
+        this.adapter = exploreUserContentAdapter;
 
         picture = (ImageView) itemView.findViewById(R.id.card_image);
         name = (TextView) itemView.findViewById(R.id.card_title);
@@ -80,6 +84,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 Snackbar.make(v, "Eliminaste de tu listado a " + name.getText().toString(),
                         Snackbar.LENGTH_LONG).show();
+                deleteFromAround(userId);
             }
         });
 
@@ -104,6 +109,22 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                     superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_orange_light));
                 }
                 superLikeImageButtonChecked = !superLikeImageButtonChecked;
+            }
+        });
+    }
+
+    private void deleteFromAround(String userId) {
+        new UserService(itemView.getContext()).deleteUserFromAround(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.e(TAG, "Deleted from arround");
+                adapter.deleteItem(getAdapterPosition());
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                Snackbar.make(itemView, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
+                        Snackbar.LENGTH_LONG).show();
             }
         });
     }

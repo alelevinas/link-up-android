@@ -316,6 +316,15 @@ public class UserService {
         api.postReportUser(UserManager.getInstance().getMyUser().getId(), reasons).enqueue(callback);
     }
 
+    public void deleteUserFromAround(String myUserId, String otherUserIdToRemove, final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        api.deleteUserFromAround(myUserId, otherUserIdToRemove).enqueue(callback);
+    }
+
     public boolean isNetworkAvailable() {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
