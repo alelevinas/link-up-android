@@ -29,6 +29,7 @@ import com.fiuba.tdp.linkup.components.BlockDialog;
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.components.chat.ChatViewHolder;
 import com.fiuba.tdp.linkup.domain.ChatMessage;
+import com.fiuba.tdp.linkup.domain.ChatPreview;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
@@ -38,10 +39,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,14 +55,17 @@ import retrofit2.Response;
 public class ChatActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     public static final String CHATS_CHILD = "chats";
     public static final String MESSAGES_CHILD = "messages";
+    public static final String LAST_CHAT_ID = "LAST_CHAT_ID";
     private static final String TAG = "ChatActivity";
     private static final String LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif";
+    public static final String LAST_CHAT_TEXT = "LAST_CHAT_TEXT";
+    public static final String LAST_CHAT_BLOCKED = "LAST_CHAT_BLOCKED";
     public static String CHAT_WITH_USER_ID = "CHAT_WITH_USER_ID";
     public static String CHAT_WITH_USER_NAME = "CHAT_WITH_USER_NAME";
     private String otherUserId;
     private String otherUserName;
     private String myUserId;
-    private String messageId;
+    private String conversationId;
     private String firebaseChatLocation;
 
     private String mUsername;
@@ -80,7 +88,18 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private String myUserLastChatReference;
     private String otherUserLastChatReference;
     private Toolbar toolbar;
+    private String lastChatPreviewId;
+    private String lastChatText;
+    private String lastChatBlocked;
+    private LinearLayout mBlockedConversation;
 
+    public static String getConversationId(String id, String otherUserId) {
+        if (otherUserId.compareTo(id) < 0) {
+            return otherUserId + "_" + id;
+        } else {
+            return id + "_" + otherUserId;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +135,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         mEmptyListMessage = (LinearLayout) findViewById(R.id.emptyChat);
+        mBlockedConversation = (LinearLayout) findViewById(R.id.blockedChat);
 
         // New message child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -159,21 +179,23 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
 
                 //my chats and last message data
                 DatabaseReference myLastChatRef = mFirebaseDatabaseReference.child(myUserLastChatReference);
-                HashMap<String, String> lastChat = new HashMap<String, String>();
+                HashMap<String, Object> lastChat = new HashMap<String, Object>();
                 lastChat.put("name", otherUserName);
                 lastChat.put("lastMessage", mMessageEditText.getText().toString());
                 lastChat.put("otherUserId", otherUserId);
-                lastChat.put("messageId", messageId);
+                lastChat.put("conversationId", messageId);
+                lastChat.put("isRead", true);
 
                 myLastChatRef.setValue(lastChat);
 
                 //OTHER chats and last message data
                 DatabaseReference otherLastChatRef = mFirebaseDatabaseReference.child(otherUserLastChatReference);
-                HashMap<String, String> otherLastChat = new HashMap<String, String>();
+                HashMap<String, Object> otherLastChat = new HashMap<String, Object>();
                 otherLastChat.put("name", UserManager.getInstance().getMyUser().getName());
                 otherLastChat.put("lastMessage", mMessageEditText.getText().toString());
                 otherLastChat.put("otherUserId", myUserId);
-                otherLastChat.put("messageId", messageId);
+                otherLastChat.put("conversationId", messageId);
+                otherLastChat.put("isRead", false);
 
                 otherLastChatRef.setValue(otherLastChat);
 
@@ -181,6 +203,46 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
                 mMessageEditText.setText("");
             }
         });
+
+        checkIfConversationBlocked();
+    }
+
+    private void checkIfConversationBlocked() {
+        DatabaseReference myLastChatRef = mFirebaseDatabaseReference.child(myUserLastChatReference);
+
+        myLastChatRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ChatPreview preview = dataSnapshot.getValue(ChatPreview.class);
+                if (preview.getBlocked_by_me()) {
+                    mBlockedConversation.setVisibility(View.VISIBLE);
+                    mSendButton.setEnabled(false);
+                } else {
+                    mBlockedConversation.setVisibility(View.GONE);
+                    mSendButton.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void markConversationRead() {
+        // mark last message as read
+        //my chats and last message data
+        DatabaseReference myLastChatRef = mFirebaseDatabaseReference.child(myUserLastChatReference);
+        Map<String, Object> isReadUpdate = new HashMap<String, Object>();
+//        isReadUpdate.put("/name", otherUserName);
+//        isReadUpdate.put("/lastMessage", lastChatText);
+//        isReadUpdate.put("/otherUserId", otherUserId);
+//        isReadUpdate.put("/conversationId", lastChatPreviewId);
+        isReadUpdate.put("/isRead", true);
+
+        myLastChatRef.updateChildren(isReadUpdate);
     }
 
     private void getOtherUserId() {
@@ -189,21 +251,25 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         if (!extrasBundle.isEmpty()) {
             otherUserId = extrasBundle.getString(CHAT_WITH_USER_ID);
             otherUserName = extrasBundle.getString(CHAT_WITH_USER_NAME);
+            lastChatPreviewId = extrasBundle.getString(LAST_CHAT_ID);
+            lastChatText = extrasBundle.getString(LAST_CHAT_TEXT);
+            lastChatBlocked = extrasBundle.getString(LAST_CHAT_BLOCKED);
             myUserId = UserManager.getInstance().getMyUser().getId();
 
             setUpToolbarTitle();
 
 
-            if (otherUserId.compareTo(myUserId) < 0) {
-                messageId = otherUserId + "_" + myUserId;
+            conversationId = getConversationId(myUserId, otherUserId);
+            /*if (otherUserId.compareTo(myUserId) < 0) {
+                conversationId = otherUserId + "_" + myUserId;
             } else {
-                messageId = myUserId + "_" + otherUserId;
+                conversationId = myUserId + "_" + otherUserId;
             }
+*/
+            firebaseChatLocation = CHATS_CHILD + "/" + conversationId + "/" + MESSAGES_CHILD;
 
-            firebaseChatLocation = CHATS_CHILD + "/" + messageId + "/" + MESSAGES_CHILD;
-
-            myUserLastChatReference = "users/" + myUserId + "/conversations/" + messageId;
-            otherUserLastChatReference = "users/" + otherUserId + "/conversations/" + messageId;
+            myUserLastChatReference = "users/" + myUserId + "/conversations/" + conversationId;
+            otherUserLastChatReference = "users/" + otherUserId + "/conversations/" + conversationId;
 
 
         } else {
@@ -270,6 +336,10 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
                 // If there are no chat messages, show a view that invites the user to add a message.
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+
+                if (mSendButton.isShown()) {
+                    markConversationRead();
+                }
             }
         };
     }
@@ -297,7 +367,6 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -308,9 +377,6 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.view_profile:
-                return true;
 
             case R.id.block:
                 new BlockDialog().setOtherUserId(otherUserId).show(getFragmentManager().beginTransaction(), "bloquear");

@@ -58,7 +58,7 @@
             android:id="@+id/chats_fragment"
             android:name="com.fiuba.tdp.linkup.views.ActiveChatsFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layout="@layout/fragment_active_chats" />
 

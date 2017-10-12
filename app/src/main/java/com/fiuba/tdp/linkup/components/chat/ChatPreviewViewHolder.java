@@ -29,17 +29,20 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;
     private final TextView mPreviewField;
     private final ImageView mProfilePicture;
+    private final ImageView mNotification;
 
     public ChatPreviewViewHolder(View itemView) {
         super(itemView);
         mNameField = (TextView) itemView.findViewById(R.id.name_text);
         mPreviewField = (TextView) itemView.findViewById(R.id.preview_text);
         mProfilePicture = (ImageView) itemView.findViewById(R.id.profile_picture);
+        mNotification= (ImageView) itemView.findViewById(R.id.notification);
     }
 
     public void bind(final ChatPreview chat, final DatabaseReference chatRef) {
         setName(chat.getName());
         setPreview(chat.getLastMessage());
+        setNotification(chat.getIsRead());
 
         new UserService(itemView.getContext()).getUser(chat.getOtherUserId(), new Callback<ServerResponse<LinkUpUser>>() {
             @Override
@@ -62,10 +65,21 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
                 Bundle bundle = new Bundle();
                 bundle.putString(ChatActivity.CHAT_WITH_USER_ID, chat.getOtherUserId());
                 bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, chat.getName());
+                bundle.putString(ChatActivity.LAST_CHAT_ID, chat.getMessageId());
+                bundle.putString(ChatActivity.LAST_CHAT_TEXT, chat.getLastMessage());
+                bundle.putBoolean(ChatActivity.LAST_CHAT_BLOCKED, chat.getBlocked_by_me());
                 intentBundle.putExtras(bundle);
                 itemView.getContext().startActivity(intentBundle);
             }
         });
+    }
+
+    private void setNotification(Boolean isRead) {
+        if (!isRead) {
+            mNotification.setVisibility(View.VISIBLE);
+        } else {
+            mNotification.setVisibility(View.GONE);
+        }
     }
 
     private void setProfilePicture(String s) {

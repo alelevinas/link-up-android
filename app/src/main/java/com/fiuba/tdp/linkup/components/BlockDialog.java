@@ -13,6 +13,12 @@ import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.views.ChatActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +36,8 @@ public class BlockDialog extends DialogFragment {
 
     String[] options;
 
+    private DatabaseReference dbRef;
+
     public BlockDialog() {
     }
 
@@ -38,8 +46,15 @@ public class BlockDialog extends DialogFragment {
         return this;
     }
 
+    private String getConversationId() {
+        return ChatActivity.getConversationId(UserManager.getInstance().getMyUser().getId(), otherUserId);
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        dbRef = FirebaseDatabase.getInstance().getReference();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         options = getResources().getStringArray(R.array.report_options);
@@ -74,6 +89,22 @@ public class BlockDialog extends DialogFragment {
             public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
                 Toast.makeText(context, "El usuario ha sido bloqueado", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "todo bien");
+
+                String convId = getConversationId();
+
+                Map<String, Object> chatBlockedByMe = new HashMap<String, Object>();
+                chatBlockedByMe.put("users/" + UserManager.getInstance().getMyUser().getId() + "/conversations/" + convId + "/blocked_by_me", true);
+
+                dbRef.updateChildren(chatBlockedByMe);
+
+
+
+                Map<String, Object> chatBlockedByOther = new HashMap<String, Object>();
+                chatBlockedByOther.put("users/" + otherUserId + "/conversations/" + convId + "/blocked_by_other", true);
+
+                dbRef.updateChildren(chatBlockedByOther);
+
+
             }
 
             @Override

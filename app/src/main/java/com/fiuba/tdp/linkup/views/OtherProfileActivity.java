@@ -24,7 +24,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
@@ -308,11 +307,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.block:
-                                Toast.makeText(getApplicationContext(), "Bloquear a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), "Bloquear a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
                                 new BlockDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "bloquear");
                                 break;
                             case R.id.report:
-                                Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
                                 new ReportDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "denunciar");
                                 break;
 

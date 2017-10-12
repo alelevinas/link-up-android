@@ -1,25 +1,58 @@
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:name="com.fiuba.tdp.linkup.views.ActiveChatsFragment"
     tools:context="com.fiuba.tdp.linkup.views.ActiveChatsFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/previewsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/item_chat_preview" >
 
-</FrameLayout>-->
+    </android.support.v7.widget.RecyclerView>
 
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/previewsRecyclerView"
-    android:name="com.fiuba.tdp.linkup.views.ActiveChatsFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context="com.fiuba.tdp.linkup.views.MatchsFragment"
-    tools:listitem="@layout/item_chat_preview" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+    <LinearLayout
+        android:id="@+id/emptyList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginStart="100dp"
+            android:layout_weight="0.14"
+            android:visibility="visible"
+            app:srcCompat="@drawable/start_liking_small" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="¡Has un LinkUp con otros usuarios para iniciar conversaciones!"
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Holo.Large"
+            android:textColor="@color/colorAccent" />
+    </LinearLayout>
+
+</RelativeLayout>
+
+
