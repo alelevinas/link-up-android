@@ -126,6 +126,8 @@ public class SplashActivity extends AppCompatActivity {
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                 if (response.isSuccessful()) {
                     UserManager.getInstance().setMyUser(response.body().data);
+                    UserManager.getInstance().updateMyBlockedUsers(getBaseContext());
+
                     if (locationManager.getLastKnownLocation() != null) {
                         LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
                         new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);

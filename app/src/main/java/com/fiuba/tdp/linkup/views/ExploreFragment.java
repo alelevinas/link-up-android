@@ -138,7 +138,7 @@ public class ExploreFragment extends Fragment {
                 holder.description.setText(usersAround.getDescriptions().get(position));
             }
             holder.userId = usersAround.getIds().get(position);
-            if (usersAround.getUser(position) != null) {
+            if (usersAround.getUser(position) != null && usersAround.getUser(position).getLike() != null) {
                 holder.favoriteImageButtonChecked = usersAround.getUser(position).getLike().compareTo("true") == 0;
             }
             holder.updateLikeStatus();

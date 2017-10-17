@@ -17,6 +17,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -48,10 +49,12 @@ import retrofit2.Response;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
-public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
+public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>, BlockDialog.OnBlockDialogFragmentInteractionListener {
 
     public static final String ID_USER = "position";
     private static final String TAG = "OTHER PROFILE";
+
+    private Menu menu;
 
     private LoaderManager mLoader;
     private ImageView loader;
@@ -297,6 +300,8 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             }
         });
 
+        final BlockDialog.OnBlockDialogFragmentInteractionListener self = this;
+
         buttonMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -307,11 +312,12 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.block:
-//                                Toast.makeText(getApplicationContext(), "Bloquear a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
-                                new BlockDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "bloquear");
+                                if (item.getTitle().equals("Bloquear"))
+                                    new BlockDialog().setOtherUserId(otherUser.getId()).attach(self).show(getFragmentManager().beginTransaction(), "bloquear");
+                                else
+                                    new BlockDialog().setOtherUserId(otherUser.getId()).unblock().attach(self).show(getFragmentManager().beginTransaction(), "desbloquear");
                                 break;
                             case R.id.report:
-//                                Toast.makeText(getApplicationContext(), "Denunciar a " + otherUser.getName(), Toast.LENGTH_SHORT).show();
                                 new ReportDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "denunciar");
                                 break;
 
@@ -321,6 +327,8 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                         return true;
                     }
                 });
+                menu = pm.getMenu();
+                onBlockDialogFragmentInteraction(UserManager.getInstance().isBlocked(otherUser.getId()));
                 pm.show();
             }
         });
@@ -392,6 +400,20 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                         Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+
+
+    @Override
+    public void onBlockDialogFragmentInteraction(Boolean isBlocked) {
+        MenuItem blockMenuItem = menu.findItem(R.id.block);
+        if (isBlocked) {
+            // cambiar el menu a Desbloquear
+            blockMenuItem.setTitle("Desbloquear");
+        } else {
+            // pooner el menu en Bloquear
+            blockMenuItem.setTitle("Bloquear");
+        }
     }
 
 

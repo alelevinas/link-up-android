@@ -52,7 +52,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class ChatActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, BlockDialog.OnBlockDialogFragmentInteractionListener {
     public static final String CHATS_CHILD = "chats";
     public static final String MESSAGES_CHILD = "messages";
     public static final String LAST_CHAT_ID = "LAST_CHAT_ID";
@@ -90,8 +90,9 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private Toolbar toolbar;
     private String lastChatPreviewId;
     private String lastChatText;
-    private String lastChatBlocked;
+    private boolean lastChatBlocked;
     private LinearLayout mBlockedConversation;
+    private Menu menu;
 
     public static String getConversationId(String id, String otherUserId) {
         if (otherUserId.compareTo(id) < 0) {
@@ -214,7 +215,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ChatPreview preview = dataSnapshot.getValue(ChatPreview.class);
-                if (preview.getBlocked_by_me()) {
+                if (preview.getBlocked_by_me() || preview.getBlocked_by_other()) {
                     mBlockedConversation.setVisibility(View.VISIBLE);
                     mSendButton.setEnabled(false);
                 } else {
@@ -253,7 +254,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             otherUserName = extrasBundle.getString(CHAT_WITH_USER_NAME);
             lastChatPreviewId = extrasBundle.getString(LAST_CHAT_ID);
             lastChatText = extrasBundle.getString(LAST_CHAT_TEXT);
-            lastChatBlocked = extrasBundle.getString(LAST_CHAT_BLOCKED);
+            lastChatBlocked = extrasBundle.getBoolean(LAST_CHAT_BLOCKED);
             myUserId = UserManager.getInstance().getMyUser().getId();
 
             setUpToolbarTitle();
@@ -369,8 +370,11 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chat_menu, menu);
+        this.menu = menu;
+        onBlockDialogFragmentInteraction(UserManager.getInstance().isBlocked(otherUserId));
         return true;
     }
 
@@ -379,12 +383,16 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         switch (item.getItemId()) {
 
             case R.id.block:
-                new BlockDialog().setOtherUserId(otherUserId).show(getFragmentManager().beginTransaction(), "bloquear");
+                if (item.getTitle().equals("Bloquear"))
+                    new BlockDialog().setOtherUserId(otherUserId).attach(this).show(getFragmentManager().beginTransaction(), "bloquear");
+                else
+                    new BlockDialog().setOtherUserId(otherUserId).unblock().attach(this).show(getFragmentManager().beginTransaction(), "desbloquear");
                 return true;
 
             case R.id.report:
                 new ReportDialog().setOtherUserId(otherUserId).show(getFragmentManager().beginTransaction(), "denunciar");
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -396,5 +404,17 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBlockDialogFragmentInteraction(Boolean isBlocked) {
+        MenuItem blockMenuItem = menu.findItem(R.id.block);
+        if (isBlocked) {
+            // cambiar el menu a Desbloquear
+            blockMenuItem.setTitle("Desbloquear");
+        } else {
+            // pooner el menu en Bloquear
+            blockMenuItem.setTitle("Bloquear");
+        }
     }
 }

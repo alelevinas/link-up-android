@@ -67,7 +67,7 @@ public class ChatPreviewViewHolder extends RecyclerView.ViewHolder {
                 bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, chat.getName());
                 bundle.putString(ChatActivity.LAST_CHAT_ID, chat.getMessageId());
                 bundle.putString(ChatActivity.LAST_CHAT_TEXT, chat.getLastMessage());
-                bundle.putBoolean(ChatActivity.LAST_CHAT_BLOCKED, chat.getBlocked_by_me());
+                bundle.putBoolean(ChatActivity.LAST_CHAT_BLOCKED, chat.getBlocked_by_me() || chat.getBlocked_by_other());
                 intentBundle.putExtras(bundle);
                 itemView.getContext().startActivity(intentBundle);
             }
