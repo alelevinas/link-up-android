@@ -326,7 +326,7 @@ public class LogInActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<ServerResponse<LinkUpUser>> call, Throwable t) {
                     Log.e("LOGIN ACTIVITY SERVER", "ERROR GETING USER FROM LINK UP SERVERS");
-                    showAlertAndExit("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta mas tarde");
+                    showAlertAndExit("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta más tarde");
                     stopLoader();
                 }
             });

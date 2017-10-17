@@ -215,11 +215,15 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ChatPreview preview = dataSnapshot.getValue(ChatPreview.class);
+                if (preview == null)
+                    return;
                 if (preview.getBlocked_by_me() || preview.getBlocked_by_other()) {
                     mBlockedConversation.setVisibility(View.VISIBLE);
+                    mMessageEditText.setEnabled(false);
                     mSendButton.setEnabled(false);
                 } else {
                     mBlockedConversation.setVisibility(View.GONE);
+                    mMessageEditText.setEnabled(true);
                     mSendButton.setEnabled(true);
                 }
             }

@@ -366,7 +366,7 @@ public class UserService {
     }
 
     private void showNoConnectionAlert() {
-        showAlert("Atención", "No hay conexión. Por favor intenta luego");
+        showAlert("Atención", "Ha habido un error al comunicarse con nuestros servidores. Por favor intenta más tarde");
     }
 
     private void showAlert(String title, String message) {
