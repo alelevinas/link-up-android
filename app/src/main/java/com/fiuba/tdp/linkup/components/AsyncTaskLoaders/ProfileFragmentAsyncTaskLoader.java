@@ -2,17 +2,13 @@ package com.fiuba.tdp.linkup.components.AsyncTaskLoaders;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.content.Intent;
 
-import com.facebook.login.LoginManager;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
-import com.fiuba.tdp.linkup.views.LogInActivity;
-import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +30,7 @@ public class ProfileFragmentAsyncTaskLoader extends AsyncTaskLoader<String> {
                 public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                     if (response.isSuccessful()) {
                         UserManager.getInstance().setMyUser(response.body().data);
+                        UserManager.getInstance().updateMyBlockedUsers(getContext());
                         if (locationManager.getLastKnownLocation() != null) {
                             LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
                             new UserService(getContext()).putLocation(UserManager.getInstance().getMyUser().getId(), userLoc);

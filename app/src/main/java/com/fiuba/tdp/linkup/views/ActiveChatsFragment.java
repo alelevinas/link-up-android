@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -44,6 +45,7 @@ public class ActiveChatsFragment extends Fragment {
 
     private String mUsername;
     private String mUserId;
+    private LinearLayout mEmptyListMessage;
 
     public ActiveChatsFragment() {
         // Required empty public constructor
@@ -70,8 +72,10 @@ public class ActiveChatsFragment extends Fragment {
         }
 
         // Initialize ProgressBar and RecyclerView.
-        //mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
-        mMessageRecyclerView = (RecyclerView) view;
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        mEmptyListMessage = (LinearLayout) view.findViewById(R.id.emptyList);
+
+        mMessageRecyclerView = (RecyclerView) view.findViewById(R.id.previewsRecyclerView);
         mLinearLayoutManager = new LinearLayoutManager(this.getContext());
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
 
@@ -83,7 +87,7 @@ public class ActiveChatsFragment extends Fragment {
 
         mMessageRecyclerView.setAdapter(mFirebaseAdapter);
 
-        return mMessageRecyclerView;
+        return view;
     }
 
     private FirebaseRecyclerAdapter<ChatPreview, ChatPreviewViewHolder> getFirebaseAdapter() {
@@ -97,7 +101,7 @@ public class ActiveChatsFragment extends Fragment {
             @Override
             protected void populateViewHolder(final ChatPreviewViewHolder viewHolder,
                                               ChatPreview chatPreview, int position) {
-                //mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 viewHolder.bind(chatPreview, mFirebaseDatabaseReference);
                 Log.e(TAG, String.format("position: %d, Item count: %d", position, getItemCount()));
                 if (getItemCount() - 1 == position) {
@@ -110,7 +114,8 @@ public class ActiveChatsFragment extends Fragment {
             @Override
             public void onDataChanged() {
                 // If there are no chat messages, show a view that invites the user to add a message.
-//                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         };
     }
@@ -141,32 +146,11 @@ public class ActiveChatsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-   /* public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }*/
 }

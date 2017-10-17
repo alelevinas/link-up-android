@@ -3,12 +3,14 @@ package com.fiuba.tdp.linkup.services;
 import android.content.Context;
 import android.util.Log;
 
+import com.fiuba.tdp.linkup.domain.LinkUpBlockedUser;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -20,6 +22,8 @@ public class UserManager {
     private static final UserManager ourInstance = new UserManager();
     private LinkUpUser myUser, userSelected;
 
+    private HashMap<String, LinkUpBlockedUser> myBlockedUsers;
+
     private UserManager() {
     }
 
@@ -28,15 +32,18 @@ public class UserManager {
     }
 
     public final LinkUpUser getMyUser() {
+//        if (myUser != null) {
+//            new UserService()
+//        }
         return myUser;
-    }
-
-    public final LinkUpUser getUserSelected() {
-        return userSelected;
     }
 
     public void setMyUser(LinkUpUser myUser) {
         this.myUser = myUser;
+    }
+
+    public final LinkUpUser getUserSelected() {
+        return userSelected;
     }
 
     public void setUserSelected(LinkUpUser otherUser) {
@@ -72,4 +79,29 @@ public class UserManager {
             }
         });
     }
+
+
+    public void updateMyBlockedUsers(Context context) {
+        new UserService(context).getBlockedUsersByMe(myUser.getId(), new Callback<ServerResponse<LinkUpBlockedUser[]>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<LinkUpBlockedUser[]>> call, Response<ServerResponse<LinkUpBlockedUser[]>> response) {
+                if (response.isSuccessful() && response.body().data != null) {
+                    myBlockedUsers = new HashMap<String, LinkUpBlockedUser>();
+                    for (LinkUpBlockedUser u: response.body().data) {
+                        myBlockedUsers.put(u.getUserId(), u);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<LinkUpBlockedUser[]>> call, Throwable t) {
+                Log.e("GET BLOCKED USERS", "ERROR");
+            }
+        });
+    }
+
+    public boolean isBlocked(String otherUserId) {
+        return myBlockedUsers.containsKey(otherUserId);
+    }
+
 }

@@ -22,6 +22,7 @@ import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.fiuba.tdp.linkup.views.ChatActivity;
 import com.fiuba.tdp.linkup.views.LogInActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,10 +47,22 @@ public class SplashActivity extends AppCompatActivity {
 
     //Firebase
     private FirebaseAuth mAuth;
+    private String otherUserId;
+    private String otherUserName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intentExtras = getIntent();
+        Bundle extrasBundle = intentExtras.getExtras();
+        if (extrasBundle != null && !extrasBundle.isEmpty()) {
+            otherUserId = extrasBundle.getString(ChatActivity.CHAT_WITH_USER_ID, "");
+            otherUserName = extrasBundle.getString(ChatActivity.CHAT_WITH_USER_NAME, "");
+        } else {
+            otherUserId = "";
+            otherUserName = "";
+        }
 
         setContentView(R.layout.activity_splash);
 
@@ -113,6 +126,8 @@ public class SplashActivity extends AppCompatActivity {
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                 if (response.isSuccessful()) {
                     UserManager.getInstance().setMyUser(response.body().data);
+                    UserManager.getInstance().updateMyBlockedUsers(getBaseContext());
+
                     if (locationManager.getLastKnownLocation() != null) {
                         LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
                         new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
@@ -121,9 +136,19 @@ public class SplashActivity extends AppCompatActivity {
                         new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                     }
 
-                    Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
-                    startActivity(main);
-                    finish();
+                    if (otherUserId.compareTo("") != 0) {
+                        Intent intent = new Intent(SplashActivity.this, ChatActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ChatActivity.CHAT_WITH_USER_ID, otherUserId);
+                        bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, otherUserName);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
+                        startActivity(main);
+                        finish();
+                    }
                 } else if (response.code() == 404) {
                     LoginManager.getInstance().logOut();
                     Intent main = new Intent(getBaseContext(), LogInActivity.class);

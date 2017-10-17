@@ -5,17 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.Toast;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -262,6 +259,7 @@ public class LogInActivity extends AppCompatActivity {
                 public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                     if (response.isSuccessful()) {
                         UserManager.getInstance().setMyUser(response.body().data);
+                        UserManager.getInstance().updateMyBlockedUsers(getBaseContext());
                         if (locationManager.getLastKnownLocation() != null) {
                             Log.d(LOCATION_TAG, "set location");
                             LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
@@ -282,6 +280,7 @@ public class LogInActivity extends AppCompatActivity {
                                 Log.e("LINKUP SERVER", "POSTED USER TO LINK UP SERVERS");
 
                                 UserManager.getInstance().setMyUser(response.body().data);
+                                UserManager.getInstance().updateMyBlockedUsers(getBaseContext());
                                 if (locationManager.getLastKnownLocation() != null) {
                                     Log.d(LOCATION_TAG, "set location");
                                     LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());

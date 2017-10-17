@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.domain.LinkUpBlockedUser;
 import com.fiuba.tdp.linkup.domain.LinkUpMatch;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.LocationUser;
@@ -324,6 +325,40 @@ public class UserService {
         }
         api.deleteUserFromAround(myUserId, otherUserIdToRemove).enqueue(callback);
     }
+
+    public void postBlockUser(String myUserId, String otherUserIdToBlock, final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        HashMap<String, String> userToBlock = new HashMap<>();
+        userToBlock.put("userId", otherUserIdToBlock);
+        api.postBlockUser(myUserId, userToBlock).enqueue(callback);
+    }
+
+    public void postUnblockUser(String myUserId, String otherUserIdToUnblock, final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        HashMap<String, String> userToBlock = new HashMap<>();
+        userToBlock.put("userId", otherUserIdToUnblock);
+        api.postUnblockUser(myUserId, userToBlock).enqueue(callback);
+    }
+
+    public void getBlockedUsersByMe(String myUserId, final Callback<ServerResponse<LinkUpBlockedUser[]>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        api.getBlockedUsersByMe(myUserId).enqueue(callback);
+    }
+
+
+    /*----------------------------------------------- EXTRA --------------------------------------*/
 
     public boolean isNetworkAvailable() {
         final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));

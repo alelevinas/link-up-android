@@ -80,7 +80,7 @@ public class ExploreFragment extends Fragment {
 
     private void startLoader() {
         loader.setVisibility(View.VISIBLE);
-        loader.startAnimation(AnimationUtils.loadAnimation(this.getContext(), R.anim.rotate_indefinitely) );
+        loader.startAnimation(AnimationUtils.loadAnimation(this.getContext(), R.anim.rotate_indefinitely));
         recyclerView.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
     }
@@ -131,14 +131,16 @@ public class ExploreFragment extends Fragment {
 
 
             holder.name.setText(usersAround.getNames().get(position));
-            if(Objects.equals(usersAround.getDescriptions().get(position), "")) {
+            if (Objects.equals(usersAround.getDescriptions().get(position), "")) {
                 holder.description.setVisibility(View.GONE);
             } else {
                 holder.description.setVisibility(View.VISIBLE);
                 holder.description.setText(usersAround.getDescriptions().get(position));
             }
             holder.userId = usersAround.getIds().get(position);
-            holder.favoriteImageButtonChecked = usersAround.getUser(position).getLike().compareTo("true") == 0;
+            if (usersAround.getUser(position) != null && usersAround.getUser(position).getLike() != null) {
+                holder.favoriteImageButtonChecked = usersAround.getUser(position).getLike().compareTo("true") == 0;
+            }
             holder.updateLikeStatus();
         }
 

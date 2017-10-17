@@ -28,6 +28,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.SplashActivity;
 import com.fiuba.tdp.linkup.views.ChatActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -93,7 +94,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void sendNotification(String messageFromUserName, String messageBody, String messageFromUserId) {
         // TODO: open chat with the other user
-        Intent intent = new Intent(this, ChatActivity.class);
+        Intent intent = new Intent(this, SplashActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ChatActivity.CHAT_WITH_USER_ID, messageFromUserId);
         bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, messageFromUserName);
