@@ -18,7 +18,11 @@ public class LinkUpUser {
     private LinkUpEducation[] education;
     private LinkUpLike[] likes;
     private LinkUpPicture[] pictures;
-    public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLike[] likes, LinkUpPicture[] pictures) {
+    private LinkUpLocation location;
+
+
+
+    public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLike[] likes, LinkUpPicture[] pictures, LinkUpLocation location) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -28,6 +32,7 @@ public class LinkUpUser {
         this.education = education;
         this.likes = likes;
         this.pictures = pictures;
+        this.location = location;
     }
 
 
@@ -103,6 +108,10 @@ public class LinkUpUser {
         return ageInt.toString();
     }
 
+    public LinkUpLocation getLocation() {
+        return location;
+    }
+
     public class LinkUpEducation {
         String name;
         String type;
@@ -130,6 +139,24 @@ public class LinkUpUser {
 
         public String getName() {
             return name;
+        }
+    }
+
+    public class LinkUpLocation {
+        String lat;
+        String lon;
+
+        public LinkUpLocation(String lat, String lon) {
+            this.lat = lat;
+            this.lon = lon;
+        }
+
+        public String getLat() {
+            return lat;
+        }
+
+        public String getLon() {
+            return lon;
         }
     }
 }

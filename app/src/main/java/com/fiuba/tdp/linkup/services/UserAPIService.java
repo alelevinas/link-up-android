@@ -53,8 +53,8 @@ public interface UserAPIService {
     @GET("/api/linkup/users/{myUserId}/links")
     Call<ServerResponse<LinkUpMatch[]>> getMatchesWithoutChat(@Path("myUserId") String myUserId);
 
-    @POST("/api/linkup/users/{myUserId}/report")
-    Call<ServerResponse<String>> postReportUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> reportData);
+    @POST("/api/linkup/users/{otherUserId}/report")
+    Call<ServerResponse<String>> postReportUser(@Path("otherUserId") String otherUserId, @Body HashMap<String, String> reportData);
 
     @DELETE("/api/linkup/users/{myUserId}/around/{otherUserIdToRemove}")
     Call<ServerResponse<String>> deleteUserFromAround(@Path("myUserId") String myUserId, @Path("otherUserIdToRemove") String otherUserIdToRemove);

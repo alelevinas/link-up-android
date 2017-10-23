@@ -66,6 +66,9 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
 
+        // Location
+        locationManager.getDeviceLocation(this);
+
         // Firebase
         mAuth = FirebaseAuth.getInstance();
 

@@ -51,7 +51,7 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         saveFireBaseToken();
-
+        UserManager.getInstance().updateMyBlockedUsers(this);
         pushFragment(exploreFragment);
     }
 
