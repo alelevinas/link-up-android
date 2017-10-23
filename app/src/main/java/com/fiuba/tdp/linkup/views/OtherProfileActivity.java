@@ -363,7 +363,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         // MAP
 
-        LatLng otherPos = new LatLng(Double.parseDouble(otherUser.getLocation().getLat()), Double.parseDouble(otherUser.getLocation().getLon()));
+        LatLng otherPos = new LatLng(otherUser.getLocation().getLat(), otherUser.getLocation().getLon());
         LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
 
         //TODO: sacar markers!!!!!
@@ -499,7 +499,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private void drawMarkerWithCircle(LatLng position, double radiusInMeters){
         if (mMap == null)
             return;
-        Log.e(TAG, otherUser.getLocation().getLat() + "   " + otherUser.getLocation().getLon());
+        Log.e(TAG, String.format("Other user Lat: %f  | Long: %f\n",otherUser.getLocation().getLat(), otherUser.getLocation().getLon()));
 
 //        double radiusInMeters = 60000.0;
         int strokeColor = 0xff33b5e5; //blue outline

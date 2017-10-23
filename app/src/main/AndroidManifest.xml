@@ -140,10 +140,6 @@
                 android:value="com.fiuba.tdp.linkup.views.MainLinkUpActivity" />
         </activity>
 
-        <activity
-            android:name="com.fiuba.tdp.linkup.MapsActivity"
-            android:label="@string/title_activity_maps" />
-
         <service android:name=".services.firebase.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

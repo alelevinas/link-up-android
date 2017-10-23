@@ -85,6 +85,10 @@ public class LinkUpUser {
         this.pictures = pictures;
     }
 
+    public void setLocation(LinkUpLocation location) {
+        this.location = location;
+    }
+
     /**
      * Method to extract the user's age from the entered Date of Birth.
      *
@@ -139,24 +143,6 @@ public class LinkUpUser {
 
         public String getName() {
             return name;
-        }
-    }
-
-    public class LinkUpLocation {
-        String lat;
-        String lon;
-
-        public LinkUpLocation(String lat, String lon) {
-            this.lat = lat;
-            this.lon = lon;
-        }
-
-        public String getLat() {
-            return lat;
-        }
-
-        public String getLon() {
-            return lon;
         }
     }
 }
