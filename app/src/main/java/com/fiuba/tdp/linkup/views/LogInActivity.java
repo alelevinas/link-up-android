@@ -270,6 +270,14 @@ public class LogInActivity extends AppCompatActivity {
                             new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         }
 
+                        // TODO: chequear si esta disabled por el administrador
+                        LinkUpUser me = UserManager.getInstance().getMyUser();
+                        if (me.isDisable()) {
+                            showAlertAndExit("Has sido bloqueado por el administrador. Consultas a preguntas@linkup.com");
+                            return;
+                        }
+
+
                         Intent main = new Intent(getBaseContext(), MainLinkUpActivity.class);
                         startActivity(main);
                         finish();
@@ -355,6 +363,7 @@ public class LogInActivity extends AppCompatActivity {
 
         dialog.show();
 
+        LoginManager.getInstance().logOut();
     }
 
     private void showAlert(String s) {
@@ -377,6 +386,5 @@ public class LogInActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         dialog.show();
-
     }
 }
