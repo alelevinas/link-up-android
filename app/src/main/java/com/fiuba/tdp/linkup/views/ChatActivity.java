@@ -68,6 +68,8 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private String conversationId;
     private String firebaseChatLocation;
 
+    private LinkUpUser otherUser;
+
     private String mUsername;
     private Button mSendButton;
     private RecyclerView mMessageRecyclerView;
@@ -93,6 +95,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
     private boolean lastChatBlocked;
     private LinearLayout mBlockedConversation;
     private Menu menu;
+    private TextView mBlockedConversationMessage;
 
     public static String getConversationId(String id, String otherUserId) {
         if (otherUserId.compareTo(id) < 0) {
@@ -137,6 +140,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
 
         mEmptyListMessage = (LinearLayout) findViewById(R.id.emptyChat);
         mBlockedConversation = (LinearLayout) findViewById(R.id.blockedChat);
+        mBlockedConversationMessage = (TextView) findViewById(R.id.blockedChatMessage);
 
         // New message child entries
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -208,6 +212,16 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         checkIfConversationBlocked();
     }
 
+    private void checkIfOtherUserIsDisabled() {
+        if (otherUser.isDisable()) {
+            mBlockedConversation.setVisibility(View.VISIBLE);
+            mBlockedConversationMessage.setText(R.string.blocked_by_admin_msg);
+            mMessageEditText.setEnabled(false);
+            mSendButton.setEnabled(false);
+            mMessageRecyclerView.setEnabled(false);
+        }
+    }
+
     private void checkIfConversationBlocked() {
         DatabaseReference myLastChatRef = mFirebaseDatabaseReference.child(myUserLastChatReference);
 
@@ -217,8 +231,13 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
                 ChatPreview preview = dataSnapshot.getValue(ChatPreview.class);
                 if (preview == null)
                     return;
+                if (mBlockedConversation.getVisibility() == View.VISIBLE) {
+                    // ya esta bloqueada la conv
+                    return;
+                }
                 if (preview.getBlocked_by_me() || preview.getBlocked_by_other()) {
                     mBlockedConversation.setVisibility(View.VISIBLE);
+                    mBlockedConversationMessage.setText(R.string.blocked_conv_msg);
                     mMessageEditText.setEnabled(false);
                     mSendButton.setEnabled(false);
                 } else {
@@ -261,8 +280,7 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             lastChatBlocked = extrasBundle.getBoolean(LAST_CHAT_BLOCKED);
             myUserId = UserManager.getInstance().getMyUser().getId();
 
-            setUpToolbarTitle();
-
+            getOtherUser();
 
             conversationId = getConversationId(myUserId, otherUserId);
             /*if (otherUserId.compareTo(myUserId) < 0) {
@@ -286,18 +304,14 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
-    private void setUpToolbarTitle() {
-        ((TextView) toolbar.findViewById(R.id.other_title_name)).setText(otherUserName);
-
-        final ImageView profileImage = (ImageView) toolbar.findViewById(R.id.other_profile_picture);
-
+    private void getOtherUser() {
         new UserService(this).getUser(otherUserId, new Callback<ServerResponse<LinkUpUser>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpUser>> call, Response<ServerResponse<LinkUpUser>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Glide.with(getBaseContext())
-                            .load(response.body().data.getPicture())
-                            .into(profileImage);
+                    otherUser = response.body().data;
+                    setUpToolbarTitle();
+                    checkIfOtherUserIsDisabled();
                 }
             }
 
@@ -319,6 +333,16 @@ public class ChatActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
+    }
+
+    private void setUpToolbarTitle() {
+        ((TextView) toolbar.findViewById(R.id.other_title_name)).setText(otherUserName);
+
+        final ImageView profileImage = (ImageView) toolbar.findViewById(R.id.other_profile_picture);
+
+        Glide.with(getBaseContext())
+                .load(otherUser.getPicture())
+                .into(profileImage);
     }
 
     private FirebaseRecyclerAdapter<ChatMessage, ChatViewHolder> getFirebaseAdapter() {

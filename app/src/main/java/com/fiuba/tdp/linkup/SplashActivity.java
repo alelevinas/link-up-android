@@ -142,7 +142,6 @@ public class SplashActivity extends AppCompatActivity {
                     }
 
 
-                    // TODO: chequear si esta disabled por el administrador
                     LinkUpUser me = UserManager.getInstance().getMyUser();
                     if (me.isDisable()) {
                         showAlertAndExit("Has sido bloqueado por el administrador. Consultas a preguntas@linkup.com");
