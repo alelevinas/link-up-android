@@ -50,8 +50,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import retrofit2.Call;
@@ -364,18 +366,24 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         // MAP
 
         LatLng otherPos = new LatLng(otherUser.getLocation().getLat(), otherUser.getLocation().getLon());
-        LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+//        LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
 
         //TODO: sacar markers!!!!!
-        mMap.addMarker(new MarkerOptions().position(myPos).title(UserManager.getInstance().getMyUser().getName()));
+//        mMap.addMarker(new MarkerOptions().position(myPos).title(UserManager.getInstance().getMyUser().getName()));
         mMap.addMarker(new MarkerOptions().position(otherPos).title(otherUser.getName()));
 
-        LatLng center = getCenterFromPositions(myPos, otherPos);
-        float radius = getRadiusFromPositions(myPos, otherPos);
+//        LatLng center = getCenterFromPositions(myPos, otherPos);
+//        float radius = getRadiusFromPositions(myPos, otherPos);
 
+        LatLng center = getRandomPositionFrom(otherPos);
+        float radius = 300;
         drawMarkerWithCircle(center, radius);
 
         distanceLabel.setText(String.format("A %.0f km de distancia",Math.ceil(radius/1000)));
+    }
+
+    private LatLng getRandomPositionFrom(LatLng otherPos) {
+        return new LatLng(otherPos.latitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002), otherPos.longitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002));
     }
 
     private float getRadiusFromPositions(LatLng myPos, LatLng otherPos) {

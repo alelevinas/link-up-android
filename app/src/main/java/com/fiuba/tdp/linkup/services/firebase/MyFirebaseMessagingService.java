@@ -109,7 +109,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.messenger_bubble_large_white)
-                        .setContentTitle("Mensaje de " + messageFromUserName)
+                        .setContentTitle("Notificación de " + messageFromUserName)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)

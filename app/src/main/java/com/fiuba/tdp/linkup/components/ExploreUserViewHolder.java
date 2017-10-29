@@ -60,8 +60,8 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Snackbar.make(v, "Ver Perfil de " + name.getText().toString(),
-                        Snackbar.LENGTH_SHORT).show();
+//                Snackbar.make(v, "Ver Perfil de " + name.getText().toString(),
+//                        Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(v.getContext(), OtherProfileActivity.class);
                 intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(userId));
                 v.getContext().startActivity(intent);

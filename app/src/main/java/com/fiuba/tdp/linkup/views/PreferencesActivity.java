@@ -13,7 +13,12 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.Switch;
+import android.widget.TextView;
 
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.interfaces.OnSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
+import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar;
 import com.facebook.Profile;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
@@ -36,8 +41,8 @@ public class PreferencesActivity extends AppCompatActivity {
     private Button linkUpPlusButton;
     private Switch likeMenSwitch;
     private Switch likeWomenSwitch;
-    private RangeSeekBar<Integer> distanceRangeSeekBar;
-    private RangeSeekBar<Integer> ageRangeSeekBar;
+    private CrystalSeekbar distanceRangeSeekBar;
+    private CrystalRangeSeekbar ageRangeSeekBar;
     private Switch invisibleSwitch;
     private RadioButton radioRelationship;
     private RadioButton radioFriendship;
@@ -64,16 +69,42 @@ public class PreferencesActivity extends AppCompatActivity {
         likeMenSwitch = (Switch) findViewById(R.id.switch_men);
         likeWomenSwitch = (Switch) findViewById(R.id.switch_women);
 
-        distanceRangeSeekBar = (RangeSeekBar<Integer>) findViewById(R.id.seekbar_distance);
-        distanceRangeSeekBar.setSelectedMaxValue(10);
+        distanceRangeSeekBar = (CrystalSeekbar) findViewById(R.id.seekbar_distance);
+        // get min and max text view
+//        final TextView tvMinDist = (TextView) findViewById(R.id.textMinDistance);
+        final TextView tvMaxDist = (TextView) findViewById(R.id.textMaxDistance);
 
-        ageRangeSeekBar = (RangeSeekBar<Integer>) findViewById(R.id.rgseekbar_age);
+        tvMaxDist.setX(distanceRangeSeekBar.getLeftThumbRect().left + 20);
+
+        // set listener
+        distanceRangeSeekBar.setOnSeekbarChangeListener(new OnSeekbarChangeListener() {
+            @Override
+            public void valueChanged(Number minValue) {
+                tvMaxDist.setText(String.valueOf(minValue));
+//                tvMaxDist.setX(distanceRangeSeekBar.getLeftThumbRect().left + 20);
+            }
+        });
+
+        ageRangeSeekBar = (CrystalRangeSeekbar) findViewById(R.id.rgseekbar_age);
+        // get min and max text view
+        final TextView tvMinAge = (TextView) findViewById(R.id.textMinAge);
+        final TextView tvMaxAge = (TextView) findViewById(R.id.textMaxAge);
+
+        ageRangeSeekBar.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
+            @Override
+            public void valueChanged(Number minValue, Number maxValue) {
+                tvMinAge.setText(String.valueOf(minValue));
+                tvMaxAge.setText(String.valueOf(maxValue));
+            }
+        });
+
+
         int userAge = Integer.parseInt(UserManager.getInstance().getMyUser().getAge());
         if(userAge <= 23)
-            ageRangeSeekBar.setSelectedMinValue(18);
+            ageRangeSeekBar.setLeft(18);
         else
-            ageRangeSeekBar.setSelectedMinValue(userAge-5);
-        ageRangeSeekBar.setSelectedMaxValue(userAge+5);
+            ageRangeSeekBar.setLeft(userAge-5);
+        ageRangeSeekBar.setRight(userAge+5);
 
         invisibleSwitch = (Switch) findViewById(R.id.switch_invisible);
 
@@ -128,10 +159,14 @@ public class PreferencesActivity extends AppCompatActivity {
                     likeMenSwitch.setChecked(false);
                     likeWomenSwitch.setChecked(true);
                 }
-                distanceRangeSeekBar.setSelectedMaxValue(Integer.parseInt(userPreferences.getDistance()));
+                distanceRangeSeekBar.setMinStartValue(Integer.parseInt(userPreferences.getDistance())).apply();
 
-                ageRangeSeekBar.setSelectedMinValue(Integer.parseInt(userPreferences.getMinAge()));
-                ageRangeSeekBar.setSelectedMaxValue(Integer.parseInt(userPreferences.getMaxAge()));
+//                final TextView tvMaxDist = (TextView) findViewById(R.id.textMaxDistance);
+//                tvMaxDist.setX(distanceRangeSeekBar.getLeftThumbRect().left + 20);
+
+                ageRangeSeekBar.setMinStartValue(Integer.parseInt(userPreferences.getMinAge()))
+                        .setMaxStartValue(Integer.parseInt(userPreferences.getMaxAge()))
+                        .apply();
 
                 invisibleSwitch.setChecked(Objects.equals(userPreferences.getMode(),"invisible"));
 
@@ -146,7 +181,7 @@ public class PreferencesActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ServerResponse<UserPreferences>> call, Throwable t) {
                 Log.w("Preferences Activity", "Error: "+t.toString()+", in call: "+call.toString());
-                showAlertAndFinish("Ha habido un error al comunicarse con nuestros servidores..");
+                showAlertAndFinish("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta más tarde");
             }
         });
     }
@@ -169,7 +204,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 gender = "female";
             else
                 gender = "male";
-        String distance = distanceRangeSeekBar.getSelectedMaxValue().toString();
+        String distance = distanceRangeSeekBar.getSelectedMinValue().toString();
         String minAge = ageRangeSeekBar.getSelectedMinValue().toString();
         String maxAge = ageRangeSeekBar.getSelectedMaxValue().toString();
         String mode = invisibleSwitch.isChecked() ? "invisible" : "visible";
