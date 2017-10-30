@@ -446,7 +446,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                             case R.id.report:
                                 new ReportDialog().setOtherUserId(otherUser.getId()).show(getFragmentManager().beginTransaction(), "denunciar");
                                 break;
-
                             default:
                                 break;
                         }
@@ -462,7 +461,13 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         // MAP
 
         LatLng otherPos = new LatLng(otherUser.getLocation().getLat(), otherUser.getLocation().getLon());
-        LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+        LatLng myPos;
+        if (locationManager.getLastKnownLocation() != null) {
+            myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+            distanceLabel.setText(String.format("A %.0f km de distancia", Math.ceil(getDistanceFromPositions(myPos, otherPos) / 1000)));
+        } else {
+            distanceLabel.setText("");
+        }
 
         //TODO: sacar markers!!!!!
 //        mMap.addMarker(new MarkerOptions().position(myPos).title(UserManager.getInstance().getMyUser().getName()));
@@ -471,11 +476,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 //        LatLng center = getCenterFromPositions(myPos, otherPos);
 //        float radius = getDistanceFromPositions(myPos, otherPos);
 
+
         LatLng center = getRandomPositionFrom(otherPos);
         float radius = 300;
         drawMarkerWithCircle(center, radius);
 
-        distanceLabel.setText(String.format("A %.0f km de distancia", Math.ceil(getDistanceFromPositions(myPos, otherPos) / 1000)));
 
         updateLikeStatus();
         updateSuperLikeStatus();
