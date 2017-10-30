@@ -140,8 +140,11 @@ public class ExploreFragment extends Fragment {
             holder.userId = usersAround.getIds().get(position);
             if (usersAround.getUser(position) != null && usersAround.getUser(position).getLike() != null) {
                 holder.likeImageButtonChecked = usersAround.getUser(position).getLike().compareTo("true") == 0;
+                // TODO lo mismo pero con superlike
+//                holder.superLikeImageButtonChecked = usersAround.getUser(position).getSuperLike().compareTo("true") == 0;
             }
             holder.updateLikeStatus();
+            holder.updateSuperLikeStatus();
         }
 
         @Override

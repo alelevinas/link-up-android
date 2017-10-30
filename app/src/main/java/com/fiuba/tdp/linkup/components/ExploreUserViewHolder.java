@@ -27,7 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.R.color.holo_orange_light;
 import static android.R.color.holo_red_light;
 
 public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
@@ -43,7 +42,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     public TextView name;
     public TextView description;
     public boolean likeImageButtonChecked = false;
-    boolean superLikeImageButtonChecked = false;
+    public boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
 
     public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent, ExploreFragment.ExploreUserContentAdapter exploreUserContentAdapter) {
@@ -64,6 +63,8 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 //                        Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(v.getContext(), OtherProfileActivity.class);
                 intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(userId));
+                intent.putExtra(OtherProfileActivity.IS_LIKED, likeImageButtonChecked);
+                intent.putExtra(OtherProfileActivity.IS_SUPERLIKED, superLikeImageButtonChecked);
                 v.getContext().startActivity(intent);
             }
         });
@@ -123,6 +124,12 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void pressSuperLikeButton(View v) {
+        if (superLikeImageButtonChecked) {
+            Snackbar.make(v, "No puedes quitarle el superlike!",
+                    Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
         superLikeImageButtonChecked = !superLikeImageButtonChecked;
         updateSuperLikeStatus();
         if (superLikeImageButtonChecked) {
@@ -136,7 +143,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         if (superLikeImageButtonChecked) {
             superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
         } else {
-            superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+            superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.medium_grey));
         }
     }
 
@@ -269,7 +276,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         if (likeImageButtonChecked) {
             likeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
         } else {
-            likeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+            likeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.medium_grey));
         }
     }
 

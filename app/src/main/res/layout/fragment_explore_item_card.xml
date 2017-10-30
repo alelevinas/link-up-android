@@ -88,10 +88,9 @@
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="@dimen/cards_button_width"
             android:layout_height="@dimen/cards_button_height"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@+id/card_text"
-            android:layout_marginRight="@dimen/md_keylines"
-            android:elevation="0dp"
+            android:layout_marginEnd="@dimen/md_keylines"
             android:tint="@color/button_grey"
             app:srcCompat="@android:drawable/btn_star" />
 
@@ -101,9 +100,9 @@
             android:layout_width="@dimen/cards_button_width"
             android:layout_height="@dimen/cards_button_height"
             android:layout_below="@+id/card_text"
-            android:layout_marginRight="@dimen/md_keylines"
-            android:layout_toLeftOf="@id/superlike_button"
-            android:tint="@color/button_grey"
+            android:layout_marginEnd="@dimen/md_keylines"
+            android:layout_toStartOf="@id/superlike_button"
+            android:tint="@color/medium_grey"
             app:srcCompat="@drawable/ic_favorite" />
 
         <ImageButton
