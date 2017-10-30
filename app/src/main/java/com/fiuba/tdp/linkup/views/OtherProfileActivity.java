@@ -459,7 +459,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         });
 
         // MAP
-
         LatLng otherPos = new LatLng(otherUser.getLocation().getLat(), otherUser.getLocation().getLon());
         LatLng myPos;
         if (locationManager.getLastKnownLocation() != null) {

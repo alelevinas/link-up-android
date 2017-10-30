@@ -4,16 +4,18 @@ public class UserAround {
     private String id;
     private String picture;
     private String like;
+    private String superlike;
     private String description;
     private String name;
 
 
-    public UserAround(String id, String name, String picture, String description, String like) {
+    public UserAround(String id, String name, String picture, String description, String like, String superlike) {
         this.id = id;
         this.picture = picture;
         this.like = like;
         this.description = description;
         this.name = name;
+        this.superlike = superlike;
     }
 
     public String getId() {
@@ -54,5 +56,13 @@ public class UserAround {
 
     public void setUserName(String userName) {
         this.name = userName;
+    }
+
+    public String getSuperlike() {
+        return superlike;
+    }
+
+    public void setSuperlike(String superlike) {
+        this.superlike = superlike;
     }
 }
