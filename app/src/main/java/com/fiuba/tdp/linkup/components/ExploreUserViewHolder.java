@@ -35,14 +35,14 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = "USER CARD";
     private final Button sendMessageButton;
     private final ImageButton closeImageButton;
-    private final ImageButton favoriteImageButton;
+    private final ImageButton likeImageButton;
     private final ImageButton superLikeImageButton;
     private final ExploreFragment.ExploreUserContentAdapter adapter;
     public String userId;
     public ImageView picture;
     public TextView name;
     public TextView description;
-    public boolean favoriteImageButtonChecked = false;
+    public boolean likeImageButtonChecked = false;
     boolean superLikeImageButtonChecked = false;
     private ViewGroup parent;
 
@@ -88,8 +88,8 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        favoriteImageButton = (ImageButton) itemView.findViewById(R.id.favorite_button);
-        favoriteImageButton.setOnClickListener(new View.OnClickListener() {
+        likeImageButton = (ImageButton) itemView.findViewById(R.id.like_button);
+        likeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pressLikeButton(v);
@@ -101,14 +101,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         superLikeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Le pusiste un SUPER like a " + name.getText().toString(),
-                        Snackbar.LENGTH_LONG).show();
-                if (superLikeImageButtonChecked) {
-                    superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
-                } else {
-                    superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_orange_light));
-                }
-                superLikeImageButtonChecked = !superLikeImageButtonChecked;
+                pressSuperLikeButton(v);
             }
         });
     }
@@ -129,10 +122,86 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    private void pressSuperLikeButton(View v) {
+        superLikeImageButtonChecked = !superLikeImageButtonChecked;
+        updateSuperLikeStatus();
+        if (superLikeImageButtonChecked) {
+            sendSuperLikeToServer(v);
+        } else {
+            sendDeleteSuperLikeToServer(v);
+        }
+    }
+
+    public void updateSuperLikeStatus() {
+        if (superLikeImageButtonChecked) {
+            superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
+        } else {
+            superLikeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+        }
+    }
+
+    private void sendSuperLikeToServer(final View v) {
+        new UserService(v.getContext()).postSuperLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<Match>>() {
+            String LOG_LIKE = "SUPER LIKE USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<Match>> call, Response<ServerResponse<Match>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data.getLink().toString());
+
+                    if (response.body().data.getLink()) {
+                        showAlert("Felicitaciones!", "Hay match!");
+                    }
+
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<Match>> call, Throwable t) {
+                superLikeImageButtonChecked = !superLikeImageButtonChecked;
+                updateSuperLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta luego más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendDeleteSuperLikeToServer(final View v) {
+        new UserService(v.getContext()).deleteSuperLikeToUser(UserManager.getInstance().getMyUser().getId(), userId, new Callback<ServerResponse<String>>() {
+            String LOG_LIKE = "DELETE SUPER LIKE FROM USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data);
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                superLikeImageButtonChecked = !superLikeImageButtonChecked;
+                updateSuperLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta luego más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
     private void pressLikeButton(View v) {
-        favoriteImageButtonChecked = !favoriteImageButtonChecked;
+        likeImageButtonChecked = !likeImageButtonChecked;
         updateLikeStatus();
-        if (favoriteImageButtonChecked) {
+        if (likeImageButtonChecked) {
             sendLikeToServer(v);
         } else {
             sendDeleteLikeToServer(v);
@@ -157,7 +226,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
             @Override
             public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
-                favoriteImageButtonChecked = !favoriteImageButtonChecked;
+                likeImageButtonChecked = !likeImageButtonChecked;
                 updateLikeStatus();
                 Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
                         Snackbar.LENGTH_LONG).show();
@@ -188,7 +257,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
             @Override
             public void onFailure(Call<ServerResponse<Match>> call, Throwable t) {
-                favoriteImageButtonChecked = !favoriteImageButtonChecked;
+                likeImageButtonChecked = !likeImageButtonChecked;
                 updateLikeStatus();
                 Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta más tarde",
                         Snackbar.LENGTH_LONG).show();
@@ -197,10 +266,10 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void updateLikeStatus() {
-        if (favoriteImageButtonChecked) {
-            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
+        if (likeImageButtonChecked) {
+            likeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), holo_red_light));
         } else {
-            favoriteImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
+            likeImageButton.setImageTintList(ContextCompat.getColorStateList(parent.getContext(), R.color.button_grey));
         }
     }
 

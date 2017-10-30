@@ -296,6 +296,27 @@ public class UserService {
         api.deleteLikeToUser(myUserId, otherUserId).enqueue(callback);
     }
 
+    public void postSuperLikeToUser(String myUserId, String otherUserId, final Callback<ServerResponse<Match>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+
+        HashMap<String, String> info = new HashMap<>();
+        info.put("userId", otherUserId);
+        api.postSuperLikeToUser(myUserId, info).enqueue(callback);
+    }
+
+    public void deleteSuperLikeToUser(String myUserId, String otherUserId, final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        api.deleteSuperLikeToUser(myUserId, otherUserId).enqueue(callback);
+    }
+
     public void getMatchesWithoutChat(String myUserId, final Callback<ServerResponse<LinkUpMatch[]>> callback) {
         if (endItNow) {
             showNoConnectionAlert();
