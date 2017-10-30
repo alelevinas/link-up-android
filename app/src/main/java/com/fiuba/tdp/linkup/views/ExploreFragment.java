@@ -144,6 +144,8 @@ public class ExploreFragment extends Fragment {
             }
             holder.updateLikeStatus();
             holder.updateSuperLikeStatus();
+
+            holder.distance = usersAround.getUser(position).getDistance();
         }
 
         @Override

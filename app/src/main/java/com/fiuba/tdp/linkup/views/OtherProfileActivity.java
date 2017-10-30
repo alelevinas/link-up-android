@@ -72,6 +72,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     public static final String ID_USER = "position";
     public static final String IS_LIKED = "IS_LIKED";
     public static final String IS_SUPERLIKED = "IS_SUPERLIKED";
+    public static final String DISTANCE = "DISTANCE";
     private static final String TAG = "OTHER PROFILE";
     private static final double ASSUMED_INIT_LATLNG_DIFF = 1.0;
     private static final float ACCURACY = 0.01f;
@@ -106,6 +107,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private FloatingActionButton buttonLike;
     private long idUser;
     private LinkUpUser otherUser;
+    private String distance;
 
     public static LatLngBounds boundsWithCenterAndLatLngDistance(LatLng center, double latDistanceInMeters, double lngDistanceInMeters) {
         latDistanceInMeters /= 2;
@@ -206,6 +208,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         likeChecked = getIntent().getBooleanExtra(IS_LIKED, false);
         superlikeChecked = getIntent().getBooleanExtra(IS_SUPERLIKED, false);
+        if (getIntent().hasExtra(DISTANCE)) {
+            distance = getIntent().getStringExtra(DISTANCE);
+        }
 
         mLoader = getLoaderManager();
         if(mLoader.getLoader(0) != null) {
@@ -465,7 +470,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
             distanceLabel.setText(String.format("A %.0f km de distancia", Math.ceil(getDistanceFromPositions(myPos, otherPos) / 1000)));
         } else {
-            distanceLabel.setText("");
+            if (distance != null) {
+                distanceLabel.setText(String.format("A %.0f km de distancia", Math.ceil(Double.valueOf(distance))));
+            }
         }
 
         //TODO: sacar markers!!!!!

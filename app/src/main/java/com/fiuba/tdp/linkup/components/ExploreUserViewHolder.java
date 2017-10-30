@@ -43,6 +43,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
     public TextView description;
     public boolean likeImageButtonChecked = false;
     public boolean superLikeImageButtonChecked = false;
+    public String distance;
     private ViewGroup parent;
 
     public ExploreUserViewHolder(LayoutInflater inflater, final ViewGroup parent, ExploreFragment.ExploreUserContentAdapter exploreUserContentAdapter) {
@@ -65,6 +66,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(userId));
                 intent.putExtra(OtherProfileActivity.IS_LIKED, likeImageButtonChecked);
                 intent.putExtra(OtherProfileActivity.IS_SUPERLIKED, superLikeImageButtonChecked);
+                intent.putExtra(OtherProfileActivity.DISTANCE, distance);
                 v.getContext().startActivity(intent);
             }
         });
