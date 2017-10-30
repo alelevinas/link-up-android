@@ -81,7 +81,7 @@ public class UserManager {
     }
 
 
-    public void updateMyBlockedUsers(Context context) {
+    public void updateMyBlockedUsers(final Context context) {
         new UserService(context).getBlockedUsersByMe(myUser.getId(), new Callback<ServerResponse<LinkUpBlockedUser[]>>() {
             @Override
             public void onResponse(Call<ServerResponse<LinkUpBlockedUser[]>> call, Response<ServerResponse<LinkUpBlockedUser[]>> response) {
@@ -96,12 +96,13 @@ public class UserManager {
             @Override
             public void onFailure(Call<ServerResponse<LinkUpBlockedUser[]>> call, Throwable t) {
                 Log.e("GET BLOCKED USERS", "ERROR");
+                new UserService(context).showNoConnectionAlert();
             }
         });
     }
 
     public boolean isBlocked(String otherUserId) {
-        return myBlockedUsers.containsKey(otherUserId);
+        return myBlockedUsers != null ? myBlockedUsers.containsKey(otherUserId) : false;
     }
 
 }

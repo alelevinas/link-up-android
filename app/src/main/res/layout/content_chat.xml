@@ -61,10 +61,11 @@
             app:srcCompat="@drawable/conv_locked" />
 
         <TextView
+            android:id="@+id/blockedChatMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:text="Esta conversación ha sido bloqueada"
+            android:text="@string/blocked_conv_msg"
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionBar.Title"
             android:textSize="22sp" />

@@ -11,9 +11,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.PhotoPickerFragment;
+import com.fiuba.tdp.linkup.domain.LinkUpLocation;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 
@@ -27,6 +29,9 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
 
     private EditText textDescription;
     private TextView labelAboutMe;
+
+    private LocationManager locationManager = new LocationManager();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +72,8 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
             fragments[i].setImage(p.getUrl());
             i++;
         }
+
+        locationManager.getDeviceLocation(this);
     }
 
     @Override
@@ -78,6 +85,10 @@ public class EditInfoActivity extends AppCompatActivity implements PhotoPickerFr
     public void postChanges() {
         LinkUpUser user = UserManager.getInstance().getMyUser();
         user.setDescription(textDescription.getText().toString());
+
+        if (locationManager.getLastKnownLocation() != null) {
+            user.setLocation(new LinkUpLocation(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude()));
+        }
 
         new UserService(labelAboutMe.getContext()).updateUser(user.getId(), user, new Callback<ServerResponse<String>>() {
             @Override

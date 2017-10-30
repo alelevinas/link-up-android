@@ -1,11 +1,13 @@
 package com.fiuba.tdp.linkup;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -65,6 +67,9 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_splash);
+
+        // Location
+        locationManager.getDeviceLocation(this);
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -136,6 +141,13 @@ public class SplashActivity extends AppCompatActivity {
                         new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                     }
 
+
+                    LinkUpUser me = UserManager.getInstance().getMyUser();
+                    if (me.isDisable()) {
+                        showAlertAndExit("Has sido bloqueado por el administrador. Consultas a preguntas@linkup.com");
+                        return;
+                    }
+
                     if (otherUserId.compareTo("") != 0) {
                         Intent intent = new Intent(SplashActivity.this, ChatActivity.class);
                         Bundle bundle = new Bundle();
@@ -203,5 +215,30 @@ public class SplashActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showAlertAndExit(String message) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message)
+                .setTitle("Atención");
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+                finish();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+        LoginManager.getInstance().logOut();
     }
 }

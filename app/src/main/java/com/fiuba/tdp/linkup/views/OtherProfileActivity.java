@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Loader;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -33,14 +34,26 @@ import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.util.GlideApp;
 import com.fiuba.tdp.linkup.util.SliderPagerAdapter;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import retrofit2.Call;
@@ -49,12 +62,16 @@ import retrofit2.Response;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
-public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>, BlockDialog.OnBlockDialogFragmentInteractionListener {
+public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>, BlockDialog.OnBlockDialogFragmentInteractionListener, OnMapReadyCallback {
 
     public static final String ID_USER = "position";
     private static final String TAG = "OTHER PROFILE";
 
+    LocationManager locationManager = new LocationManager();
+
     private Menu menu;
+    private GoogleMap mMap;
+    private Circle mCircle;
 
     private LoaderManager mLoader;
     private ImageView loader;
@@ -83,6 +100,8 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private FloatingActionButton buttonLike;
 
     private long idUser;
+    private LinkUpUser otherUser;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,6 +109,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         setContentView(R.layout.other_profile_detail);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Location
+        locationManager.getDeviceLocation(this);
 
         toolbarUsername = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // collapsingToolbar.setTitle(getString(R.string.item_title));
@@ -127,6 +149,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         startLoader();
         startMyAsyncTask();
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         toolbarUsername.setTitle("");
     }
 
@@ -147,6 +174,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     }
 
     private void bindUserData(final LinkUpUser otherUser) {
+
+        this.otherUser = otherUser;
+
         int nPictures = 0;
         for(LinkUpPicture picture : otherUser.getPictures()){
             if(!picture.getUrl().equals(""))
@@ -226,7 +256,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         toolbarUsername.setTitle(getFirstWord(otherUser.getName()) + ", " + otherUser.getAge());
         //toolbarUsername.setBackgroundColor(Color.parseColor("#3f000000"));
 
-        distanceLabel.setText("A 25km de distancia");
+
         if (otherUser.getEducation().length != 0 ) {
             studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());
         } else {
@@ -252,7 +282,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                 if(likesUser.equals(""))
                     likesUser = like.getName();
                 else
-                    likesUser = likesUser + "\n " + like.getName();
+                    likesUser = likesUser + "\n" + like.getName();
             }
             userInterests.setText(likesUser);
             userInterestsLabel.setVisibility(View.VISIBLE);
@@ -332,6 +362,40 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                 pm.show();
             }
         });
+
+        // MAP
+
+        LatLng otherPos = new LatLng(otherUser.getLocation().getLat(), otherUser.getLocation().getLon());
+//        LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+
+        //TODO: sacar markers!!!!!
+//        mMap.addMarker(new MarkerOptions().position(myPos).title(UserManager.getInstance().getMyUser().getName()));
+        mMap.addMarker(new MarkerOptions().position(otherPos).title(otherUser.getName()));
+
+//        LatLng center = getCenterFromPositions(myPos, otherPos);
+//        float radius = getRadiusFromPositions(myPos, otherPos);
+
+        LatLng center = getRandomPositionFrom(otherPos);
+        float radius = 300;
+        drawMarkerWithCircle(center, radius);
+
+        distanceLabel.setText(String.format("A %.0f km de distancia",Math.ceil(radius/1000)));
+    }
+
+    private LatLng getRandomPositionFrom(LatLng otherPos) {
+        return new LatLng(otherPos.latitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002), otherPos.longitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002));
+    }
+
+    private float getRadiusFromPositions(LatLng myPos, LatLng otherPos) {
+
+        float[] distance = new float[1];
+        Location.distanceBetween(myPos.latitude, myPos.longitude, otherPos.latitude, otherPos.longitude, distance);
+
+        return distance[0];
+    }
+
+    private LatLng getCenterFromPositions(LatLng myPos, LatLng otherPos) {
+        return new LatLng((myPos.latitude + otherPos.latitude) / 2, (myPos.longitude + otherPos.longitude) / 2);
     }
 
     private String getFirstWord(String text) {
@@ -416,6 +480,136 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         }
     }
 
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+//        Log.e(TAG, otherUser.getLocation().getLat() + "   " + otherUser.getLocation().getLon());
+
+
+        // Add a marker in Sydney and move the camera
+//        LatLng ba = new LatLng(-34.6156625, -58.503338);
+//        drawMarkerWithCircle(ba);
+//        mMap.addMarker(new MarkerOptions().position(ba).title("Marker in BA"));
+
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(ba));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(ba).build(), 10));
+    }
+
+    private void drawMarkerWithCircle(LatLng position, double radiusInMeters){
+        if (mMap == null)
+            return;
+        Log.e(TAG, String.format("Other user Lat: %f  | Long: %f\n",otherUser.getLocation().getLat(), otherUser.getLocation().getLon()));
+
+//        double radiusInMeters = 60000.0;
+        int strokeColor = 0xff33b5e5; //blue outline
+        int shadeColor = 0x33ff0000; //opaque red fill
+
+        CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(8);
+        mCircle = mMap.addCircle(circleOptions);
+
+        LatLngBounds bounds = boundsWithCenterAndLatLngDistance(position,radiusInMeters/2,radiusInMeters/2);
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = 200;
+//        int padding = (int) (width * 0.12); // offset from edges of the map 12% of screen
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, 0));
+//        mMap.addMarker(new MarkerOptions().position(position));
+    }
+
+    private static final double ASSUMED_INIT_LATLNG_DIFF = 1.0;
+    private static final float ACCURACY = 0.01f;
+
+    public static LatLngBounds boundsWithCenterAndLatLngDistance(LatLng center, double latDistanceInMeters, double lngDistanceInMeters) {
+        latDistanceInMeters /= 2;
+        lngDistanceInMeters /= 2;
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        float[] distance = new float[1];
+        {
+            boolean foundMax = false;
+            double foundMinLngDiff = 0;
+            double assumedLngDiff = ASSUMED_INIT_LATLNG_DIFF;
+            do {
+                Location.distanceBetween(center.latitude, center.longitude, center.latitude, center.longitude + assumedLngDiff, distance);
+                double distanceDiff = distance[0] - lngDistanceInMeters;
+                if (distanceDiff < 0) {
+                    if (!foundMax) {
+                        foundMinLngDiff = assumedLngDiff;
+                        assumedLngDiff *= 2;
+                    } else {
+                        double tmp = assumedLngDiff;
+                        assumedLngDiff += (assumedLngDiff - foundMinLngDiff) / 2;
+                        foundMinLngDiff = tmp;
+                    }
+                } else {
+                    assumedLngDiff -= (assumedLngDiff - foundMinLngDiff) / 2;
+                    foundMax = true;
+                }
+            } while (Math.abs(distance[0] - lngDistanceInMeters) > lngDistanceInMeters * ACCURACY);
+            LatLng east = new LatLng(center.latitude, center.longitude + assumedLngDiff);
+            builder.include(east);
+            LatLng west = new LatLng(center.latitude, center.longitude - assumedLngDiff);
+            builder.include(west);
+        }
+        {
+            boolean foundMax = false;
+            double foundMinLatDiff = 0;
+            double assumedLatDiffNorth = ASSUMED_INIT_LATLNG_DIFF;
+            do {
+                Location.distanceBetween(center.latitude, center.longitude, center.latitude + assumedLatDiffNorth, center.longitude, distance);
+                double distanceDiff = distance[0] - latDistanceInMeters;
+                if (distanceDiff < 0) {
+                    if (!foundMax) {
+                        foundMinLatDiff = assumedLatDiffNorth;
+                        assumedLatDiffNorth *= 2;
+                    } else {
+                        double tmp = assumedLatDiffNorth;
+                        assumedLatDiffNorth += (assumedLatDiffNorth - foundMinLatDiff) / 2;
+                        foundMinLatDiff = tmp;
+                    }
+                } else {
+                    assumedLatDiffNorth -= (assumedLatDiffNorth - foundMinLatDiff) / 2;
+                    foundMax = true;
+                }
+            } while (Math.abs(distance[0] - latDistanceInMeters) > latDistanceInMeters * ACCURACY);
+            LatLng north = new LatLng(center.latitude + assumedLatDiffNorth, center.longitude);
+            builder.include(north);
+        }
+        {
+            boolean foundMax = false;
+            double foundMinLatDiff = 0;
+            double assumedLatDiffSouth = ASSUMED_INIT_LATLNG_DIFF;
+            do {
+                Location.distanceBetween(center.latitude, center.longitude, center.latitude - assumedLatDiffSouth, center.longitude, distance);
+                double distanceDiff = distance[0] - latDistanceInMeters;
+                if (distanceDiff < 0) {
+                    if (!foundMax) {
+                        foundMinLatDiff = assumedLatDiffSouth;
+                        assumedLatDiffSouth *= 2;
+                    } else {
+                        double tmp = assumedLatDiffSouth;
+                        assumedLatDiffSouth += (assumedLatDiffSouth - foundMinLatDiff) / 2;
+                        foundMinLatDiff = tmp;
+                    }
+                } else {
+                    assumedLatDiffSouth -= (assumedLatDiffSouth - foundMinLatDiff) / 2;
+                    foundMax = true;
+                }
+            } while (Math.abs(distance[0] - latDistanceInMeters) > latDistanceInMeters * ACCURACY);
+            LatLng south = new LatLng(center.latitude - assumedLatDiffSouth, center.longitude);
+            builder.include(south);
+        }
+        return builder.build();
+    }
 
 
     private void showAlert(String s) {

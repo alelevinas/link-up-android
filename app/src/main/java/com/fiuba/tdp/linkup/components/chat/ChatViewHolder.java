@@ -1,6 +1,7 @@
 package com.fiuba.tdp.linkup.components.chat;
 
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RotateDrawable;
 import android.support.v4.content.ContextCompat;
@@ -91,11 +92,23 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void setStarred(ImageView mStarred, Boolean isStarred) {
-        if (isStarred) {
-            mStarred.setVisibility(View.VISIBLE);
+        if (mStarred == mLeftStarred && isStarred == false) {
+            mStarred.setVisibility(View.INVISIBLE);
+            return;
         } else {
-            mStarred.setVisibility(View.GONE);
+            mStarred.setVisibility(View.VISIBLE);
         }
+        String resourceId = "";
+        if (isStarred) {
+            resourceId = "@android:drawable/btn_star_big_on"; // where myResourceName is the name of your resource file, minus the file extension
+        } else {
+            resourceId = "@drawable/chat_icon_star_white"; // where myResourceName is the name of your resource file, minus the file extension
+        }
+
+        int imageResource = itemView.getResources().getIdentifier(resourceId, null, itemView.getContext().getPackageName());
+        Drawable drawable = ContextCompat.getDrawable(itemView.getContext(), imageResource); // For API 21+, gets a drawable styled for theme of passed Context
+
+        mStarred.setImageDrawable(drawable);
     }
 
     private void setIsSender(boolean isSender, ChatMessage chat) {
@@ -128,7 +141,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
         }
 
-//        mMessage.setVisibility(View.GONE);
         ((GradientDrawable) mMessage.getBackground()).setColor(color);
         ((RotateDrawable) mLeftArrow.getBackground()).getDrawable()
                 .setColorFilter(color, PorterDuff.Mode.SRC);

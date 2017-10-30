@@ -305,16 +305,16 @@ public class UserService {
         api.getMatchesWithoutChat(myUserId).enqueue(callback);
     }
 
-    public void postReportUser(String userIdReported, String reportReason, final Callback<ServerResponse<String>> callback) {
+    public void postReportUser(String otherUserId, String reportReason, final Callback<ServerResponse<String>> callback) {
         if (endItNow) {
             showNoConnectionAlert();
             callback.onFailure(null, null);
             return;
         }
         HashMap<String, String> reasons = new HashMap<>();
-        reasons.put("userId", userIdReported);
+        reasons.put("userIdReporter", UserManager.getInstance().getMyUser().getId());
         reasons.put("reason", reportReason);
-        api.postReportUser(UserManager.getInstance().getMyUser().getId(), reasons).enqueue(callback);
+        api.postReportUser(otherUserId, reasons).enqueue(callback);
     }
 
     public void deleteUserFromAround(String myUserId, String otherUserIdToRemove, final Callback<ServerResponse<String>> callback) {
@@ -365,7 +365,7 @@ public class UserService {
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 
-    private void showNoConnectionAlert() {
+    public void showNoConnectionAlert() {
         showAlert("Atención", "Ha habido un error al comunicarse con nuestros servidores. Por favor intenta más tarde");
     }
 
