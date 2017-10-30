@@ -8,8 +8,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +20,7 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +36,7 @@ import com.fiuba.tdp.linkup.components.BlockDialog;
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
+import com.fiuba.tdp.linkup.domain.Match;
 import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.services.LocationManager;
 import com.fiuba.tdp.linkup.services.UserManager;
@@ -50,7 +54,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -60,19 +63,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.R.color.holo_blue_bright;
+import static android.R.color.holo_green_light;
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class OtherProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>, BlockDialog.OnBlockDialogFragmentInteractionListener, OnMapReadyCallback {
 
     public static final String ID_USER = "position";
+    public static final String IS_LIKED = "IS_LIKED";
+    public static final String IS_SUPERLIKED = "IS_SUPERLIKED";
     private static final String TAG = "OTHER PROFILE";
-
+    private static final double ASSUMED_INIT_LATLNG_DIFF = 1.0;
+    private static final float ACCURACY = 0.01f;
+    public boolean likeChecked = false;
+    public boolean superlikeChecked = false;
     LocationManager locationManager = new LocationManager();
-
     private Menu menu;
     private GoogleMap mMap;
     private Circle mCircle;
-
     private LoaderManager mLoader;
     private ImageView loader;
     private NestedScrollView nestedScrollView;
@@ -83,7 +91,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private TextView userDescription;
     private TextView userInterestsLabel;
     private TextView userInterests;
-
     private ImageView vp_image;
     private ViewPager vp_slider;
     private LinearLayout ll_dots;
@@ -91,17 +98,96 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
     private ArrayList<String> slider_image_list;
     private TextView[] dots;
     private int page_position = 0;
-
     private ImageButton buttonMessage;
     private ImageButton buttonShare;
     private ImageButton buttonMenu;
     private FloatingActionButton buttonNotLike;
     private FloatingActionButton buttonSuperLike;
     private FloatingActionButton buttonLike;
-
     private long idUser;
     private LinkUpUser otherUser;
 
+    public static LatLngBounds boundsWithCenterAndLatLngDistance(LatLng center, double latDistanceInMeters, double lngDistanceInMeters) {
+        latDistanceInMeters /= 2;
+        lngDistanceInMeters /= 2;
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+        float[] distance = new float[1];
+        {
+            boolean foundMax = false;
+            double foundMinLngDiff = 0;
+            double assumedLngDiff = ASSUMED_INIT_LATLNG_DIFF;
+            do {
+                Location.distanceBetween(center.latitude, center.longitude, center.latitude, center.longitude + assumedLngDiff, distance);
+                double distanceDiff = distance[0] - lngDistanceInMeters;
+                if (distanceDiff < 0) {
+                    if (!foundMax) {
+                        foundMinLngDiff = assumedLngDiff;
+                        assumedLngDiff *= 2;
+                    } else {
+                        double tmp = assumedLngDiff;
+                        assumedLngDiff += (assumedLngDiff - foundMinLngDiff) / 2;
+                        foundMinLngDiff = tmp;
+                    }
+                } else {
+                    assumedLngDiff -= (assumedLngDiff - foundMinLngDiff) / 2;
+                    foundMax = true;
+                }
+            } while (Math.abs(distance[0] - lngDistanceInMeters) > lngDistanceInMeters * ACCURACY);
+            LatLng east = new LatLng(center.latitude, center.longitude + assumedLngDiff);
+            builder.include(east);
+            LatLng west = new LatLng(center.latitude, center.longitude - assumedLngDiff);
+            builder.include(west);
+        }
+        {
+            boolean foundMax = false;
+            double foundMinLatDiff = 0;
+            double assumedLatDiffNorth = ASSUMED_INIT_LATLNG_DIFF;
+            do {
+                Location.distanceBetween(center.latitude, center.longitude, center.latitude + assumedLatDiffNorth, center.longitude, distance);
+                double distanceDiff = distance[0] - latDistanceInMeters;
+                if (distanceDiff < 0) {
+                    if (!foundMax) {
+                        foundMinLatDiff = assumedLatDiffNorth;
+                        assumedLatDiffNorth *= 2;
+                    } else {
+                        double tmp = assumedLatDiffNorth;
+                        assumedLatDiffNorth += (assumedLatDiffNorth - foundMinLatDiff) / 2;
+                        foundMinLatDiff = tmp;
+                    }
+                } else {
+                    assumedLatDiffNorth -= (assumedLatDiffNorth - foundMinLatDiff) / 2;
+                    foundMax = true;
+                }
+            } while (Math.abs(distance[0] - latDistanceInMeters) > latDistanceInMeters * ACCURACY);
+            LatLng north = new LatLng(center.latitude + assumedLatDiffNorth, center.longitude);
+            builder.include(north);
+        }
+        {
+            boolean foundMax = false;
+            double foundMinLatDiff = 0;
+            double assumedLatDiffSouth = ASSUMED_INIT_LATLNG_DIFF;
+            do {
+                Location.distanceBetween(center.latitude, center.longitude, center.latitude - assumedLatDiffSouth, center.longitude, distance);
+                double distanceDiff = distance[0] - latDistanceInMeters;
+                if (distanceDiff < 0) {
+                    if (!foundMax) {
+                        foundMinLatDiff = assumedLatDiffSouth;
+                        assumedLatDiffSouth *= 2;
+                    } else {
+                        double tmp = assumedLatDiffSouth;
+                        assumedLatDiffSouth += (assumedLatDiffSouth - foundMinLatDiff) / 2;
+                        foundMinLatDiff = tmp;
+                    }
+                } else {
+                    assumedLatDiffSouth -= (assumedLatDiffSouth - foundMinLatDiff) / 2;
+                    foundMax = true;
+                }
+            } while (Math.abs(distance[0] - latDistanceInMeters) > latDistanceInMeters * ACCURACY);
+            LatLng south = new LatLng(center.latitude - assumedLatDiffSouth, center.longitude);
+            builder.include(south);
+        }
+        return builder.build();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,6 +203,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         // collapsingToolbar.setTitle(getString(R.string.item_title));
 
         idUser = getIntent().getLongExtra(ID_USER, 0);
+
+        likeChecked = getIntent().getBooleanExtra(IS_LIKED, false);
+        superlikeChecked = getIntent().getBooleanExtra(IS_SUPERLIKED, false);
 
         mLoader = getLoaderManager();
         if(mLoader.getLoader(0) != null) {
@@ -155,6 +244,15 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         mapFragment.getMapAsync(this);
 
         toolbarUsername.setTitle("");
+
+        if (!getIntent().hasExtra(IS_LIKED)) {
+            buttonLike.setVisibility(View.GONE);
+            buttonSuperLike.setVisibility(View.GONE);
+
+            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) buttonNotLike.getLayoutParams();
+            lp.anchorGravity = Gravity.BOTTOM | Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL;
+            buttonNotLike.setLayoutParams(lp); //bottom|center_vertical|center_horizontal"
+        }
     }
 
     private void addBottomDots(int currentPage) {
@@ -301,16 +399,14 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         buttonSuperLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Has dado SuperLike a " + otherUser.getName(),
-                        Snackbar.LENGTH_LONG).show();
+                pressSuperLikeButton(v);
             }
         });
 
         buttonLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Diste Like a " + otherUser.getName(),
-                        Snackbar.LENGTH_LONG).show();
+                pressLikeButton(v);
             }
         });
 
@@ -366,27 +462,113 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         // MAP
 
         LatLng otherPos = new LatLng(otherUser.getLocation().getLat(), otherUser.getLocation().getLon());
-//        LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
+        LatLng myPos = new LatLng(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
 
         //TODO: sacar markers!!!!!
 //        mMap.addMarker(new MarkerOptions().position(myPos).title(UserManager.getInstance().getMyUser().getName()));
         mMap.addMarker(new MarkerOptions().position(otherPos).title(otherUser.getName()));
 
 //        LatLng center = getCenterFromPositions(myPos, otherPos);
-//        float radius = getRadiusFromPositions(myPos, otherPos);
+//        float radius = getDistanceFromPositions(myPos, otherPos);
 
         LatLng center = getRandomPositionFrom(otherPos);
         float radius = 300;
         drawMarkerWithCircle(center, radius);
 
-        distanceLabel.setText(String.format("A %.0f km de distancia",Math.ceil(radius/1000)));
+        distanceLabel.setText(String.format("A %.0f km de distancia", Math.ceil(getDistanceFromPositions(myPos, otherPos) / 1000)));
+
+        updateLikeStatus();
+        updateSuperLikeStatus();
     }
 
-    private LatLng getRandomPositionFrom(LatLng otherPos) {
-        return new LatLng(otherPos.latitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002), otherPos.longitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002));
+    private void pressSuperLikeButton(View v) {
+        if (superlikeChecked) {
+            Snackbar.make(v, "No puedes quitarle el superlike!",
+                    Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        superlikeChecked = !superlikeChecked;
+        updateSuperLikeStatus();
+        if (superlikeChecked) {
+            sendSuperLikeToServer(v);
+        } else {
+            sendDeleteSuperLikeToServer(v);
+        }
     }
 
-    private float getRadiusFromPositions(LatLng myPos, LatLng otherPos) {
+    private void sendDeleteSuperLikeToServer(final View v) {
+        new UserService(v.getContext()).deleteSuperLikeToUser(UserManager.getInstance().getMyUser().getId(), otherUser.getId(), new Callback<ServerResponse<String>>() {
+            String LOG_LIKE = "DELETE SUPER LIKE FROM USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data);
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                superlikeChecked = !superlikeChecked;
+                updateSuperLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta luego más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendSuperLikeToServer(final View v) {
+        new UserService(v.getContext()).postSuperLikeToUser(UserManager.getInstance().getMyUser().getId(), otherUser.getId(), new Callback<ServerResponse<Match>>() {
+            String LOG_LIKE = "SUPER LIKE USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<Match>> call, Response<ServerResponse<Match>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data.getLink().toString());
+
+                    if (response.body().data.getLink()) {
+                        showAlert("Felicitaciones!", "Hay match!");
+                    }
+
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<Match>> call, Throwable t) {
+                superlikeChecked = !superlikeChecked;
+                updateSuperLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta luego más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void updateSuperLikeStatus() {
+        if (superlikeChecked) {
+            buttonSuperLike.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorAccent));
+            buttonSuperLike.setImageTintList(ContextCompat.getColorStateList(this, R.color.cardview_light_background));
+        } else {
+            buttonSuperLike.setImageTintList(ContextCompat.getColorStateList(this, holo_blue_bright));
+            buttonSuperLike.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.cardview_light_background));
+        }
+    }
+
+    private LatLng getRandomPositionFrom(LatLng pos) {
+        return new LatLng(pos.latitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002), pos.longitude + ThreadLocalRandom.current().nextDouble(-0.002, 0.002));
+    }
+
+    private float getDistanceFromPositions(LatLng myPos, LatLng otherPos) {
 
         float[] distance = new float[1];
         Location.distanceBetween(myPos.latitude, myPos.longitude, otherPos.latitude, otherPos.longitude, distance);
@@ -439,8 +621,12 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         loader.setVisibility(View.GONE);
 
         buttonNotLike.setVisibility(View.VISIBLE);
-        buttonSuperLike.setVisibility(View.VISIBLE);
-        buttonLike.setVisibility(View.VISIBLE);
+
+        if (getIntent().hasExtra(IS_LIKED)) {
+            buttonSuperLike.setVisibility(View.VISIBLE);
+            buttonLike.setVisibility(View.VISIBLE);
+        }
+
 
         findViewById(R.id.appbar).setVisibility(View.VISIBLE);
         nestedScrollView.setVisibility(View.VISIBLE);
@@ -465,8 +651,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             }
         });
     }
-
-
 
     @Override
     public void onBlockDialogFragmentInteraction(Boolean isBlocked) {
@@ -526,92 +710,6 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 //        mMap.addMarker(new MarkerOptions().position(position));
     }
 
-    private static final double ASSUMED_INIT_LATLNG_DIFF = 1.0;
-    private static final float ACCURACY = 0.01f;
-
-    public static LatLngBounds boundsWithCenterAndLatLngDistance(LatLng center, double latDistanceInMeters, double lngDistanceInMeters) {
-        latDistanceInMeters /= 2;
-        lngDistanceInMeters /= 2;
-        LatLngBounds.Builder builder = LatLngBounds.builder();
-        float[] distance = new float[1];
-        {
-            boolean foundMax = false;
-            double foundMinLngDiff = 0;
-            double assumedLngDiff = ASSUMED_INIT_LATLNG_DIFF;
-            do {
-                Location.distanceBetween(center.latitude, center.longitude, center.latitude, center.longitude + assumedLngDiff, distance);
-                double distanceDiff = distance[0] - lngDistanceInMeters;
-                if (distanceDiff < 0) {
-                    if (!foundMax) {
-                        foundMinLngDiff = assumedLngDiff;
-                        assumedLngDiff *= 2;
-                    } else {
-                        double tmp = assumedLngDiff;
-                        assumedLngDiff += (assumedLngDiff - foundMinLngDiff) / 2;
-                        foundMinLngDiff = tmp;
-                    }
-                } else {
-                    assumedLngDiff -= (assumedLngDiff - foundMinLngDiff) / 2;
-                    foundMax = true;
-                }
-            } while (Math.abs(distance[0] - lngDistanceInMeters) > lngDistanceInMeters * ACCURACY);
-            LatLng east = new LatLng(center.latitude, center.longitude + assumedLngDiff);
-            builder.include(east);
-            LatLng west = new LatLng(center.latitude, center.longitude - assumedLngDiff);
-            builder.include(west);
-        }
-        {
-            boolean foundMax = false;
-            double foundMinLatDiff = 0;
-            double assumedLatDiffNorth = ASSUMED_INIT_LATLNG_DIFF;
-            do {
-                Location.distanceBetween(center.latitude, center.longitude, center.latitude + assumedLatDiffNorth, center.longitude, distance);
-                double distanceDiff = distance[0] - latDistanceInMeters;
-                if (distanceDiff < 0) {
-                    if (!foundMax) {
-                        foundMinLatDiff = assumedLatDiffNorth;
-                        assumedLatDiffNorth *= 2;
-                    } else {
-                        double tmp = assumedLatDiffNorth;
-                        assumedLatDiffNorth += (assumedLatDiffNorth - foundMinLatDiff) / 2;
-                        foundMinLatDiff = tmp;
-                    }
-                } else {
-                    assumedLatDiffNorth -= (assumedLatDiffNorth - foundMinLatDiff) / 2;
-                    foundMax = true;
-                }
-            } while (Math.abs(distance[0] - latDistanceInMeters) > latDistanceInMeters * ACCURACY);
-            LatLng north = new LatLng(center.latitude + assumedLatDiffNorth, center.longitude);
-            builder.include(north);
-        }
-        {
-            boolean foundMax = false;
-            double foundMinLatDiff = 0;
-            double assumedLatDiffSouth = ASSUMED_INIT_LATLNG_DIFF;
-            do {
-                Location.distanceBetween(center.latitude, center.longitude, center.latitude - assumedLatDiffSouth, center.longitude, distance);
-                double distanceDiff = distance[0] - latDistanceInMeters;
-                if (distanceDiff < 0) {
-                    if (!foundMax) {
-                        foundMinLatDiff = assumedLatDiffSouth;
-                        assumedLatDiffSouth *= 2;
-                    } else {
-                        double tmp = assumedLatDiffSouth;
-                        assumedLatDiffSouth += (assumedLatDiffSouth - foundMinLatDiff) / 2;
-                        foundMinLatDiff = tmp;
-                    }
-                } else {
-                    assumedLatDiffSouth -= (assumedLatDiffSouth - foundMinLatDiff) / 2;
-                    foundMax = true;
-                }
-            } while (Math.abs(distance[0] - latDistanceInMeters) > latDistanceInMeters * ACCURACY);
-            LatLng south = new LatLng(center.latitude - assumedLatDiffSouth, center.longitude);
-            builder.include(south);
-        }
-        return builder.build();
-    }
-
-
     private void showAlert(String s) {
         // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -633,6 +731,109 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
         dialog.show();
 
+    }
+
+    private void showAlert(String title, String message) {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage(message)
+                .setTitle(title);
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked OK button
+                dialog.dismiss();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+    }
+
+
+    /***********************LIKE*************************************/
+
+    private void pressLikeButton(View v) {
+        likeChecked = !likeChecked;
+        updateLikeStatus();
+        if (likeChecked) {
+            sendLikeToServer(v);
+        } else {
+            sendDeleteLikeToServer(v);
+        }
+    }
+
+    private void sendDeleteLikeToServer(final View v) {
+        new UserService(v.getContext()).deleteLikeToUser(UserManager.getInstance().getMyUser().getId(), otherUser.getId(), new Callback<ServerResponse<String>>() {
+            String LOG_LIKE = "DELETE LIKE FROM USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data);
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                likeChecked = !likeChecked;
+                updateLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta luego más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void sendLikeToServer(final View v) {
+        new UserService(v.getContext()).postLikeToUser(UserManager.getInstance().getMyUser().getId(), otherUser.getId(), new Callback<ServerResponse<Match>>() {
+            String LOG_LIKE = "LIKE USER";
+
+            @Override
+            public void onResponse(Call<ServerResponse<Match>> call, Response<ServerResponse<Match>> response) {
+                Log.d(LOG_LIKE, "message = " + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(LOG_LIKE, "-----isSuccess----");
+                    Log.d(LOG_LIKE, response.body().data.getLink().toString());
+
+                    if (response.body().data.getLink()) {
+                        showAlert("Felicitaciones!", "Hay match!");
+                    }
+
+                } else {
+                    Log.d(LOG_LIKE, "-----isFalse-----");
+                    this.onFailure(call, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<Match>> call, Throwable t) {
+                likeChecked = !likeChecked;
+                updateLikeStatus();
+                Snackbar.make(v, "Hubo un error al contactar al servidor. Por favor intenta luego más tarde",
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void updateLikeStatus() {
+        if (likeChecked) {
+            buttonLike.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorAccent));
+            buttonLike.setImageTintList(ContextCompat.getColorStateList(this, R.color.cardview_light_background));
+        } else {
+            buttonLike.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.cardview_light_background));
+            buttonLike.setImageTintList(ContextCompat.getColorStateList(this, holo_green_light));
+        }
     }
 
 }

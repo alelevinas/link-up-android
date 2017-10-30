@@ -50,6 +50,12 @@ public interface UserAPIService {
     @DELETE("/api/linkup/users/{myUserId}/likes/{otherUserId}")
     Call<ServerResponse<String>> deleteLikeToUser(@Path("myUserId") String myUserId, @Path("otherUserId") String otherUserId);
 
+    @POST("/api/linkup/users/{myUserId}/superlikes")
+    Call<ServerResponse<Match>> postSuperLikeToUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
+
+    @DELETE("/api/linkup/users/{myUserId}/superlikes/{otherUserId}")
+    Call<ServerResponse<String>> deleteSuperLikeToUser(@Path("myUserId") String myUserId, @Path("otherUserId") String otherUserId);
+
     @GET("/api/linkup/users/{myUserId}/links")
     Call<ServerResponse<LinkUpMatch[]>> getMatchesWithoutChat(@Path("myUserId") String myUserId);
 
