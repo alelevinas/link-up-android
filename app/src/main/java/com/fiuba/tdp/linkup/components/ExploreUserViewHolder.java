@@ -107,6 +107,9 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 if (ExploreUserViewHolder.superlikes != 0) {
                     pressSuperLikeButton(v);
+                } else {
+                    Snackbar.make(itemView, "Solo puedes hacer 1 superlike por día!",
+                            Snackbar.LENGTH_LONG).show();
                 }
             }
         });
