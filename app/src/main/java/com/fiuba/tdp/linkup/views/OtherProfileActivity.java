@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
 import com.fiuba.tdp.linkup.components.BlockDialog;
+import com.fiuba.tdp.linkup.components.ExploreUserViewHolder;
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
@@ -404,7 +405,12 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         buttonSuperLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pressSuperLikeButton(v);
+                if (ExploreUserViewHolder.superlikes == 0) {
+                    pressSuperLikeButton(v);
+                } else {
+                    Snackbar.make(v, "Solo puedes hacer 1 superlike por día!",
+                            Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 

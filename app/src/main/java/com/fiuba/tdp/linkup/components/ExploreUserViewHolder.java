@@ -105,7 +105,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         superLikeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ExploreUserViewHolder.superlikes != 0) {
+                if (ExploreUserViewHolder.superlikes == 0) {
                     pressSuperLikeButton(v);
                 } else {
                     Snackbar.make(itemView, "Solo puedes hacer 1 superlike por día!",
