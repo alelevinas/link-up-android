@@ -1,6 +1,7 @@
 package com.fiuba.tdp.linkup.views;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -26,8 +27,6 @@ import com.fiuba.tdp.linkup.domain.UserPreferences;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 
-import org.florescu.android.rangeseekbar.RangeSeekBar;
-
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -52,7 +51,7 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.preferences);
+        setContentView(R.layout.activity_preferences);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -63,6 +62,9 @@ public class PreferencesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Snackbar.make(v, "Obtener LinkUp Plus!", Snackbar.LENGTH_LONG).show();
+
+                Intent getPremium = new Intent(PreferencesActivity.this, PremiumDetailsActivity.class);
+                startActivity(getPremium);
             }
         });
 

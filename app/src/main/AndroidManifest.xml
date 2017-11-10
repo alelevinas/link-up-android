@@ -34,7 +34,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/messenger_bubble_large_white" />
@@ -49,7 +48,7 @@
                  You need a different API key for each encryption key, including the release key that is used to
                  sign the APK for publishing.
                  You can define the keys for the debug and release targets in src/debug/ and src/release/.
-             -->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -113,7 +112,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".views.FirstSignUpActivity" />
         </activity>
-
         <activity
             android:name=".views.OtherProfileActivity"
             android:parentActivityName=".views.MainLinkUpActivity"
@@ -126,9 +124,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!--<meta-data-->
-            <!--android:name="com.google.android.geo.API_KEY"-->
-            <!--android:value="AIzaSyDnSDRdt2xYPIROG86xWuf7_W7h8475A6c" />-->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="AIzaSyDnSDRdt2xYPIROG86xWuf7_W7h8475A6c" /> -->
 
         <activity
             android:name=".views.ChatActivity"
@@ -145,14 +143,21 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".services.firebase.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-
+        <activity
+            android:name=".views.PremiumDetailsActivity"
+            android:label="@string/title_activity_premium_details"
+            android:parentActivityName=".views.PreferencesActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fiuba.tdp.linkup.views.PreferencesActivity" />
+        </activity>
     </application>
 
 </manifest>

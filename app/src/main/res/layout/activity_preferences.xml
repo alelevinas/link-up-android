@@ -46,11 +46,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_alignParentTop="true"
+                        android:elevation="3dp"
                         android:gravity="center_vertical|center_horizontal"
-                        android:text="¡Obtener LinkUp Plus!"
+                        android:text="¡Obtener LinkUp premium!"
                         android:textColor="?android:attr/textColorLink"
                         android:textColorLink="@color/colorAccent"
-                        android:textSize="25sp" />
+                        android:textSize="22sp" />
 
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
@@ -137,12 +138,12 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         app:bar_color="#F7BB88"
-                        app:left_thumb_color="@color/colorAccent"
-                        app:left_thumb_color_pressed="@color/colorAccent"
                         app:bar_highlight_color="#E07416"
                         app:corner_radius="10"
                         app:data_type="_integer"
                         app:gap="5"
+                        app:left_thumb_color="@color/colorAccent"
+                        app:left_thumb_color_pressed="@color/colorAccent"
                         app:max_value="100"
                         app:min_value="0"
                         app:steps="1" />
@@ -162,13 +163,13 @@
                         android:id="@+id/textMaxDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="100"
+                        android:layout_alignParentRight="true"
                         android:layout_below="@id/seekbar_distance"
-                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
-                        android:textSize="16dp"
+                        android:layout_marginTop="5dp"
+                        android:text="100"
                         android:textColor="#000"
-                        android:layout_alignParentRight="true"/>
+                        android:textSize="16dp" />
 
                     <!--<org.florescu.android.rangeseekbar.RangeSeekBar
                         android:id="@+id/seekbar_distance"
@@ -224,39 +225,39 @@
                         android:layout_below="@+id/txt_age_range"
                         app:bar_color="#F7BB88"
                         app:bar_highlight_color="#E07416"
-                        app:left_thumb_color="@color/colorAccent"
-                        app:left_thumb_color_pressed="@color/colorAccent"
-                        app:right_thumb_color="@color/colorAccent"
-                        app:right_thumb_color_pressed="@color/colorAccent"
                         app:corner_radius="10"
                         app:data_type="_integer"
                         app:gap="5"
+                        app:left_thumb_color="@color/colorAccent"
+                        app:left_thumb_color_pressed="@color/colorAccent"
                         app:max_value="100"
                         app:min_value="18"
+                        app:right_thumb_color="@color/colorAccent"
+                        app:right_thumb_color_pressed="@color/colorAccent"
                         app:steps="1" />
 
                     <TextView
                         android:id="@+id/textMinAge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
                         android:layout_below="@id/rgseekbar_age"
-                        android:layout_marginTop="5dp"
                         android:layout_marginStart="10dp"
-                        android:textSize="16dp"
-                        android:textColor="#000"/>
+                        android:layout_marginTop="5dp"
+                        android:text="0"
+                        android:textColor="#000"
+                        android:textSize="16dp" />
 
                     <TextView
                         android:id="@+id/textMaxAge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:layout_alignParentRight="true"
                         android:layout_below="@id/rgseekbar_age"
-                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
-                        android:textSize="16dp"
+                        android:layout_marginTop="5dp"
+                        android:text="0"
                         android:textColor="#000"
-                        android:layout_alignParentRight="true"/>
+                        android:textSize="16dp" />
 
                     <!--<org.florescu.android.rangeseekbar.RangeSeekBar
                         android:id="@+id/rgseekbar_age"

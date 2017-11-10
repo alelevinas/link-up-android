@@ -54,4 +54,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="blocked_by_admin_msg">El usuario con quien intentas comunicarte ha sido bloqueado por el administrador</string>
     <string name="blocked_conv_msg">Esta conversación ha sido bloqueada</string>
+    <string name="title_activity_premium_details">PremiumDetailsActivity</string>
 </resources>
