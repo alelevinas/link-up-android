@@ -27,26 +27,43 @@
         android:padding="70dp"
         app:srcCompat="@drawable/ic_launcher_web" />
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/explore_list"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/md_keylines"
-        android:paddingTop="@dimen/md_keylines"
-        android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:gravity="center_vertical"
-        android:text="@string/fragment_explore_empty"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:visibility="invisible" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/explore_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/md_keylines"
+            android:paddingTop="@dimen/md_keylines"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="24dp"
+            android:gravity="center_vertical"
+            android:text="@string/fragment_explore_empty"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:visibility="invisible" />
+
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-6059841271500739/5578214333" />
+
+    </RelativeLayout>
+
 </FrameLayout>

@@ -27,6 +27,7 @@ import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.views.ChatActivity;
 import com.fiuba.tdp.linkup.views.LogInActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -55,6 +56,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobileAds.initialize(this, "ca-app-pub-6059841271500739~5358722483");
 
         Intent intentExtras = getIntent();
         Bundle extrasBundle = intentExtras.getExtras();

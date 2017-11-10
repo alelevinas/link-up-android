@@ -20,6 +20,8 @@ import com.fiuba.tdp.linkup.domain.ServerResponse;
 import com.fiuba.tdp.linkup.domain.UserAround;
 import com.fiuba.tdp.linkup.domain.UsersAround;
 import com.fiuba.tdp.linkup.services.UserService;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -30,6 +32,8 @@ import retrofit2.Response;
 
 
 public class ExploreFragment extends Fragment {
+
+    private AdView mAdView;
 
     private RecyclerView recyclerView;
     private TextView emptyView;
@@ -49,6 +53,12 @@ public class ExploreFragment extends Fragment {
 //        recyclerView.setHasFixedSize(true);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 //        loader.setVisibility(View.GONE);
+
+        mAdView = (AdView) view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("96CB5162B59E84E0C69BD697E2AD9696")
+                .build();
+        mAdView.loadAd(adRequest);
 
         return view;
     }
