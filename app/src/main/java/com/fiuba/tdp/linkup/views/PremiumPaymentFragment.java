@@ -16,6 +16,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.fiuba.tdp.linkup.R;
+import com.fiuba.tdp.linkup.domain.ServerResponse;
+import com.fiuba.tdp.linkup.services.UserManager;
+import com.fiuba.tdp.linkup.services.UserService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PremiumPaymentFragment extends Fragment {
 
@@ -67,6 +74,18 @@ public class PremiumPaymentFragment extends Fragment {
 
     private void upgradeToPremium() {
         Log.d(TAG, "Upgrading to PREMIUM");
+        new UserService(getContext()).postUpgradeToPremium(new Callback<ServerResponse<String>>() {
+            @Override
+            public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                showAlert("¡El pago se ha procesado con éxito!", "");
+                UserManager.getInstance().getMyUser().setPremium(true);
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                showAlert("Nos hemos encontrado con un error", "Por favor intenta más tarde");
+            }
+        });
     }
 
     private boolean checkCardInput() {
@@ -129,7 +148,7 @@ public class PremiumPaymentFragment extends Fragment {
         mListener = null;
     }
 
-    private void showAlert(String title, String message) {
+    private void showAlert(final String title, String message) {
         // 1. Instantiate an AlertDialog.Builder with its constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -142,6 +161,9 @@ public class PremiumPaymentFragment extends Fragment {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
                 dialog.dismiss();
+                if (title.compareTo("¡El pago se ha procesado con éxito!") == 0) {
+                    mListener.onPremiumPaymentFragmentInteraction();
+                }
             }
         });
 

@@ -378,6 +378,17 @@ public class UserService {
         api.getBlockedUsersByMe(myUserId).enqueue(callback);
     }
 
+    public void postUpgradeToPremium(final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        HashMap<String, String> info = new HashMap<>();
+        info.put("userId", UserManager.getInstance().getMyUser().getId());
+        api.postUpgradeToPremium(info).enqueue(callback);
+    }
+
 
     /*----------------------------------------------- EXTRA --------------------------------------*/
 
