@@ -47,6 +47,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private RadioButton radioFriendship;
     private Button deleteAccountButton;
     private UserService userService;
+    private View baseLinLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +58,19 @@ public class PreferencesActivity extends AppCompatActivity {
 
         userService = new UserService(getBaseContext());
 
+        baseLinLayout = (View) findViewById(R.id.prefs_base);
+
         linkUpPlusButton = (Button) findViewById(R.id.txt_linkup_plus);
-        linkUpPlusButton.setOnClickListener(new View.OnClickListener(){
+
+        linkUpPlusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Obtener LinkUp Plus!", Snackbar.LENGTH_LONG).show();
-
-                Intent getPremium = new Intent(PreferencesActivity.this, PremiumDetailsActivity.class);
-                startActivity(getPremium);
+                if (UserManager.getInstance().getMyUser().isPremium()) {
+                    showAlertQuitPremium();
+                } else {
+                    Intent getPremium = new Intent(PreferencesActivity.this, PremiumDetailsActivity.class);
+                    startActivity(getPremium);
+                }
             }
         });
 
@@ -102,11 +108,11 @@ public class PreferencesActivity extends AppCompatActivity {
 
 
         int userAge = Integer.parseInt(UserManager.getInstance().getMyUser().getAge());
-        if(userAge <= 23)
+        if (userAge <= 23)
             ageRangeSeekBar.setLeft(18);
         else
-            ageRangeSeekBar.setLeft(userAge-5);
-        ageRangeSeekBar.setRight(userAge+5);
+            ageRangeSeekBar.setLeft(userAge - 5);
+        ageRangeSeekBar.setRight(userAge + 5);
 
         invisibleSwitch = (Switch) findViewById(R.id.switch_invisible);
 
@@ -132,7 +138,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private void startLoader() {
         scrollview.setVisibility(View.GONE);
         loader.setVisibility(View.VISIBLE);
-        loader.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely) );
+        loader.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_indefinitely));
     }
 
     private void stopLoader() {
@@ -144,20 +150,20 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("Preferences view", "Refreshing current values for user "+Profile.getCurrentProfile().getId());
+        Log.d("Preferences view", "Refreshing current values for user " + Profile.getCurrentProfile().getId());
         userService.getUserPreferences(Profile.getCurrentProfile().getId(), new Callback<ServerResponse<UserPreferences>>() {
             @Override
             public void onResponse(Call<ServerResponse<UserPreferences>> call, Response<ServerResponse<UserPreferences>> response) {
                 UserPreferences userPreferences = response.body().data;
-                if(Objects.equals(userPreferences.getGender(), "both")){
+                if (Objects.equals(userPreferences.getGender(), "both")) {
                     likeMenSwitch.setChecked(true);
                     likeWomenSwitch.setChecked(true);
                 }
-                if(Objects.equals(userPreferences.getGender(), "male")){
+                if (Objects.equals(userPreferences.getGender(), "male")) {
                     likeMenSwitch.setChecked(true);
                     likeWomenSwitch.setChecked(false);
                 }
-                if(Objects.equals(userPreferences.getGender(), "female")){
+                if (Objects.equals(userPreferences.getGender(), "female")) {
                     likeMenSwitch.setChecked(false);
                     likeWomenSwitch.setChecked(true);
                 }
@@ -170,9 +176,9 @@ public class PreferencesActivity extends AppCompatActivity {
                         .setMaxStartValue(Integer.parseInt(userPreferences.getMaxAge()))
                         .apply();
 
-                invisibleSwitch.setChecked(Objects.equals(userPreferences.getMode(),"invisible"));
+                invisibleSwitch.setChecked(Objects.equals(userPreferences.getMode(), "invisible"));
 
-                if(Objects.equals(userPreferences.getSearchMode(), "couple"))
+                if (Objects.equals(userPreferences.getSearchMode(), "couple"))
                     radioRelationship.setChecked(true);
                 else
                     radioFriendship.setChecked(true);
@@ -182,10 +188,18 @@ public class PreferencesActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ServerResponse<UserPreferences>> call, Throwable t) {
-                Log.w("Preferences Activity", "Error: "+t.toString()+", in call: "+call.toString());
+                Log.w("Preferences Activity", "Error: " + t.toString() + ", in call: " + call.toString());
                 showAlertAndFinish("Ha habido un error al comunicarse con nuestros servidores. Por favor intenta más tarde");
             }
         });
+
+        if (!UserManager.getInstance().getMyUser().isPremium()) {
+            linkUpPlusButton.setText("¡Obtener LinkUp premium!");
+            linkUpPlusButton.setTextSize(22);
+        } else {
+            linkUpPlusButton.setText("Dejar de ser LinkUp premium :(");
+            linkUpPlusButton.setTextSize(18);
+        }
     }
 
     @Override
@@ -199,24 +213,69 @@ public class PreferencesActivity extends AppCompatActivity {
     public void postPreferences() {
         String userId = Profile.getCurrentProfile().getId();
         String gender;
-        if(likeMenSwitch.isChecked() && likeWomenSwitch.isChecked())
+        if (likeMenSwitch.isChecked() && likeWomenSwitch.isChecked())
             gender = "both";
+        else if (likeWomenSwitch.isChecked())
+            gender = "female";
         else
-            if(likeWomenSwitch.isChecked())
-                gender = "female";
-            else
-                gender = "male";
+            gender = "male";
         String distance = distanceRangeSeekBar.getSelectedMinValue().toString();
         String minAge = ageRangeSeekBar.getSelectedMinValue().toString();
         String maxAge = ageRangeSeekBar.getSelectedMaxValue().toString();
         String mode = invisibleSwitch.isChecked() ? "invisible" : "visible";
         String searchMode;
-        if(radioRelationship.isChecked())
+        if (radioRelationship.isChecked())
             searchMode = "couple";
         else
             searchMode = "friendship";
 
         userService.postPreferences(userId, gender, distance, minAge, maxAge, mode, searchMode);
+    }
+
+    private void showAlertQuitPremium() {
+        // 1. Instantiate an AlertDialog.Builder with its constructor
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // 2. Chain together various setter methods to set the dialog characteristics
+        builder.setMessage("¿Seguro que quieres dejar de ser premium?")
+                .setTitle("Atención");
+
+        // 3. Add the buttons
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(final DialogInterface dialog, int id) {
+                // User clicked OK button
+                new UserService(getBaseContext()).deleteUpgradeToPremium(new Callback<ServerResponse<String>>() {
+                    @Override
+                    public void onResponse(Call<ServerResponse<String>> call, Response<ServerResponse<String>> response) {
+                        if (response.isSuccessful()) {
+                            UserManager.getInstance().getMyUser().setPremium(false);
+                            linkUpPlusButton.setText("¡Obtener LinkUp premium!");
+                            linkUpPlusButton.setTextSize(22);
+                            dialog.dismiss();
+                        } else {
+                            onFailure(null, null);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ServerResponse<String>> call, Throwable t) {
+                        Snackbar.make(baseLinLayout, "Ha habido un error, intenta más tarde.", Snackbar.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                });
+
+            }
+        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                dialog.dismiss();
+            }
+        });
+
+        // 4. Get the AlertDialog from create()
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 
     private void showAlertAndFinish(String s) {

@@ -389,6 +389,15 @@ public class UserService {
         api.postUpgradeToPremium(info).enqueue(callback);
     }
 
+    public void deleteUpgradeToPremium(final Callback<ServerResponse<String>> callback) {
+        if (endItNow) {
+            showNoConnectionAlert();
+            callback.onFailure(null, null);
+            return;
+        }
+        api.deleteUpgradeToPremium(UserManager.getInstance().getMyUser().getId()).enqueue(callback);
+    }
+
 
     /*----------------------------------------------- EXTRA --------------------------------------*/
 

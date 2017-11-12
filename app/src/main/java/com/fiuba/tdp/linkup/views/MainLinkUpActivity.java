@@ -156,6 +156,10 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
 //        tokenObject.put("token", token);
 //        tokenObject.put("name", UserManager.getInstance().getMyUser().getName());
 
+        if (UserManager.getInstance().getMyUser() == null) {
+            return;
+        }
+
         mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId() + "/token").setValue(token);
         mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId() + "/name").setValue(UserManager.getInstance().getMyUser().getName());
     }

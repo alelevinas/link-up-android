@@ -76,4 +76,7 @@ public interface UserAPIService {
 
     @POST("api/linkup/users/premium")
     Call<ServerResponse<String>> postUpgradeToPremium(@Body HashMap<String, String> data);
+
+    @DELETE("api/linkup/users/premium/{myUserId}")
+    Call<ServerResponse<String>> deleteUpgradeToPremium(@Path("myUserId") String myUserId);
 }
