@@ -71,7 +71,12 @@ public interface UserAPIService {
     @POST("/api/linkup/users/{myUserId}/unblock")
     Call<ServerResponse<String>> postUnblockUser(@Path("myUserId") String myUserId, @Body HashMap<String, String> info);
 
-
     @GET("/api/linkup/users/{myUserId}/block")
     Call<ServerResponse<LinkUpBlockedUser[]>> getBlockedUsersByMe(@Path("myUserId") String myUserId);
+
+    @POST("api/linkup/users/premium")
+    Call<ServerResponse<String>> postUpgradeToPremium(@Body HashMap<String, String> data);
+
+    @DELETE("api/linkup/users/premium/{myUserId}")
+    Call<ServerResponse<String>> deleteUpgradeToPremium(@Path("myUserId") String myUserId);
 }

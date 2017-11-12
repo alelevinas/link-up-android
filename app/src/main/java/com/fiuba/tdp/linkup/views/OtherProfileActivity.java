@@ -33,7 +33,6 @@ import android.widget.TextView;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.OtherProfileActivityAsyncTaskLoader;
 import com.fiuba.tdp.linkup.components.BlockDialog;
-import com.fiuba.tdp.linkup.components.ExploreUserViewHolder;
 import com.fiuba.tdp.linkup.components.ReportDialog;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
 import com.fiuba.tdp.linkup.domain.LinkUpUser;
@@ -214,7 +213,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         }
 
         mLoader = getLoaderManager();
-        if(mLoader.getLoader(0) != null) {
+        if (mLoader.getLoader(0) != null) {
             mLoader.initLoader(0, null, this);// deliver the result after the screen rotation
         }
 
@@ -229,7 +228,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         userDescription = (TextView) findViewById(R.id.aboutMe);
 
         userInterestsLabel = (TextView) findViewById(R.id.interestsLabel);
-        userInterests =  (TextView) findViewById(R.id.interests);
+        userInterests = (TextView) findViewById(R.id.interests);
 
         nestedScrollView = (NestedScrollView) findViewById(R.id.nestedScrollView);
         loader = (ImageView) findViewById(R.id.loader);
@@ -282,11 +281,11 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         this.otherUser = otherUser;
 
         int nPictures = 0;
-        for(LinkUpPicture picture : otherUser.getPictures()){
-            if(!picture.getUrl().equals(""))
+        for (LinkUpPicture picture : otherUser.getPictures()) {
+            if (!picture.getUrl().equals(""))
                 nPictures++;
         }
-        if(nPictures>0) {
+        if (nPictures > 0) {
             vp_image.setVisibility(View.GONE);
             vp_slider.setVisibility(View.VISIBLE);
 
@@ -361,13 +360,13 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         //toolbarUsername.setBackgroundColor(Color.parseColor("#3f000000"));
 
 
-        if (otherUser.getEducation().length != 0 ) {
+        if (otherUser.getEducation().length != 0) {
             studiesLabel.setText(otherUser.getEducation()[otherUser.getEducation().length - 1].getName());
         } else {
             studiesLabel.setText("");
         }
 
-        if(otherUser.getDescription().equals("")) {
+        if (otherUser.getDescription().equals("")) {
             aboutMeLabel.setVisibility(View.GONE);
             userDescription.setVisibility(View.GONE);
         } else {
@@ -377,13 +376,13 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             userDescription.setVisibility(View.VISIBLE);
         }
 
-        if(otherUser.getLikes().length == 0){
+        if (otherUser.getLikes().length == 0) {
             userInterestsLabel.setVisibility(View.GONE);
             userInterests.setVisibility(View.GONE);
         } else {
             String likesUser = "";
-            for(LinkUpUser.LinkUpLike like : otherUser.getLikes()) {
-                if(likesUser.equals(""))
+            for (LinkUpUser.LinkUpLike like : otherUser.getLikes()) {
+                if (likesUser.equals(""))
                     likesUser = like.getName();
                 else
                     likesUser = likesUser + "\n" + like.getName();
@@ -405,12 +404,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         buttonSuperLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ExploreUserViewHolder.superlikes == 0) {
-                    pressSuperLikeButton(v);
-                } else {
-                    Snackbar.make(v, "Solo puedes hacer 1 superlike por día!",
-                            Snackbar.LENGTH_LONG).show();
-                }
+                pressSuperLikeButton(v);
             }
         });
 
@@ -551,6 +545,14 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                     Log.d(LOG_LIKE, "-----isSuccess----");
                     Log.d(LOG_LIKE, response.body().data.getLink().toString());
 
+                    if (response.body().data.getExtra().compareTo("") != 0) {
+                        Snackbar.make(v, "¡Ya no tienes más superlikes!",
+                                Snackbar.LENGTH_LONG).show();
+                        superlikeChecked = !superlikeChecked;
+                        updateSuperLikeStatus();
+                        return;
+                    }
+
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
                     }
@@ -614,7 +616,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         buttonLike.setVisibility(View.GONE);
 
         loader.setVisibility(View.VISIBLE);
-        loader.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_indefinitely) );
+        loader.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_indefinitely));
     }
 
     public void startMyAsyncTask() {
@@ -705,10 +707,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(ba).build(), 10));
     }
 
-    private void drawMarkerWithCircle(LatLng position, double radiusInMeters){
+    private void drawMarkerWithCircle(LatLng position, double radiusInMeters) {
         if (mMap == null)
             return;
-        Log.e(TAG, String.format("Other user Lat: %f  | Long: %f\n",otherUser.getLocation().getLat(), otherUser.getLocation().getLon()));
+        Log.e(TAG, String.format("Other user Lat: %f  | Long: %f\n", otherUser.getLocation().getLat(), otherUser.getLocation().getLon()));
 
 //        double radiusInMeters = 60000.0;
         int strokeColor = 0xff33b5e5; //blue outline
@@ -717,7 +719,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         CircleOptions circleOptions = new CircleOptions().center(position).radius(radiusInMeters).fillColor(shadeColor).strokeColor(strokeColor).strokeWidth(8);
         mCircle = mMap.addCircle(circleOptions);
 
-        LatLngBounds bounds = boundsWithCenterAndLatLngDistance(position,radiusInMeters/2,radiusInMeters/2);
+        LatLngBounds bounds = boundsWithCenterAndLatLngDistance(position, radiusInMeters / 2, radiusInMeters / 2);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = 200;

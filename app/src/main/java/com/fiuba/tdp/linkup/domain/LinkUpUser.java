@@ -20,10 +20,10 @@ public class LinkUpUser {
     private LinkUpPicture[] pictures;
     private LinkUpLocation location;
     private boolean disable;
+    private boolean premium;
 
 
-
-    public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLike[] likes, LinkUpPicture[] pictures, LinkUpLocation location, boolean disable) {
+    public LinkUpUser(String id, String name, String gender, String birthday, String picture, String description, LinkUpEducation[] education, LinkUpLike[] likes, LinkUpPicture[] pictures, LinkUpLocation location, boolean disable, boolean premium) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -35,6 +35,7 @@ public class LinkUpUser {
         this.pictures = pictures;
         this.location = location;
         this.disable = disable;
+        this.premium = premium;
     }
 
 
@@ -87,10 +88,6 @@ public class LinkUpUser {
         this.pictures = pictures;
     }
 
-    public void setLocation(LinkUpLocation location) {
-        this.location = location;
-    }
-
     /**
      * Method to extract the user's age from the entered Date of Birth.
      *
@@ -118,12 +115,24 @@ public class LinkUpUser {
         return location;
     }
 
+    public void setLocation(LinkUpLocation location) {
+        this.location = location;
+    }
+
     public boolean isDisable() {
         return disable;
     }
 
     public void setDisable(boolean disable) {
         this.disable = disable;
+    }
+
+    public boolean isPremium() {
+        return premium;
+    }
+
+    public void setPremium(boolean premium) {
+        this.premium = premium;
     }
 
     public class LinkUpEducation {

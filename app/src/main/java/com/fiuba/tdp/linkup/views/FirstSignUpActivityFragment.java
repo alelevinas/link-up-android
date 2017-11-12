@@ -42,6 +42,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     private TextView description;
     private TextView studiesView;
     private ImageView profile_picture;
+    private ImageView premium_star;
     private ImageView secondary_pictures1;
     private ImageView secondary_pictures2;
     private ImageView secondary_pictures3;
@@ -75,6 +76,7 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
         description = (TextView) mainView.findViewById(R.id.txt_description);
         studiesView = (TextView) mainView.findViewById(R.id.label_studies);
         profile_picture = (ImageView) mainView.findViewById(R.id.profile_picture);
+        premium_star = (ImageView) mainView.findViewById(R.id.premium_star);
 
         secondary_pictures1 = (ImageView) mainView.findViewById(R.id.secondary_picture);
         secondary_pictures2 = (ImageView) mainView.findViewById(R.id.secondary_picture2);
@@ -128,7 +130,13 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
                 .load(profile.getProfilePictureUri(700, 700).toString())
                 .apply(bitmapTransform(new CircleCrop()))
 //                .placeholder(R.drawable.ezgif_com_gif_maker)
-                .into((ImageView) view.findViewById(R.id.profile_picture));
+                .into(profile_picture);
+
+        if (myUser.isPremium()) {
+            premium_star.setVisibility(View.VISIBLE);
+        } else {
+            premium_star.setVisibility(View.GONE);
+        }
 
         TextView nameView = (TextView) view.findViewById(R.id.label_name);
         nameView.setText(profile.getName());

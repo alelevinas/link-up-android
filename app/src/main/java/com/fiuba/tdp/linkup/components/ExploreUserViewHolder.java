@@ -32,7 +32,7 @@ import static android.R.color.holo_red_light;
 public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TAG = "USER CARD";
-    public static int superlikes = 0;
+
     private final Button sendMessageButton;
     private final ImageButton closeImageButton;
     private final ImageButton likeImageButton;
@@ -105,12 +105,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         superLikeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ExploreUserViewHolder.superlikes == 0) {
-                    pressSuperLikeButton(v);
-                } else {
-                    Snackbar.make(itemView, "Solo puedes hacer 1 superlike por día!",
-                            Snackbar.LENGTH_LONG).show();
-                }
+                pressSuperLikeButton(v);
             }
         });
     }
@@ -166,7 +161,14 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                     Log.d(LOG_LIKE, "-----isSuccess----");
                     Log.d(LOG_LIKE, response.body().data.getLink().toString());
 
-                    ExploreUserViewHolder.superlikes += 1;
+                    if (response.body().data.getExtra().compareTo("") != 0) {
+                        Snackbar.make(v, "¡Ya no tienes más superlikes!",
+                                Snackbar.LENGTH_LONG).show();
+                        superLikeImageButtonChecked = !superLikeImageButtonChecked;
+                        updateSuperLikeStatus();
+                        return;
+                    }
+
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");

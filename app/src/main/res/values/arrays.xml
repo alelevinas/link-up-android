@@ -6,4 +6,9 @@
         <item>Spam</item>
         <item>Otro</item>
     </string-array>
+
+    <string-array name="credit_cards">
+        <item>Visa</item>
+        <item>American Express</item>
+    </string-array>
 </resources>
