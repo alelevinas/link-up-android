@@ -30,6 +30,8 @@ import com.fiuba.tdp.linkup.domain.LinkUpUser;
 import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.util.DownloadImage;
 import com.fiuba.tdp.linkup.util.GlideApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -130,6 +132,11 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
             //Do whatever you want to do
             Log.d(TAG, "LOG OUUUUUT");
             LoginManager.getInstance().logOut();
+
+            // Delete token so i dont get any notifications
+            DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            mFirebaseDatabaseReference.child("users" + "/" + UserManager.getInstance().getMyUser().getId() + "/token").setValue("");
+
             Intent main = new Intent(getContext(), LogInActivity.class);
             startActivity(main);
             getActivity().finish();

@@ -97,14 +97,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent intent;
         if (type.compareTo("PROFILE") == 0) {
             // open other users profile because he superliked me
-            intent = new Intent(this, OtherProfileActivity.class);
-            intent.putExtra(OtherProfileActivity.ID_USER, Long.parseLong(messageFromUserId));
-            intent.putExtra(OtherProfileActivity.IS_LIKED, false);
-            intent.putExtra(OtherProfileActivity.IS_SUPERLIKED, false);
-//            intent.putExtra(OtherProfileActivity.DISTANCE, distance);
+            intent = new Intent(this, SplashActivity.class);
+            intent.putExtra(SplashActivity.NOTIFICATION_ACTIVITY, SplashActivity.OTHER_PROFILE);
+
+            Bundle bundle = new Bundle();
+            bundle.putLong(OtherProfileActivity.ID_USER, Long.parseLong(messageFromUserId));
+            bundle.putBoolean(OtherProfileActivity.IS_LIKED, false);
+            bundle.putBoolean(OtherProfileActivity.IS_SUPERLIKED, false);
+//            intent.putExtra(OtherProfileActivity.DISTANCE, 10);
+            intent.putExtras(bundle);
         } else {
             // open chat with the other user
             intent = new Intent(this, SplashActivity.class);
+            intent.putExtra(SplashActivity.NOTIFICATION_ACTIVITY, SplashActivity.CHAT_ACTIVITY);
             Bundle bundle = new Bundle();
             bundle.putString(ChatActivity.CHAT_WITH_USER_ID, messageFromUserId);
             bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, messageFromUserName);

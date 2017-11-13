@@ -163,7 +163,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                     Log.d(LOG_LIKE, "-----isSuccess----");
                     Log.d(LOG_LIKE, response.body().data.getLink().toString());
 
-                    if (response.body().data.getExtra().compareTo("") != 0) {
+                    if (response.body().data.getExtra() != null && response.body().data.getExtra().compareTo("") != 0) {
                         Snackbar.make(v, "¡Ya no tienes más superlikes!",
                                 Snackbar.LENGTH_LONG).show();
                         superLikeImageButtonChecked = !superLikeImageButtonChecked;
@@ -174,7 +174,10 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
-                        sendNotificationToOtherUser(userId);
+                        sendMatchNotificationToOtherUser(userId);
+                    } else {
+                        // no hubo match, envio la notif
+                        sendSuperlikeNotificationToOtherUser(userId);
                     }
 
                 } else {
@@ -269,6 +272,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendMatchNotificationToOtherUser(userId);
                     }
 
                 } else {
@@ -318,10 +322,18 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void sendNotificationToOtherUser(String otherUserId) {
+    private void sendMatchNotificationToOtherUser(String otherUserId) {
+        sendNotificationToOtherUser(otherUserId, "matches");
+    }
+
+    private void sendSuperlikeNotificationToOtherUser(String otherUserId) {
+        sendNotificationToOtherUser(otherUserId, "superlikes");
+    }
+
+    private void sendNotificationToOtherUser(String otherUserId, String childRefToNotify) {
         //OTHER chats and last message data
         DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        String otherUserMatchesReference = "users/" + otherUserId + "/matches";
+        String otherUserMatchesReference = "users/" + otherUserId + "/" + childRefToNotify;
         DatabaseReference otherMatchesRef = mFirebaseDatabaseReference.child(otherUserMatchesReference);
 
         otherMatchesRef.push().setValue(UserManager.getInstance().getMyUser().getId());
