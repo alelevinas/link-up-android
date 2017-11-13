@@ -28,7 +28,7 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
         InterestsFragment.OnListFragmentInteractionListener, NewMatchFragment.OnNewMatchListFragmentInteractionListener {
 
     private Fragment exploreFragment = new ExploreFragment();
-    private Fragment profileFragment = new FirstSignUpActivityFragment();
+    private Fragment profileFragment = new MyProfileFragment();
     private Fragment matchesFragment = new MatchsFragment();
     private Fragment comingSoon = new CommingSoonFragment();
 

@@ -5,8 +5,13 @@ import android.app.LoaderManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -17,6 +22,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.components.AsyncTaskLoaders.ProfileFragmentAsyncTaskLoader;
 import com.fiuba.tdp.linkup.domain.LinkUpPicture;
@@ -29,8 +35,9 @@ import java.util.Objects;
 
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
-public class FirstSignUpActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>{
+public class MyProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
 
+    private static final String TAG = "MY_PROFILE";
     private Profile profile;
     private ImageView loader;
     private ConstraintLayout mainLayout;
@@ -50,6 +57,12 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
     private ImageView secondary_pictures5;
 
     private View mainView;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,6 +117,28 @@ public class FirstSignUpActivityFragment extends Fragment implements LoaderManag
 
         return mainView;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.profile_menu, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.log_out) {
+            //Do whatever you want to do
+            Log.d(TAG, "LOG OUUUUUT");
+            LoginManager.getInstance().logOut();
+            Intent main = new Intent(getContext(), LogInActivity.class);
+            startActivity(main);
+            getActivity().finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
     private void startLoader() {
