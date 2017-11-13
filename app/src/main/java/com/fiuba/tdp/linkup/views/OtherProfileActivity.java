@@ -52,6 +52,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -827,6 +829,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendNotificationToOtherUser(otherUser.getId());
                     }
 
                 } else {
@@ -853,6 +856,15 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             buttonLike.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.cardview_light_background));
             buttonLike.setImageTintList(ContextCompat.getColorStateList(this, holo_green_light));
         }
+    }
+
+    private void sendNotificationToOtherUser(String otherUserId) {
+        //OTHER chats and last message data
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        String otherUserMatchesReference = "users/" + otherUserId + "/matches";
+        DatabaseReference otherMatchesRef = mFirebaseDatabaseReference.child(otherUserMatchesReference);
+
+        otherMatchesRef.push().setValue(UserManager.getInstance().getMyUser().getId());
     }
 
 }

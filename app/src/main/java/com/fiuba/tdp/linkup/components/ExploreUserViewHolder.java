@@ -22,6 +22,8 @@ import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.views.ExploreFragment;
 import com.fiuba.tdp.linkup.views.OtherProfileActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,7 +79,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Snackbar.make(v, "Enviar mensaje a " + name.getText().toString(),
+                Snackbar.make(v, "Enviar NOTIF a " + name.getText().toString(),
                         Snackbar.LENGTH_LONG).show();
             }
         });
@@ -172,6 +174,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendNotificationToOtherUser(userId);
                     }
 
                 } else {
@@ -313,5 +316,14 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
         dialog.show();
 
+    }
+
+    private void sendNotificationToOtherUser(String otherUserId) {
+        //OTHER chats and last message data
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        String otherUserMatchesReference = "users/" + otherUserId + "/matches";
+        DatabaseReference otherMatchesRef = mFirebaseDatabaseReference.child(otherUserMatchesReference);
+
+        otherMatchesRef.push().setValue(UserManager.getInstance().getMyUser().getId());
     }
 }
