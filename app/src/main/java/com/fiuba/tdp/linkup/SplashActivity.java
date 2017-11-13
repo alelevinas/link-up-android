@@ -27,6 +27,7 @@ import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.views.ChatActivity;
 import com.fiuba.tdp.linkup.views.LogInActivity;
 import com.fiuba.tdp.linkup.views.MainLinkUpActivity;
+import com.fiuba.tdp.linkup.views.OtherProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -41,6 +42,9 @@ import retrofit2.Response;
 
 public class SplashActivity extends AppCompatActivity {
 
+    public static final String NOTIFICATION_ACTIVITY = "NOTIFICATION_ACTIVITY";
+    public static final String OTHER_PROFILE = "OTHER_PROFILE";
+    public static final String CHAT_ACTIVITY = "CHAT_ACTIVITY";
     private static final long SPLASH_TIME_OUT = 150;
     LocationManager locationManager = new LocationManager();
 
@@ -49,22 +53,28 @@ public class SplashActivity extends AppCompatActivity {
 
     //Firebase
     private FirebaseAuth mAuth;
-    private String otherUserId;
-    private String otherUserName;
+    //    private String otherUserId;
+//    private String otherUserName;
+    private String activityType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Intent intentExtras = getIntent();
-        Bundle extrasBundle = intentExtras.getExtras();
-        if (extrasBundle != null && !extrasBundle.isEmpty()) {
-            otherUserId = extrasBundle.getString(ChatActivity.CHAT_WITH_USER_ID, "");
-            otherUserName = extrasBundle.getString(ChatActivity.CHAT_WITH_USER_NAME, "");
-        } else {
-            otherUserId = "";
-            otherUserName = "";
+        activityType = intentExtras.getStringExtra(NOTIFICATION_ACTIVITY);
+        if (activityType == null) {
+            activityType = "";
         }
+
+//        Bundle extrasBundle = intentExtras.getExtras();
+//        if (extrasBundle != null && !extrasBundle.isEmpty()) {
+//            otherUserId = extrasBundle.getString(ChatActivity.CHAT_WITH_USER_ID, "");
+//            otherUserName = extrasBundle.getString(ChatActivity.CHAT_WITH_USER_NAME, "");
+//        } else {
+//            otherUserId = "";
+//            otherUserName = "";
+//        }
 
         setContentView(R.layout.activity_splash);
 
@@ -148,12 +158,17 @@ public class SplashActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (otherUserId.compareTo("") != 0) {
+                    if (activityType.compareTo(CHAT_ACTIVITY) == 0) {
                         Intent intent = new Intent(SplashActivity.this, ChatActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ChatActivity.CHAT_WITH_USER_ID, otherUserId);
-                        bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, otherUserName);
-                        intent.putExtras(bundle);
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString(ChatActivity.CHAT_WITH_USER_ID, otherUserId);
+//                        bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, otherUserName);
+                        intent.putExtras(getIntent().getExtras());
+                        startActivity(intent);
+                        finish();
+                    } else if (activityType.compareTo(OTHER_PROFILE) == 0) {
+                        Intent intent = new Intent(SplashActivity.this, OtherProfileActivity.class);
+                        intent.putExtras(getIntent().getExtras());
                         startActivity(intent);
                         finish();
                     } else {

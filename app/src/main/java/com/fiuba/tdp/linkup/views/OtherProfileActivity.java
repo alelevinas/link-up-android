@@ -2,6 +2,7 @@ package com.fiuba.tdp.linkup.views;
 
 import android.app.LoaderManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Color;
 import android.location.Location;
@@ -52,6 +53,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -204,13 +207,17 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
         toolbarUsername = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // collapsingToolbar.setTitle(getString(R.string.item_title));
 
-        idUser = getIntent().getLongExtra(ID_USER, 0);
+        Intent intentExtras = getIntent();
+        Bundle extrasBundle = intentExtras.getExtras();
+        if (!extrasBundle.isEmpty()) {
+            idUser = extrasBundle.getLong(ID_USER, 0);
 
-        likeChecked = getIntent().getBooleanExtra(IS_LIKED, false);
-        superlikeChecked = getIntent().getBooleanExtra(IS_SUPERLIKED, false);
-        if (getIntent().hasExtra(DISTANCE)) {
-            distance = getIntent().getStringExtra(DISTANCE);
+            likeChecked = extrasBundle.getBoolean(IS_LIKED, false);
+            superlikeChecked = extrasBundle.getBoolean(IS_SUPERLIKED, false);
+            distance = extrasBundle.getString(DISTANCE, null);
+
         }
+
 
         mLoader = getLoaderManager();
         if (mLoader.getLoader(0) != null) {
@@ -545,7 +552,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
                     Log.d(LOG_LIKE, "-----isSuccess----");
                     Log.d(LOG_LIKE, response.body().data.getLink().toString());
 
-                    if (response.body().data.getExtra().compareTo("") != 0) {
+                    if (response.body().data.getExtra() != null && response.body().data.getExtra().compareTo("") != 0) {
                         Snackbar.make(v, "¡Ya no tienes más superlikes!",
                                 Snackbar.LENGTH_LONG).show();
                         superlikeChecked = !superlikeChecked;
@@ -555,6 +562,10 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendMatchNotificationToOtherUser(otherUser.getId());
+                    } else {
+                        // no hubo match, envio la notif
+                        sendSuperlikeNotificationToOtherUser(otherUser.getId());
                     }
 
                 } else {
@@ -827,6 +838,7 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendMatchNotificationToOtherUser(otherUser.getId());
                     }
 
                 } else {
@@ -853,6 +865,23 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             buttonLike.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.cardview_light_background));
             buttonLike.setImageTintList(ContextCompat.getColorStateList(this, holo_green_light));
         }
+    }
+
+    private void sendMatchNotificationToOtherUser(String otherUserId) {
+        sendNotificationToOtherUser(otherUserId, "matches");
+    }
+
+    private void sendSuperlikeNotificationToOtherUser(String otherUserId) {
+        sendNotificationToOtherUser(otherUserId, "superlikes");
+    }
+
+    private void sendNotificationToOtherUser(String otherUserId, String childRefToNotify) {
+        //OTHER chats and last message data
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        String otherUserMatchesReference = "users/" + otherUserId + "/" + childRefToNotify;
+        DatabaseReference otherMatchesRef = mFirebaseDatabaseReference.child(otherUserMatchesReference);
+
+        otherMatchesRef.push().setValue(UserManager.getInstance().getMyUser().getId());
     }
 
 }

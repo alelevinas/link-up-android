@@ -22,6 +22,8 @@ import com.fiuba.tdp.linkup.services.UserManager;
 import com.fiuba.tdp.linkup.services.UserService;
 import com.fiuba.tdp.linkup.views.ExploreFragment;
 import com.fiuba.tdp.linkup.views.OtherProfileActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,7 +79,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Snackbar.make(v, "Enviar mensaje a " + name.getText().toString(),
+                Snackbar.make(v, "Enviar NOTIF a " + name.getText().toString(),
                         Snackbar.LENGTH_LONG).show();
             }
         });
@@ -161,7 +163,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
                     Log.d(LOG_LIKE, "-----isSuccess----");
                     Log.d(LOG_LIKE, response.body().data.getLink().toString());
 
-                    if (response.body().data.getExtra().compareTo("") != 0) {
+                    if (response.body().data.getExtra() != null && response.body().data.getExtra().compareTo("") != 0) {
                         Snackbar.make(v, "¡Ya no tienes más superlikes!",
                                 Snackbar.LENGTH_LONG).show();
                         superLikeImageButtonChecked = !superLikeImageButtonChecked;
@@ -172,6 +174,10 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendMatchNotificationToOtherUser(userId);
+                    } else {
+                        // no hubo match, envio la notif
+                        sendSuperlikeNotificationToOtherUser(userId);
                     }
 
                 } else {
@@ -266,6 +272,7 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
                     if (response.body().data.getLink()) {
                         showAlert("Felicitaciones!", "Hay match!");
+                        sendMatchNotificationToOtherUser(userId);
                     }
 
                 } else {
@@ -313,5 +320,22 @@ public class ExploreUserViewHolder extends RecyclerView.ViewHolder {
 
         dialog.show();
 
+    }
+
+    private void sendMatchNotificationToOtherUser(String otherUserId) {
+        sendNotificationToOtherUser(otherUserId, "matches");
+    }
+
+    private void sendSuperlikeNotificationToOtherUser(String otherUserId) {
+        sendNotificationToOtherUser(otherUserId, "superlikes");
+    }
+
+    private void sendNotificationToOtherUser(String otherUserId, String childRefToNotify) {
+        //OTHER chats and last message data
+        DatabaseReference mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        String otherUserMatchesReference = "users/" + otherUserId + "/" + childRefToNotify;
+        DatabaseReference otherMatchesRef = mFirebaseDatabaseReference.child(otherUserMatchesReference);
+
+        otherMatchesRef.push().setValue(UserManager.getInstance().getMyUser().getId());
     }
 }

@@ -30,6 +30,7 @@ import android.util.Log;
 import com.fiuba.tdp.linkup.R;
 import com.fiuba.tdp.linkup.SplashActivity;
 import com.fiuba.tdp.linkup.views.ChatActivity;
+import com.fiuba.tdp.linkup.views.OtherProfileActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -71,7 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            sendNotification(remoteMessage.getData().get("fromUserName"), remoteMessage.getData().get("body"), remoteMessage.getData().get("fromUserUid"));
+            sendNotification(remoteMessage.getData().get("type"), remoteMessage.getData().get("fromUserName"), remoteMessage.getData().get("body"), remoteMessage.getData().get("fromUserUid"));
 
         }
 
@@ -92,14 +93,28 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
-    private void sendNotification(String messageFromUserName, String messageBody, String messageFromUserId) {
-        // TODO: open chat with the other user
-        Intent intent = new Intent(this, SplashActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ChatActivity.CHAT_WITH_USER_ID, messageFromUserId);
-        bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, messageFromUserName);
-        intent.putExtras(bundle);
+    private void sendNotification(String type, String messageFromUserName, String messageBody, String messageFromUserId) {
+        Intent intent;
+        if (type.compareTo("PROFILE") == 0) {
+            // open other users profile because he superliked me
+            intent = new Intent(this, SplashActivity.class);
+            intent.putExtra(SplashActivity.NOTIFICATION_ACTIVITY, SplashActivity.OTHER_PROFILE);
 
+            Bundle bundle = new Bundle();
+            bundle.putLong(OtherProfileActivity.ID_USER, Long.parseLong(messageFromUserId));
+            bundle.putBoolean(OtherProfileActivity.IS_LIKED, false);
+            bundle.putBoolean(OtherProfileActivity.IS_SUPERLIKED, false);
+//            intent.putExtra(OtherProfileActivity.DISTANCE, 10);
+            intent.putExtras(bundle);
+        } else {
+            // open chat with the other user
+            intent = new Intent(this, SplashActivity.class);
+            intent.putExtra(SplashActivity.NOTIFICATION_ACTIVITY, SplashActivity.CHAT_ACTIVITY);
+            Bundle bundle = new Bundle();
+            bundle.putString(ChatActivity.CHAT_WITH_USER_ID, messageFromUserId);
+            bundle.putString(ChatActivity.CHAT_WITH_USER_NAME, messageFromUserName);
+            intent.putExtras(bundle);
+        }
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
