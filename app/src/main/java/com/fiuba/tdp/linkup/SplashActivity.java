@@ -147,7 +147,7 @@ public class SplashActivity extends AppCompatActivity {
                         LocationUser userLoc = new LocationUser(locationManager.getLastKnownLocation().getLatitude(), locationManager.getLastKnownLocation().getLongitude());
                         new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                     } else {
-                        LocationUser userLoc = new LocationUser(-34.59, -58.41);
+                        LocationUser userLoc = new LocationUser(-34.61, -58.36);
                         new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                     }
 

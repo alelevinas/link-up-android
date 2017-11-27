@@ -68,9 +68,9 @@ public class MainLinkUpActivity extends AppCompatActivity implements ProfileFrag
             case R.id.navigation_discover:
                 pushFragment(exploreFragment);
                 return true;
-            case R.id.navigation_notifications:
-                pushFragment(comingSoon);
-                return true;
+//            case R.id.navigation_notifications:
+//                pushFragment(comingSoon);
+//                return true;
             case R.id.navigation_messages:
                 pushFragment(matchesFragment);
                 return true;

@@ -266,7 +266,7 @@ public class LogInActivity extends AppCompatActivity {
                             new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         } else {
                             Log.d(LOCATION_TAG, "set default location");
-                            LocationUser userLoc = new LocationUser(-34.59, -58.41);
+                            LocationUser userLoc = new LocationUser(-34.61, -58.36);
                             new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                         }
 
@@ -295,7 +295,7 @@ public class LogInActivity extends AppCompatActivity {
                                     new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                                 } else {
                                     Log.d(LOCATION_TAG, "set default location");
-                                    LocationUser userLoc = new LocationUser(-34.59, -58.41);
+                                    LocationUser userLoc = new LocationUser(-34.61, -58.36);
                                     new UserService(getBaseContext()).putLocation(profile.getId(), userLoc);
                                 }
 

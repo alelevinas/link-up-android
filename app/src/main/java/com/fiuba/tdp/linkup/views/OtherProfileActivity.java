@@ -482,9 +482,9 @@ public class OtherProfileActivity extends AppCompatActivity implements LoaderMan
             }
         }
 
-        //TODO: sacar markers!!!!!
+
 //        mMap.addMarker(new MarkerOptions().position(myPos).title(UserManager.getInstance().getMyUser().getName()));
-        mMap.addMarker(new MarkerOptions().position(otherPos).title(otherUser.getName()));
+//        mMap.addMarker(new MarkerOptions().position(otherPos).title(otherUser.getName()));
 
 //        LatLng center = getCenterFromPositions(myPos, otherPos);
 //        float radius = getDistanceFromPositions(myPos, otherPos);
